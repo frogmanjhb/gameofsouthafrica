@@ -1545,18 +1545,131 @@ function checkForTradingChallenge(character, endingKey) {
                          (character === 'dutch' && endingKey.startsWith('fair_trade_'));
     
     if (isTradeEnding) {
-        // Unlock the trading challenge mini-game
-        const wasNewlyUnlocked = unlockMiniGame('tradingChallenge');
+        // Count total trade-related endings collected
+        const tradeEndingsCount = countTradeEndings();
         
-        // Show appropriate message after a short delay
-        setTimeout(() => {
-            if (wasNewlyUnlocked) {
-                showMiniGameUnlockedMessage(character);
-            } else {
-                showTradingChallengeOffer(character);
-            }
-        }, 2000);
+        // Only unlock if student has completed at least 8 trade-related endings
+        if (tradeEndingsCount >= 8) {
+            const wasNewlyUnlocked = unlockMiniGame('tradingChallenge');
+            
+            // Show appropriate message after a short delay
+            setTimeout(() => {
+                if (wasNewlyUnlocked) {
+                    showMiniGameUnlockedMessage(character);
+                } else {
+                    showTradingChallengeOffer(character);
+                }
+            }, 2000);
+        } else {
+            // Show progress message
+            setTimeout(() => {
+                showTradingChallengeProgress(tradeEndingsCount);
+            }, 2000);
+        }
     }
+}
+
+function countTradeEndings() {
+    let count = 0;
+    
+    // Count Khoi-San trade endings
+    collectedEndings.khoisan.forEach(endingKey => {
+        if (endingKey.startsWith('trade_')) {
+            count++;
+        }
+    });
+    
+    // Count Dutch trade endings
+    collectedEndings.dutch.forEach(endingKey => {
+        if (endingKey.startsWith('fair_trade_')) {
+            count++;
+        }
+    });
+    
+    return count;
+}
+
+function showTradingChallengeProgress(currentCount) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border: 3px solid #f39c12;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        max-width: 500px;
+        color: white;
+        font-family: 'Courier New', monospace;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    `;
+    
+    const title = document.createElement('h2');
+    title.textContent = 'Trading Challenge Progress';
+    title.style.cssText = `
+        color: #f39c12;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+    `;
+    
+    const text = document.createElement('p');
+    text.innerHTML = `
+        You've completed <strong>${currentCount} of 8</strong> trade-related endings!<br><br>
+        Complete <strong>${8 - currentCount} more</strong> trade endings to unlock the Trading Challenge mini-game.<br><br>
+        <em>Keep exploring different trade scenarios to understand the complexities of historical commerce!</em>
+    `;
+    text.style.cssText = `
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-size: 1.1em;
+    `;
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Continue Learning';
+    closeButton.style.cssText = `
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    closeButton.onmouseover = () => {
+        closeButton.style.background = '#c0392b';
+        closeButton.style.transform = 'translateY(-2px)';
+    };
+    
+    closeButton.onmouseout = () => {
+        closeButton.style.background = '#e74c3c';
+        closeButton.style.transform = 'translateY(0)';
+    };
+    
+    closeButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(closeButton);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
 }
 
 function showMiniGameUnlockedMessage(character) {
