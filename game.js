@@ -13,7 +13,8 @@ let collectedEndings = JSON.parse(localStorage.getItem('collectedEndings')) || {
 
 // Mini-game unlock system
 let unlockedMiniGames = JSON.parse(localStorage.getItem('unlockedMiniGames')) || {
-    tradingChallenge: false
+    tradingChallenge: false,
+    cattleChase: false
 };
 
 // Trading challenge mini-game data
@@ -37,6 +38,36 @@ const tradingChallenge = {
         correctMatches: 0,
         totalMatches: 0
     }
+};
+
+// Cattle Chase mini-game data
+const cattleChase = {
+    gameState: {
+        active: false,
+        score: 0,
+        lives: 3,
+        level: 1,
+        cattleInKraal: 0,
+        cattleNeeded: 5,
+        gameSpeed: 1,
+        spawnSide: 0 // 0 = bottom, 1 = top, 2 = left
+    },
+    player: {
+        x: 400,
+        y: 550,
+        size: 30,
+        speed: 5
+    },
+    cattle: [],
+    obstacles: [],
+    kraal: {
+        x: 350,
+        y: 50,
+        width: 100,
+        height: 80
+    },
+    canvas: null,
+    ctx: null
 };
 
 // Background images for different scenes
@@ -958,6 +989,11 @@ function saveCollectedEnding(character, endingKey, ending) {
         collectedEndings[character].push(endingKey);
         localStorage.setItem('collectedEndings', JSON.stringify(collectedEndings));
         updateCollectorCounter();
+        
+        // Check if all Khoi-San endings are collected for Cattle Chase unlock
+        if (character === 'khoisan') {
+            checkAllKhoisanEndingsCollected();
+        }
     }
 }
 
@@ -1100,7 +1136,7 @@ function startTradingChallenge(character) {
 }
 
 function hideAllScreens() {
-    const screens = ['titleScreen', 'gameScreen', 'endingScreen', 'infoScreen', 'collectorScreen', 'tradingChallengeScreen', 'miniGameScreen'];
+    const screens = ['titleScreen', 'gameScreen', 'endingScreen', 'infoScreen', 'collectorScreen', 'tradingChallengeScreen', 'miniGameScreen', 'cattleChaseScreen'];
     screens.forEach(screenId => {
         document.getElementById(screenId).style.display = 'none';
     });
@@ -1297,7 +1333,7 @@ function hideMiniGameCollection() {
 
 function updateMiniGameDisplay() {
     // Update progress counter
-    const totalMiniGames = 1; // Currently only trading challenge
+    const totalMiniGames = 2; // Trading challenge and cattle chase
     const unlockedCount = Object.values(unlockedMiniGames).filter(unlocked => unlocked).length;
     
     document.getElementById('miniGameProgress').textContent = `${unlockedCount} of ${totalMiniGames} mini-games unlocked`;
@@ -1305,22 +1341,42 @@ function updateMiniGameDisplay() {
     
     // Update trading challenge display
     const tradingItem = document.getElementById('tradingChallengeMiniGame');
-    const playButton = tradingItem.querySelector('.play-mini-game-btn');
-    const statusIcon = tradingItem.querySelector('.status-icon');
-    const statusText = tradingItem.querySelector('.status-text');
+    const tradingPlayButton = tradingItem.querySelector('.play-mini-game-btn');
+    const tradingStatusIcon = tradingItem.querySelector('.status-icon');
+    const tradingStatusText = tradingItem.querySelector('.status-text');
     
     if (unlockedMiniGames.tradingChallenge) {
         tradingItem.classList.remove('locked');
         tradingItem.classList.add('unlocked');
-        playButton.disabled = false;
-        statusIcon.textContent = '✅';
-        statusText.textContent = 'Unlocked';
+        tradingPlayButton.disabled = false;
+        tradingStatusIcon.textContent = '✅';
+        tradingStatusText.textContent = 'Unlocked';
     } else {
         tradingItem.classList.remove('unlocked');
         tradingItem.classList.add('locked');
-        playButton.disabled = true;
-        statusIcon.textContent = '🔒';
-        statusText.textContent = 'Locked';
+        tradingPlayButton.disabled = true;
+        tradingStatusIcon.textContent = '🔒';
+        tradingStatusText.textContent = 'Locked';
+    }
+    
+    // Update cattle chase display
+    const cattleItem = document.getElementById('cattleChaseMiniGame');
+    const cattlePlayButton = cattleItem.querySelector('.play-mini-game-btn');
+    const cattleStatusIcon = cattleItem.querySelector('.status-icon');
+    const cattleStatusText = cattleItem.querySelector('.status-text');
+    
+    if (unlockedMiniGames.cattleChase) {
+        cattleItem.classList.remove('locked');
+        cattleItem.classList.add('unlocked');
+        cattlePlayButton.disabled = false;
+        cattleStatusIcon.textContent = '✅';
+        cattleStatusText.textContent = 'Unlocked';
+    } else {
+        cattleItem.classList.remove('unlocked');
+        cattleItem.classList.add('locked');
+        cattlePlayButton.disabled = true;
+        cattleStatusIcon.textContent = '🔒';
+        cattleStatusText.textContent = 'Locked';
     }
 }
 
@@ -1764,6 +1820,658 @@ function showTradingChallengeOffer(character) {
     modal.appendChild(buttonContainer);
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
+}
+
+// Cattle Chase Game Functions
+function playCattleChase() {
+    if (!unlockedMiniGames.cattleChase) {
+        return; // Shouldn't happen but safety check
+    }
+    
+    hideAllScreens();
+    document.getElementById('cattleChaseScreen').style.display = 'block';
+    initializeCattleChase();
+}
+
+function initializeCattleChase() {
+    // Reset game state
+    cattleChase.gameState = {
+        active: false,
+        score: 0,
+        lives: 3,
+        level: 1,
+        cattleInKraal: 0,
+        cattleNeeded: 5,
+        gameSpeed: 1,
+        spawnSide: 0 // Start with bottom spawn
+    };
+    
+    cattleChase.player = {
+        x: 400,
+        y: 550,
+        size: 30,
+        speed: 5
+    };
+    
+    cattleChase.cattle = [];
+    cattleChase.obstacles = [];
+    
+    // Update display
+    updateCattleGameStats();
+    
+    // Show instructions
+    document.getElementById('cattleInstructions').style.display = 'block';
+    document.getElementById('cattleGameOver').style.display = 'none';
+    
+    // Get canvas context
+    cattleChase.canvas = document.getElementById('cattleCanvas');
+    cattleChase.ctx = cattleChase.canvas.getContext('2d');
+    
+    // Set canvas size for mobile
+    if (window.innerWidth <= 600) {
+        cattleChase.canvas.width = 350;
+        cattleChase.canvas.height = 400;
+    } else {
+        cattleChase.canvas.width = 800;
+        cattleChase.canvas.height = 600;
+    }
+    
+    drawCattleGameBoard();
+}
+
+function startCattleChase() {
+    cattleChase.gameState.active = true;
+    
+    // Hide instructions
+    document.getElementById('cattleInstructions').style.display = 'none';
+    
+    // Initialize game objects
+    spawnCattle();
+    spawnObstacles();
+    
+    // Set up keyboard controls
+    setupCattleControls();
+    
+    // Start game loop
+    cattleGameLoop();
+}
+
+function updateCattleGameStats() {
+    document.getElementById('cattleLives').textContent = cattleChase.gameState.lives;
+    document.getElementById('cattleScore').textContent = cattleChase.gameState.score;
+    document.getElementById('cattleInKraal').textContent = `${cattleChase.gameState.cattleInKraal}/${cattleChase.gameState.cattleNeeded}`;
+    document.getElementById('cattleLevel').textContent = cattleChase.gameState.level;
+}
+
+function spawnCattle() {
+    cattleChase.cattle = [];
+    const positions = getCattleSpawnPositions();
+    
+    for (let i = 0; i < 3; i++) {
+        cattleChase.cattle.push({
+            x: positions[i].x,
+            y: positions[i].y,
+            size: 25,
+            speed: 2,
+            following: false,
+            inKraal: false,
+            lost: false
+        });
+    }
+}
+
+function spawnNewCattleBatch() {
+    // Cycle to next spawn side
+    cattleChase.gameState.spawnSide = (cattleChase.gameState.spawnSide + 1) % 3;
+    
+    // Add 3 new cattle to the existing array (keeping the ones already in kraal)
+    const positions = getCattleSpawnPositions();
+    
+    for (let i = 0; i < 3; i++) {
+        cattleChase.cattle.push({
+            x: positions[i].x,
+            y: positions[i].y,
+            size: 25,
+            speed: 2,
+            following: false,
+            inKraal: false,
+            lost: false
+        });
+    }
+}
+
+function getCattleSpawnPositions() {
+    const canvasWidth = cattleChase.canvas.width;
+    const canvasHeight = cattleChase.canvas.height;
+    const spacing = 80;
+    const positions = [];
+    
+    switch (cattleChase.gameState.spawnSide) {
+        case 0: // Bottom
+            for (let i = 0; i < 3; i++) {
+                positions.push({
+                    x: 100 + (i * spacing),
+                    y: canvasHeight - 50
+                });
+            }
+            break;
+            
+        case 1: // Top (but not in kraal area)
+            for (let i = 0; i < 3; i++) {
+                positions.push({
+                    x: 100 + (i * spacing),
+                    y: 150 // Below the kraal area
+                });
+            }
+            break;
+            
+        case 2: // Left side
+            for (let i = 0; i < 3; i++) {
+                positions.push({
+                    x: 50,
+                    y: 200 + (i * spacing)
+                });
+            }
+            break;
+    }
+    
+    return positions;
+}
+
+function spawnObstacles() {
+    cattleChase.obstacles = [];
+    const numObstacles = 3 + cattleChase.gameState.level;
+    
+    for (let i = 0; i < numObstacles; i++) {
+        cattleChase.obstacles.push({
+            x: Math.random() * (cattleChase.canvas.width - 40),
+            y: 150 + Math.random() * 300,
+            size: 30,
+            speed: 1 + (cattleChase.gameState.level * 0.5),
+            direction: Math.random() * Math.PI * 2,
+            type: Math.random() > 0.5 ? 'wolf' : 'settler'
+        });
+    }
+}
+
+let cattleKeys = {};
+
+function setupCattleControls() {
+    document.addEventListener('keydown', (e) => {
+        cattleKeys[e.key.toLowerCase()] = true;
+    });
+    
+    document.addEventListener('keyup', (e) => {
+        cattleKeys[e.key.toLowerCase()] = false;
+    });
+}
+
+function cattleGameLoop() {
+    if (!cattleChase.gameState.active) return;
+    
+    updateCattleGame();
+    drawCattleGameBoard();
+    
+    requestAnimationFrame(cattleGameLoop);
+}
+
+function updateCattleGame() {
+    // Move player
+    if (cattleKeys['arrowup'] || cattleKeys['w']) {
+        cattleChase.player.y -= cattleChase.player.speed;
+    }
+    if (cattleKeys['arrowdown'] || cattleKeys['s']) {
+        cattleChase.player.y += cattleChase.player.speed;
+    }
+    if (cattleKeys['arrowleft'] || cattleKeys['a']) {
+        cattleChase.player.x -= cattleChase.player.speed;
+    }
+    if (cattleKeys['arrowright'] || cattleKeys['d']) {
+        cattleChase.player.x += cattleChase.player.speed;
+    }
+    
+    // Keep player in bounds
+    cattleChase.player.x = Math.max(15, Math.min(cattleChase.canvas.width - 15, cattleChase.player.x));
+    cattleChase.player.y = Math.max(15, Math.min(cattleChase.canvas.height - 15, cattleChase.player.y));
+    
+    // Update cattle
+    cattleChase.cattle.forEach((cow, index) => {
+        if (!cow.inKraal && !cow.lost) {
+            // Cattle follow player if close
+            const distToPlayer = Math.sqrt(
+                Math.pow(cow.x - cattleChase.player.x, 2) + 
+                Math.pow(cow.y - cattleChase.player.y, 2)
+            );
+            
+            if (distToPlayer < 50) {
+                cow.following = true;
+            }
+            
+            if (cow.following) {
+                // Move towards player
+                const angle = Math.atan2(cattleChase.player.y - cow.y, cattleChase.player.x - cow.x);
+                cow.x += Math.cos(angle) * cow.speed;
+                cow.y += Math.sin(angle) * cow.speed;
+            }
+            
+            // Check if cattle reached kraal
+            if (cow.x > cattleChase.kraal.x && 
+                cow.x < cattleChase.kraal.x + cattleChase.kraal.width &&
+                cow.y > cattleChase.kraal.y && 
+                cow.y < cattleChase.kraal.y + cattleChase.kraal.height) {
+                cow.inKraal = true;
+                cattleChase.gameState.cattleInKraal++;
+                cattleChase.gameState.score += 50;
+                updateCattleGameStats();
+                
+                // Spawn new cattle when current batch is cleared (either in kraal or lost)
+                const activeCattle = cattleChase.cattle.filter(c => !c.inKraal && !c.lost).length;
+                if (activeCattle === 0 && cattleChase.gameState.cattleInKraal < cattleChase.gameState.cattleNeeded) {
+                    spawnNewCattleBatch();
+                }
+            }
+        }
+    });
+    
+    // Update obstacles
+    cattleChase.obstacles.forEach(obstacle => {
+        obstacle.x += Math.cos(obstacle.direction) * obstacle.speed;
+        obstacle.y += Math.sin(obstacle.direction) * obstacle.speed;
+        
+        // Bounce off walls
+        if (obstacle.x <= 0 || obstacle.x >= cattleChase.canvas.width - obstacle.size) {
+            obstacle.direction = Math.PI - obstacle.direction;
+        }
+        if (obstacle.y <= 0 || obstacle.y >= cattleChase.canvas.height - obstacle.size) {
+            obstacle.direction = -obstacle.direction;
+        }
+        
+        // Check collision with player or cattle
+        const playerDist = Math.sqrt(
+            Math.pow(obstacle.x - cattleChase.player.x, 2) + 
+            Math.pow(obstacle.y - cattleChase.player.y, 2)
+        );
+        
+        if (playerDist < obstacle.size) {
+            loseLife();
+            return;
+        }
+        
+        // Check collision with cattle
+        cattleChase.cattle.forEach(cow => {
+            if (!cow.inKraal && !cow.lost) {
+                const cowDist = Math.sqrt(
+                    Math.pow(obstacle.x - cow.x, 2) + 
+                    Math.pow(obstacle.y - cow.y, 2)
+                );
+                
+                if (cowDist < obstacle.size) {
+                    // Mark this cattle as lost and player loses a life
+                    cow.lost = true;
+                    cow.following = false;
+                    cattleChase.gameState.score = Math.max(0, cattleChase.gameState.score - 25); // Penalty for losing cattle
+                    updateCattleGameStats();
+                    
+                    // Player loses a life when cattle are touched
+                    loseLife();
+                    
+                    // Check if we need to spawn new cattle (when all active cattle are gone)
+                    const activeCattle = cattleChase.cattle.filter(c => !c.inKraal && !c.lost).length;
+                    if (activeCattle === 0 && cattleChase.gameState.cattleInKraal < cattleChase.gameState.cattleNeeded) {
+                        setTimeout(() => {
+                            spawnNewCattleBatch();
+                        }, 1000); // Small delay before spawning new batch
+                    }
+                }
+            }
+        });
+    });
+    
+    // Check win condition
+    if (cattleChase.gameState.cattleInKraal >= cattleChase.gameState.cattleNeeded) {
+        nextCattleLevel();
+    }
+}
+
+function drawCattleGameBoard() {
+    const ctx = cattleChase.ctx;
+    ctx.clearRect(0, 0, cattleChase.canvas.width, cattleChase.canvas.height);
+    
+    // Draw background (grassland)
+    ctx.fillStyle = '#2ecc71';
+    ctx.fillRect(0, 0, cattleChase.canvas.width, cattleChase.canvas.height);
+    
+    // Draw kraal
+    ctx.fillStyle = '#8b4513';
+    ctx.fillRect(cattleChase.kraal.x, cattleChase.kraal.y, cattleChase.kraal.width, cattleChase.kraal.height);
+    ctx.fillStyle = '#654321';
+    ctx.strokeRect(cattleChase.kraal.x, cattleChase.kraal.y, cattleChase.kraal.width, cattleChase.kraal.height);
+    
+    // Draw kraal label
+    ctx.fillStyle = '#fff';
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('KRAAL', cattleChase.kraal.x + cattleChase.kraal.width/2, cattleChase.kraal.y + cattleChase.kraal.height/2);
+    
+    // Draw player (herder)
+    ctx.fillStyle = '#3498db';
+    ctx.beginPath();
+    ctx.arc(cattleChase.player.x, cattleChase.player.y, cattleChase.player.size/2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Draw player emoji
+    ctx.font = '20px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏹', cattleChase.player.x, cattleChase.player.y + 5);
+    
+    // Draw cattle
+    cattleChase.cattle.forEach(cow => {
+        if (!cow.inKraal) {
+            if (cow.lost) {
+                // Draw lost cattle as gray/faded
+                ctx.fillStyle = '#7f8c8d';
+                ctx.beginPath();
+                ctx.arc(cow.x, cow.y, cow.size/2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.font = '16px Arial';
+                ctx.fillText('💀', cow.x, cow.y + 5); // Skull to show it's lost
+            } else {
+                ctx.fillStyle = cow.following ? '#e74c3c' : '#f39c12';
+                ctx.beginPath();
+                ctx.arc(cow.x, cow.y, cow.size/2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.font = '16px Arial';
+                ctx.fillText('🐄', cow.x, cow.y + 5);
+            }
+        }
+    });
+    
+    // Draw obstacles
+    cattleChase.obstacles.forEach(obstacle => {
+        ctx.fillStyle = obstacle.type === 'wolf' ? '#8e44ad' : '#e67e22';
+        ctx.beginPath();
+        ctx.arc(obstacle.x, obstacle.y, obstacle.size/2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.font = '16px Arial';
+        ctx.fillText(obstacle.type === 'wolf' ? '🐺' : '👤', obstacle.x, obstacle.y + 5);
+    });
+}
+
+function loseLife() {
+    cattleChase.gameState.lives--;
+    updateCattleGameStats();
+    
+    if (cattleChase.gameState.lives <= 0) {
+        endCattleChase();
+    } else {
+        // Reset player position
+        cattleChase.player.x = 400;
+        cattleChase.player.y = 550;
+        
+        // Only respawn cattle that aren't already in the kraal
+        const cattleInKraal = cattleChase.cattle.filter(c => c.inKraal);
+        cattleChase.cattle = [...cattleInKraal]; // Keep cattle already in kraal
+        
+        // Spawn new cattle if we don't have enough active ones
+        const activeCattle = cattleChase.cattle.filter(c => !c.inKraal && !c.lost).length;
+        if (activeCattle === 0) {
+            spawnNewCattleBatch();
+        }
+    }
+}
+
+function nextCattleLevel() {
+    cattleChase.gameState.level++;
+    cattleChase.gameState.cattleInKraal = 0;
+    cattleChase.gameState.score += 100; // Bonus for completing level
+    updateCattleGameStats();
+    
+    // Reset and increase difficulty
+    cattleChase.player.x = 400;
+    cattleChase.player.y = 550;
+    spawnCattle();
+    spawnObstacles();
+}
+
+function endCattleChase() {
+    cattleChase.gameState.active = false;
+    
+    // Show game over screen
+    document.getElementById('cattleGameOver').style.display = 'block';
+    
+    // Set results based on performance
+    let title, text, historicalText;
+    
+    if (cattleChase.gameState.level >= 5) {
+        title = "Master Herder!";
+        text = `Outstanding! You reached level ${cattleChase.gameState.level} and scored ${cattleChase.gameState.score} points!`;
+        historicalText = "Exceptional herding skills! In Khoi-San society, master herders were highly respected for their ability to protect and manage cattle. Your success shows the skill and dedication required to maintain these valuable animals that were central to wealth, status, and survival.";
+    } else if (cattleChase.gameState.level >= 3) {
+        title = "Skilled Herder";
+        text = `Good work! You reached level ${cattleChase.gameState.level} and scored ${cattleChase.gameState.score} points!`;
+        historicalText = "Well done! Protecting cattle required constant vigilance against wild animals and later, settlers who saw the cattle as free for the taking. Your performance shows you understand the challenges Khoi-San herders faced daily.";
+    } else {
+        title = "Learning Herder";
+        text = `You reached level ${cattleChase.gameState.level} and scored ${cattleChase.gameState.score} points. Keep practicing!`;
+        historicalText = "Herding was a challenging skill that took years to master. The Khoi-San had to protect their cattle from lions, leopards, and later from Dutch settlers who often simply took cattle without permission, leading to many conflicts over these precious animals.";
+    }
+    
+    document.getElementById('cattleResultTitle').textContent = title;
+    document.getElementById('cattleResultText').textContent = text;
+    document.getElementById('cattleHistoricalText').textContent = historicalText;
+}
+
+function restartCattleChase() {
+    document.getElementById('cattleGameOver').style.display = 'none';
+    initializeCattleChase();
+}
+
+function exitCattleChase() {
+    cattleChase.gameState.active = false;
+    hideAllScreens();
+    document.getElementById('titleScreen').style.display = 'block';
+}
+
+function checkAllKhoisanEndingsCollected() {
+    const totalKhoisanEndings = Object.keys(gameStories.khoisan.endings).length;
+    const collectedKhoisanEndings = collectedEndings.khoisan.length;
+    
+    if (collectedKhoisanEndings >= totalKhoisanEndings) {
+        const wasNewlyUnlocked = unlockMiniGame('cattleChase');
+        if (wasNewlyUnlocked) {
+            setTimeout(() => {
+                showCattleChaseUnlockedMessage();
+            }, 2000);
+        }
+    }
+}
+
+function showCattleChaseUnlockedMessage() {
+    // Create modal overlay for cattle chase unlock announcement
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: rgba(44, 62, 80, 0.95);
+        border: 3px solid #e67e22;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(230, 126, 34, 0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = "🐄 Cattle Chase Unlocked!";
+    title.style.cssText = `
+        color: #e67e22;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const text = document.createElement('p');
+    text.textContent = "Amazing! You've collected all Khoi-San endings and unlocked the Cattle Chase mini-game! Experience the challenges of protecting your precious cattle - the foundation of Khoi-San wealth and survival.";
+    text.style.cssText = `
+        color: #ecf0f1;
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    `;
+    
+    const playNowButton = document.createElement('button');
+    playNowButton.textContent = "🐄 Play Now";
+    playNowButton.style.cssText = `
+        background: rgba(230, 126, 34, 0.8);
+        border: 2px solid #e67e22;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const collectionButton = document.createElement('button');
+    collectionButton.textContent = "🎮 View Collection";
+    collectionButton.style.cssText = `
+        background: rgba(142, 68, 173, 0.8);
+        border: 2px solid #8e44ad;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const laterButton = document.createElement('button');
+    laterButton.textContent = "Maybe Later";
+    laterButton.style.cssText = `
+        background: rgba(52, 73, 94, 0.8);
+        border: 2px solid #34495e;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    // Hover effects
+    playNowButton.onmouseover = () => {
+        playNowButton.style.background = 'rgba(230, 126, 34, 1)';
+    };
+    playNowButton.onmouseout = () => {
+        playNowButton.style.background = 'rgba(230, 126, 34, 0.8)';
+    };
+    
+    collectionButton.onmouseover = () => {
+        collectionButton.style.background = 'rgba(142, 68, 173, 1)';
+    };
+    collectionButton.onmouseout = () => {
+        collectionButton.style.background = 'rgba(142, 68, 173, 0.8)';
+    };
+    
+    laterButton.onmouseover = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 1)';
+    };
+    laterButton.onmouseout = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 0.8)';
+    };
+    
+    // Click handlers
+    playNowButton.onclick = () => {
+        document.body.removeChild(overlay);
+        playCattleChase();
+    };
+    
+    collectionButton.onclick = () => {
+        document.body.removeChild(overlay);
+        showMiniGameCollection();
+    };
+    
+    laterButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    buttonContainer.appendChild(playNowButton);
+    buttonContainer.appendChild(collectionButton);
+    buttonContainer.appendChild(laterButton);
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(buttonContainer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+// Test function for Cattle Chase
+function testCattleChase() {
+    // Temporarily unlock cattle chase for testing
+    const originalValue = unlockedMiniGames.cattleChase;
+    unlockedMiniGames.cattleChase = true;
+    
+    // Start the game
+    playCattleChase();
+    
+    // Create a note about this being a test
+    setTimeout(() => {
+        const testNote = document.createElement('div');
+        testNote.style.cssText = `
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(211, 84, 0, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            z-index: 1001;
+            border: 2px solid #d35400;
+        `;
+        testNote.textContent = '🧪 TEST MODE - Cattle Chase temporarily unlocked';
+        document.body.appendChild(testNote);
+        
+        // Remove the note after 5 seconds
+        setTimeout(() => {
+            if (document.body.contains(testNote)) {
+                document.body.removeChild(testNote);
+            }
+            // Restore original unlock state
+            unlockedMiniGames.cattleChase = originalValue;
+        }, 5000);
+    }, 1000);
 }
 
 // End of file

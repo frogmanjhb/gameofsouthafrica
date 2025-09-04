@@ -372,6 +372,39 @@
             text-align: center;
         }
 
+        .cattle-test-button {
+            background: rgba(211, 84, 0, 0.8);
+            border: 2px solid #d35400;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .cattle-test-button:hover {
+            background: rgba(211, 84, 0, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .cattle-test-icon {
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+
+        .cattle-test-text {
+            font-size: 0.8em;
+            opacity: 0.9;
+            text-align: center;
+        }
+
         /* Mini-Game Collection Styles */
         .mini-game-screen {
             text-align: left;
@@ -854,6 +887,127 @@
             75% { transform: translateX(5px); }
         }
 
+        /* Cattle Chase Styles */
+        .cattle-chase-screen {
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .cattle-title {
+            font-size: 2em;
+            color: #e67e22;
+            margin-bottom: 15px;
+        }
+
+        .cattle-info {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e67e22;
+        }
+
+        .cattle-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-top: 10px;
+        }
+
+        .cattle-stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(52, 73, 94, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .cattle-game-area {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #d35400;
+        }
+
+        #cattleCanvas {
+            border: 3px solid #e67e22;
+            border-radius: 10px;
+            background: #2ecc71;
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .cattle-instructions {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cattle-instructions h3 {
+            color: #e67e22;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .cattle-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .start-cattle-btn {
+            background: rgba(230, 126, 34, 0.8);
+            border: 2px solid #e67e22;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto 0;
+            width: fit-content;
+        }
+
+        .start-cattle-btn:hover {
+            background: rgba(230, 126, 34, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .cattle-game-over {
+            background: rgba(52, 73, 94, 0.9);
+            border: 3px solid #e67e22;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cattle-game-over h3 {
+            color: #e67e22;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .cattle-game-over p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
         @media (max-width: 600px) {
             .character-selection {
                 flex-direction: column;
@@ -933,6 +1087,27 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
+
+            .cattle-stats {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            #cattleCanvas {
+                width: 100%;
+                max-width: 350px;
+                height: auto;
+            }
+
+            .cattle-instructions {
+                padding: 15px;
+                text-align: center;
+            }
+
+            .start-cattle-btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
         }
     </style>
 </head>
@@ -952,8 +1127,12 @@
                 </button>
                 <button id="miniGameButton" class="mini-game-button" onclick="showMiniGameCollection()">
                     <span class="mini-game-icon">🎮</span>
-                    <span id="miniGameCount" class="mini-game-count">0/1</span>
+                    <span id="miniGameCount" class="mini-game-count">0/2</span>
                     <span class="mini-game-text">Mini-Games</span>
+                </button>
+                <button id="cattleTestButton" class="cattle-test-button" onclick="testCattleChase()">
+                    <span class="cattle-test-icon">🐄</span>
+                    <span class="cattle-test-text">Test Cattle Chase</span>
                 </button>
             </div>
             
@@ -1077,6 +1256,61 @@
             </div>
         </div>
 
+        <!-- Cattle Chase Screen -->
+        <div id="cattleChaseScreen" class="cattle-chase-screen" style="display: none;">
+            <button class="back-button" onclick="exitCattleChase()">← Exit Game</button>
+            <h2 class="cattle-title">🐄 Cattle Chase</h2>
+            <div class="cattle-info">
+                <p>Guide your cattle safely into the kraal while avoiding wild animals and settlers!</p>
+                <p class="cattle-subtitle">Use arrow keys or WASD to move. Protect your precious cattle - they are your wealth and status!</p>
+            </div>
+            
+            <div class="cattle-stats">
+                <div class="stat">
+                    <span class="stat-label">Lives:</span>
+                    <span id="cattleLives" class="stat-value">3</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="cattleScore" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Cattle in Kraal:</span>
+                    <span id="cattleInKraal" class="stat-value">0/5</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Level:</span>
+                    <span id="cattleLevel" class="stat-value">1</span>
+                </div>
+            </div>
+            
+            <div id="cattleGameArea" class="cattle-game-area">
+                <canvas id="cattleCanvas" width="800" height="600"></canvas>
+                
+                <div id="cattleInstructions" class="cattle-instructions">
+                    <h3>🎮 How to Play</h3>
+                    <p><strong>Goal:</strong> Guide 5 cattle into the kraal (pen) to complete each level</p>
+                    <p><strong>Controls:</strong> Arrow keys or WASD to move your herder</p>
+                    <p><strong>Avoid:</strong> Wild animals (🐺) and settlers (👤) trying to steal your cattle</p>
+                    <p><strong>Strategy:</strong> Lead cattle carefully - they follow behind you!</p>
+                    <button class="start-cattle-btn" onclick="startCattleChase()">
+                        <span class="play-icon">▶️</span>
+                        Start Game
+                    </button>
+                </div>
+                
+                <div id="cattleGameOver" class="cattle-game-over" style="display: none;">
+                    <h3 id="cattleResultTitle">Game Complete!</h3>
+                    <p id="cattleResultText">You successfully protected your cattle!</p>
+                    <div class="historical-context">
+                        <h4>📚 Historical Context</h4>
+                        <p id="cattleHistoricalText">Cattle were the foundation of Khoi-San society, representing wealth, status, and survival. Protecting them from wild animals, raiders, and later from settlers who wanted to claim them was a constant challenge that shaped Khoi-San life.</p>
+                    </div>
+                    <button class="restart-button" onclick="restartCattleChase()">Play Again</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Trading Challenge Screen -->
         <div id="tradingChallengeScreen" class="trading-challenge-screen" style="display: none;">
             <button class="back-button" onclick="exitTradingChallenge()">← Exit Challenge</button>
@@ -1141,7 +1375,7 @@
             <button class="back-button" onclick="hideMiniGameCollection()">← Back to Main Menu</button>
             <h2 class="mini-game-collection-title">🎮 Mini-Game Collection</h2>
             <div class="mini-game-progress">
-                <span id="miniGameProgress">0 of 1 mini-games unlocked</span>
+                <span id="miniGameProgress">0 of 2 mini-games unlocked</span>
             </div>
             
             <div class="mini-games-container">
@@ -1165,6 +1399,32 @@
                     </div>
                     <div class="mini-game-actions">
                         <button class="play-mini-game-btn" onclick="playTradingChallenge()" disabled>
+                            <span class="play-icon">▶️</span>
+                            Play Game
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="cattleChaseMiniGame" class="mini-game-item locked">
+                    <div class="mini-game-header">
+                        <span class="mini-game-emoji">🐄</span>
+                        <div class="mini-game-info">
+                            <h3 class="mini-game-title">Cattle Chase</h3>
+                            <p class="mini-game-subtitle">Khoi-San Herding Challenge</p>
+                        </div>
+                        <div class="mini-game-status">
+                            <span class="status-icon">🔒</span>
+                            <span class="status-text">Locked</span>
+                        </div>
+                    </div>
+                    <div class="mini-game-description">
+                        <p class="description-text">Guide your precious cattle into the kraal while avoiding wild animals and settlers! A Frogger-style chase game that shows how central cattle were to Khoi-San wealth and survival.</p>
+                        <div class="unlock-condition">
+                            <strong>Unlock by:</strong> Collect all Khoi-San endings (32/32)
+                        </div>
+                    </div>
+                    <div class="mini-game-actions">
+                        <button class="play-mini-game-btn" onclick="playCattleChase()" disabled>
                             <span class="play-icon">▶️</span>
                             Play Game
                         </button>
