@@ -4,6 +4,13 @@ let currentCharacter = '';
 let currentScene = 0;
 let gameHistory = [];
 
+// Collector system for tracking endings
+let collectedEndings = JSON.parse(localStorage.getItem('collectedEndings')) || {
+    khoisan: [],
+    dutch: [],
+    britishColonist: []
+};
+
 // Background images for different scenes
 const backgrounds = {
     khoisan: {
@@ -744,6 +751,9 @@ function showEnding() {
     const endingKey = gameHistory.join('_');
     const ending = story.endings[endingKey];
     
+    // Save the ending to collected endings
+    saveCollectedEnding(currentCharacter, endingKey, ending);
+    
     document.getElementById('gameScreen').style.display = 'none';
     document.getElementById('endingScreen').style.display = 'block';
     
@@ -770,8 +780,134 @@ function restartGame() {
     goBack();
 }
 
+function showInfo() {
+    document.getElementById('titleScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'none';
+    document.getElementById('endingScreen').style.display = 'none';
+    document.getElementById('infoScreen').style.display = 'block';
+}
+
+function hideInfo() {
+    document.getElementById('infoScreen').style.display = 'none';
+    document.getElementById('titleScreen').style.display = 'block';
+    document.getElementById('gameScreen').style.display = 'none';
+    document.getElementById('endingScreen').style.display = 'none';
+}
+
+// Collector system functions
+function saveCollectedEnding(character, endingKey, ending) {
+    if (!collectedEndings[character].includes(endingKey)) {
+        collectedEndings[character].push(endingKey);
+        localStorage.setItem('collectedEndings', JSON.stringify(collectedEndings));
+        updateCollectorCounter();
+    }
+}
+
+function updateCollectorCounter() {
+    const totalCollected = collectedEndings.khoisan.length + 
+                          collectedEndings.dutch.length + 
+                          collectedEndings.britishColonist.length;
+    const totalPossible = Object.keys(gameStories.khoisan.endings).length + 
+                         Object.keys(gameStories.dutch.endings).length + 
+                         Object.keys(gameStories.britishColonist.endings).length;
+    
+    document.getElementById('collectorCount').textContent = `${totalCollected}/${totalPossible}`;
+    
+    // Update progress text if collector screen is visible
+    const progressElement = document.getElementById('collectorProgress');
+    if (progressElement) {
+        progressElement.textContent = `${totalCollected} of ${totalPossible} endings discovered`;
+    }
+    
+    // Update individual character counts
+    updateCharacterCounts();
+}
+
+function updateCharacterCounts() {
+    const khoisanTotal = Object.keys(gameStories.khoisan.endings).length;
+    const dutchTotal = Object.keys(gameStories.dutch.endings).length;
+    const britishTotal = Object.keys(gameStories.britishColonist.endings).length;
+    
+    document.getElementById('khoisanCount').textContent = `(${collectedEndings.khoisan.length}/${khoisanTotal})`;
+    document.getElementById('dutchCount').textContent = `(${collectedEndings.dutch.length}/${dutchTotal})`;
+    document.getElementById('britishCount').textContent = `(${collectedEndings.britishColonist.length}/${britishTotal})`;
+}
+
+function showCollector() {
+    document.getElementById('titleScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'none';
+    document.getElementById('endingScreen').style.display = 'none';
+    document.getElementById('infoScreen').style.display = 'none';
+    document.getElementById('collectorScreen').style.display = 'block';
+    
+    // Initialize the collector display
+    populateAllEndings();
+    updateCollectorCounter();
+}
+
+function hideCollector() {
+    document.getElementById('collectorScreen').style.display = 'none';
+    document.getElementById('titleScreen').style.display = 'block';
+    document.getElementById('gameScreen').style.display = 'none';
+    document.getElementById('endingScreen').style.display = 'none';
+    document.getElementById('infoScreen').style.display = 'none';
+}
+
+function showCharacterEndings(character) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Update character endings display
+    document.querySelectorAll('.character-endings').forEach(div => div.classList.remove('active'));
+    document.getElementById(character + 'Endings').classList.add('active');
+}
+
+function populateAllEndings() {
+    populateCharacterEndings('khoisan');
+    populateCharacterEndings('dutch');
+    populateCharacterEndings('britishColonist');
+}
+
+function populateCharacterEndings(character) {
+    const container = document.getElementById(character + 'Endings');
+    const story = gameStories[character];
+    const collected = collectedEndings[character];
+    
+    container.innerHTML = '';
+    
+    Object.keys(story.endings).forEach(endingKey => {
+        const ending = story.endings[endingKey];
+        const isCollected = collected.includes(endingKey);
+        
+        const endingDiv = document.createElement('div');
+        endingDiv.className = `ending-item ${isCollected ? 'collected' : 'locked'}`;
+        
+        const title = document.createElement('div');
+        title.className = 'ending-title';
+        title.textContent = isCollected ? ending.title : '??? Hidden Ending ???';
+        
+        const description = document.createElement('div');
+        description.className = 'ending-description';
+        description.textContent = isCollected ? ending.text : 'Complete this path to unlock this ending...';
+        
+        const status = document.createElement('div');
+        status.className = 'ending-status';
+        status.textContent = isCollected ? '✓ Discovered' : '🔒 Locked';
+        
+        endingDiv.appendChild(title);
+        endingDiv.appendChild(description);
+        endingDiv.appendChild(status);
+        
+        container.appendChild(endingDiv);
+    });
+}
+
 // Initialize the game
 document.addEventListener('DOMContentLoaded', function() {
+    // Update collector counter on load
+    updateCollectorCounter();
+    
     // Game is ready to play!
     console.log('Voices of the Past: South Africa - Game Ready!');
 });

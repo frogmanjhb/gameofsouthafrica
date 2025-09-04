@@ -184,6 +184,280 @@
             background: rgba(46, 204, 113, 1);
         }
 
+        .info-button {
+            background: rgba(52, 152, 219, 0.8);
+            border: 2px solid #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info-button:hover {
+            background: rgba(52, 152, 219, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .info-screen {
+            text-align: left;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .info-title {
+            font-size: 2em;
+            color: #f39c12;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info-content {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .info-intro {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            color: #ecf0f1;
+            line-height: 1.6;
+        }
+
+        .character-info {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .character-info h3 {
+            color: #f39c12;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .character-info p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .character-info ul {
+            margin: 10px 0 15px 20px;
+        }
+
+        .character-info li {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .game-mechanics {
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid #2ecc71;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .game-mechanics h3 {
+            color: #2ecc71;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .game-mechanics h4 {
+            color: #f39c12;
+            font-size: 1.1em;
+            margin: 15px 0 10px 0;
+        }
+
+        .game-mechanics ul {
+            margin: 10px 0 15px 20px;
+        }
+
+        .game-mechanics li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .menu-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .collector-button {
+            background: rgba(155, 89, 182, 0.8);
+            border: 2px solid #9b59b6;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .collector-button:hover {
+            background: rgba(155, 89, 182, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .collector-icon {
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+
+        .collector-count {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 2px;
+        }
+
+        .collector-text {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .collector-screen {
+            text-align: left;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .collector-title {
+            font-size: 2em;
+            color: #9b59b6;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .collector-progress {
+            text-align: center;
+            font-size: 1.1em;
+            color: #f39c12;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .character-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #34495e;
+            color: #bdc3c7;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .tab-button.active {
+            background: rgba(52, 152, 219, 0.8);
+            border-color: #3498db;
+            color: white;
+        }
+
+        .tab-button:hover {
+            border-color: #f39c12;
+        }
+
+        .endings-container {
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #9b59b6;
+        }
+
+        .character-endings {
+            display: none;
+        }
+
+        .character-endings.active {
+            display: block;
+        }
+
+        .ending-item {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #34495e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .ending-item.collected {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .ending-item.locked {
+            border-color: #7f8c8d;
+            background: rgba(127, 140, 141, 0.1);
+            filter: blur(2px);
+            opacity: 0.6;
+        }
+
+        .ending-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #f39c12;
+        }
+
+        .ending-item.collected .ending-title {
+            color: #2ecc71;
+        }
+
+        .ending-item.locked .ending-title {
+            color: #7f8c8d;
+        }
+
+        .ending-description {
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .ending-item.locked .ending-description {
+            color: #7f8c8d;
+        }
+
+        .ending-status {
+            font-size: 0.8em;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .ending-item.collected .ending-status {
+            color: #2ecc71;
+        }
+
+        .ending-item.locked .ending-status {
+            color: #7f8c8d;
+        }
+
         @media (max-width: 600px) {
             .character-selection {
                 flex-direction: column;
@@ -192,6 +466,29 @@
             
             .game-title {
                 font-size: 2em;
+            }
+
+            .info-screen {
+                max-height: 75vh;
+            }
+
+            .character-info, .game-mechanics {
+                padding: 15px;
+            }
+
+            .menu-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .character-tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -202,6 +499,15 @@
         <div id="titleScreen" class="title-screen">
             <h1 class="game-title">Voices of the Past: South Africa</h1>
             <p class="subtitle">Choose your character and step into history</p>
+            
+            <div class="menu-buttons">
+                <button id="infoButton" class="info-button" onclick="showInfo()">ℹ️ Game Info</button>
+                <button id="collectorButton" class="collector-button" onclick="showCollector()">
+                    <span class="collector-icon">🏆</span>
+                    <span id="collectorCount" class="collector-count">0/96</span>
+                    <span class="collector-text">Endings Collected</span>
+                </button>
+            </div>
             
             <div class="character-selection">
                 <div class="character-card" onclick="startGame('khoisan')">
@@ -237,6 +543,123 @@
             <h2 id="endingTitle" class="ending-title"></h2>
             <div id="endingText" class="ending-text"></div>
             <button class="restart-button" onclick="restartGame()">Play Again</button>
+        </div>
+
+        <!-- Info Screen -->
+        <div id="infoScreen" class="info-screen" style="display: none;">
+            <button class="back-button" onclick="hideInfo()">← Back to Main Menu</button>
+            <h2 class="info-title">About the Game</h2>
+            <div class="info-content">
+                <p class="info-intro">The game allows players to experience South African colonial history (1652-1800s) through the eyes of three different characters:</p>
+                
+                <div class="character-info">
+                    <h3>1. Khoi-San Character 🏹</h3>
+                    <p><strong>Role:</strong> A herder and hunter-gatherer living traditional life</p>
+                    <p><strong>Timeline:</strong> From 1652 Dutch arrival through the 1700s</p>
+                    <p><strong>Key Challenges:</strong></p>
+                    <ul>
+                        <li>Dealing with Dutch settlers arriving in 1652</li>
+                        <li>Land conflicts and grazing rights</li>
+                        <li>Smallpox epidemics devastating communities</li>
+                        <li>Forced labor decisions</li>
+                        <li>Migration vs. assimilation choices</li>
+                    </ul>
+                    <p><strong>Historical Focus:</strong> Loss of independence, displacement, and survival strategies</p>
+                </div>
+
+                <div class="character-info">
+                    <h3>2. Dutch Settler ⚓</h3>
+                    <p><strong>Role:</strong> A colonist sent by the Dutch East India Company</p>
+                    <p><strong>Timeline:</strong> From 1652 through the frontier expansion period</p>
+                    <p><strong>Key Challenges:</strong></p>
+                    <ul>
+                        <li>Trading vs. taking land from Khoi-San</li>
+                        <li>Farm expansion and labor needs</li>
+                        <li>Importing enslaved workers vs. employing locals</li>
+                        <li>Company control vs. independence</li>
+                        <li>Frontier farming decisions</li>
+                    </ul>
+                    <p><strong>Historical Focus:</strong> Colonial expansion, labor systems, and settler independence</p>
+                </div>
+
+                <div class="character-info">
+                    <h3>3. British Colonist 🏴</h3>
+                    <p><strong>Role:</strong> A British official implementing British rule</p>
+                    <p><strong>Timeline:</strong> Late 1700s after British takeover</p>
+                    <p><strong>Key Challenges:</strong></p>
+                    <ul>
+                        <li>Managing unhappy Dutch settlers (Boers)</li>
+                        <li>Khoi-San rights and pass laws</li>
+                        <li>Slavery abolition debates</li>
+                        <li>The Great Trek migration</li>
+                        <li>Frontier wars with Xhosa peoples</li>
+                    </ul>
+                    <p><strong>Historical Focus:</strong> Imperial administration, legal changes, and colonial conflicts</p>
+                </div>
+
+                <div class="game-mechanics">
+                    <h3>Game Mechanics 🎯</h3>
+                    
+                    <h4>Choice-Based Narrative</h4>
+                    <ul>
+                        <li>5 scenes per character with 2 choices each</li>
+                        <li>32 possible endings per character (based on choice combinations)</li>
+                        <li>Historical context boxes appear after major decisions</li>
+                        <li>Visual backgrounds change with each scene using period-appropriate images</li>
+                    </ul>
+
+                    <h4>Educational Features</h4>
+                    <ul>
+                        <li><strong>Perspective-taking:</strong> Same historical events viewed from different angles</li>
+                        <li><strong>Cause and effect:</strong> Choices have clear consequences on relationships and outcomes</li>
+                        <li><strong>Historical accuracy:</strong> Each scenario includes real historical context</li>
+                        <li><strong>Multiple playthroughs encouraged:</strong> "Try another character to see history from a different perspective!"</li>
+                    </ul>
+
+                    <h4>Collector System 🏆</h4>
+                    <ul>
+                        <li><strong>Ending Collection:</strong> Track all 96 possible endings across all three characters</li>
+                        <li><strong>Progress Counter:</strong> See how many endings you've discovered on the main menu</li>
+                        <li><strong>Unlock System:</strong> Collected endings are fully visible, while locked ones appear blurred with mystery titles</li>
+                        <li><strong>Character Progress:</strong> View individual progress for each historical perspective (32 endings each)</li>
+                        <li><strong>Persistent Tracking:</strong> Your progress is saved and persists across game sessions</li>
+                        <li><strong>Replay Motivation:</strong> Discover all possible historical outcomes and decision paths</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collector Screen -->
+        <div id="collectorScreen" class="collector-screen" style="display: none;">
+            <button class="back-button" onclick="hideCollector()">← Back to Main Menu</button>
+            <h2 class="collector-title">🏆 Endings Collection</h2>
+            <div class="collector-progress">
+                <span id="collectorProgress">0 of 96 endings discovered</span>
+            </div>
+            
+            <div class="character-tabs">
+                <button class="tab-button active" onclick="showCharacterEndings('khoisan')">
+                    🏹 Khoi-San <span id="khoisanCount">(0/32)</span>
+                </button>
+                <button class="tab-button" onclick="showCharacterEndings('dutch')">
+                    ⚓ Dutch <span id="dutchCount">(0/32)</span>
+                </button>
+                <button class="tab-button" onclick="showCharacterEndings('britishColonist')">
+                    🏴 British <span id="britishCount">(0/32)</span>
+                </button>
+            </div>
+
+            <div class="endings-container">
+                <div id="khoisanEndings" class="character-endings active">
+                    <!-- Endings will be populated by JavaScript -->
+                </div>
+                <div id="dutchEndings" class="character-endings">
+                    <!-- Endings will be populated by JavaScript -->
+                </div>
+                <div id="britishColonistEndings" class="character-endings">
+                    <!-- Endings will be populated by JavaScript -->
+                </div>
+            </div>
         </div>
     </div>
 
