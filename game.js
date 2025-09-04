@@ -16,6 +16,7 @@ const backgrounds = {
     dutch: {
         intro: 'Images/Dutch/1.png',
         farm: 'Images/Dutch/2.png',
+        labor: 'Images/Dutch/3.png',
         company: 'Images/Dutch/3.png',
         trek: 'Images/Dutch/4.png'
     },
