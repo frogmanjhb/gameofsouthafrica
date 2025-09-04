@@ -333,6 +333,225 @@
             opacity: 0.9;
         }
 
+        .mini-game-button {
+            background: rgba(142, 68, 173, 0.8);
+            border: 2px solid #8e44ad;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .mini-game-button:hover {
+            background: rgba(142, 68, 173, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .mini-game-icon {
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+
+        .mini-game-count {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 2px;
+        }
+
+        .mini-game-text {
+            font-size: 0.8em;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        /* Mini-Game Collection Styles */
+        .mini-game-screen {
+            text-align: left;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .mini-game-collection-title {
+            font-size: 2em;
+            color: #8e44ad;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .mini-game-progress {
+            text-align: center;
+            font-size: 1.1em;
+            color: #f39c12;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .mini-games-container {
+            background: rgba(44, 62, 80, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #8e44ad;
+        }
+
+        .mini-game-item {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #34495e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .mini-game-item.unlocked {
+            border-color: #8e44ad;
+            background: rgba(142, 68, 173, 0.1);
+        }
+
+        .mini-game-item.locked {
+            border-color: #7f8c8d;
+            background: rgba(127, 140, 141, 0.1);
+            filter: blur(1px);
+            opacity: 0.7;
+        }
+
+        .mini-game-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .mini-game-emoji {
+            font-size: 2.5em;
+        }
+
+        .mini-game-info {
+            flex: 1;
+        }
+
+        .mini-game-title {
+            font-size: 1.4em;
+            margin: 0 0 5px 0;
+            color: #f39c12;
+        }
+
+        .mini-game-item.unlocked .mini-game-title {
+            color: #8e44ad;
+        }
+
+        .mini-game-item.locked .mini-game-title {
+            color: #7f8c8d;
+        }
+
+        .mini-game-subtitle {
+            font-size: 0.9em;
+            color: #bdc3c7;
+            margin: 0;
+            font-style: italic;
+        }
+
+        .mini-game-item.locked .mini-game-subtitle {
+            color: #7f8c8d;
+        }
+
+        .mini-game-status {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .status-text {
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .mini-game-item.unlocked .status-text {
+            color: #8e44ad;
+        }
+
+        .mini-game-item.locked .status-text {
+            color: #7f8c8d;
+        }
+
+        .mini-game-description {
+            margin-bottom: 20px;
+        }
+
+        .description-text {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #ecf0f1;
+        }
+
+        .mini-game-item.locked .description-text {
+            color: #7f8c8d;
+        }
+
+        .unlock-condition {
+            background: rgba(44, 62, 80, 0.8);
+            border: 1px solid #34495e;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9em;
+            color: #bdc3c7;
+        }
+
+        .mini-game-item.locked .unlock-condition {
+            border-color: #7f8c8d;
+            color: #7f8c8d;
+        }
+
+        .mini-game-actions {
+            text-align: center;
+        }
+
+        .play-mini-game-btn {
+            background: rgba(142, 68, 173, 0.8);
+            border: 2px solid #8e44ad;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .play-mini-game-btn:hover:not(:disabled) {
+            background: rgba(142, 68, 173, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .play-mini-game-btn:disabled {
+            background: rgba(127, 140, 141, 0.3);
+            border-color: #7f8c8d;
+            color: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .play-icon {
+            font-size: 1em;
+        }
+
         .collector-screen {
             text-align: left;
             max-height: 85vh;
@@ -458,6 +677,183 @@
             color: #7f8c8d;
         }
 
+        /* Trading Challenge Styles */
+        .trading-challenge-screen {
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .trading-title {
+            font-size: 2em;
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+
+        .challenge-info {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .challenge-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-top: 10px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(52, 73, 94, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #bdc3c7;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        .trading-game-area {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #e67e22;
+        }
+
+        .current-item {
+            margin-bottom: 30px;
+        }
+
+        .trade-item-display {
+            background: rgba(52, 152, 219, 0.2);
+            border: 3px solid #3498db;
+            border-radius: 15px;
+            padding: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 200px;
+        }
+
+        .item-icon {
+            font-size: 3em;
+        }
+
+        .item-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .value-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .value-option {
+            background: rgba(46, 204, 113, 0.8);
+            border: 2px solid #2ecc71;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .value-option:hover {
+            background: rgba(46, 204, 113, 1);
+            border-color: #f39c12;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .value-option.correct {
+            background: rgba(46, 204, 113, 1);
+            border-color: #27ae60;
+            animation: correctPulse 0.6s ease;
+        }
+
+        .value-option.incorrect {
+            background: rgba(231, 76, 60, 0.8);
+            border-color: #e74c3c;
+            animation: incorrectShake 0.6s ease;
+        }
+
+        .value-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .challenge-result {
+            background: rgba(52, 73, 94, 0.9);
+            border: 3px solid #f39c12;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .challenge-result h3 {
+            color: #f39c12;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .challenge-result p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .historical-context {
+            background: rgba(44, 62, 80, 0.8);
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .historical-context h4 {
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
         @media (max-width: 600px) {
             .character-selection {
                 flex-direction: column;
@@ -490,6 +886,53 @@
                 width: 100%;
                 text-align: center;
             }
+
+            .game-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .value-options {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .value-option {
+                padding: 15px;
+                min-height: 60px;
+            }
+
+            .value-number {
+                font-size: 1.5em;
+            }
+
+            .trade-item-display {
+                min-width: auto;
+                padding: 15px;
+            }
+
+            .item-icon {
+                font-size: 2.5em;
+            }
+
+            .item-name {
+                font-size: 1.2em;
+            }
+
+            .mini-game-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .mini-game-emoji {
+                font-size: 2em;
+            }
+
+            .play-mini-game-btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
         }
     </style>
 </head>
@@ -506,6 +949,11 @@
                     <span class="collector-icon">🏆</span>
                     <span id="collectorCount" class="collector-count">0/96</span>
                     <span class="collector-text">Endings Collected</span>
+                </button>
+                <button id="miniGameButton" class="mini-game-button" onclick="showMiniGameCollection()">
+                    <span class="mini-game-icon">🎮</span>
+                    <span id="miniGameCount" class="mini-game-count">0/1</span>
+                    <span class="mini-game-text">Mini-Games</span>
                 </button>
             </div>
             
@@ -625,6 +1073,102 @@
                         <li><strong>Persistent Tracking:</strong> Your progress is saved and persists across game sessions</li>
                         <li><strong>Replay Motivation:</strong> Discover all possible historical outcomes and decision paths</li>
                     </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trading Challenge Screen -->
+        <div id="tradingChallengeScreen" class="trading-challenge-screen" style="display: none;">
+            <button class="back-button" onclick="exitTradingChallenge()">← Exit Challenge</button>
+            <h2 class="trading-title">🤝 Trading Challenge</h2>
+            <div class="challenge-info">
+                <p>Match items with their correct trade values before time runs out!</p>
+                <p class="challenge-subtitle">Understanding trade misunderstandings that led to conflict</p>
+            </div>
+            
+            <div class="game-stats">
+                <div class="stat">
+                    <span class="stat-label">Time:</span>
+                    <span id="timeLeft" class="stat-value">60</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="challengeScore" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Perspective:</span>
+                    <span id="tradePerspective" class="stat-value">Khoi-San</span>
+                </div>
+            </div>
+            
+            <div id="tradingGameArea" class="trading-game-area">
+                <div class="current-item">
+                    <div id="currentTradeItem" class="trade-item-display">
+                        <span id="itemIcon" class="item-icon">🐄</span>
+                        <span id="itemName" class="item-name">Cattle</span>
+                    </div>
+                </div>
+                
+                <div class="value-options">
+                    <div id="valueOption1" class="value-option" onclick="selectValue(1)">
+                        <span class="value-number">1</span>
+                    </div>
+                    <div id="valueOption2" class="value-option" onclick="selectValue(2)">
+                        <span class="value-number">2</span>
+                    </div>
+                    <div id="valueOption3" class="value-option" onclick="selectValue(3)">
+                        <span class="value-number">3</span>
+                    </div>
+                    <div id="valueOption4" class="value-option" onclick="selectValue(4)">
+                        <span class="value-number">4</span>
+                    </div>
+                </div>
+                
+                <div id="challengeResult" class="challenge-result" style="display: none;">
+                    <h3 id="resultTitle">Challenge Complete!</h3>
+                    <p id="resultText">You scored 0 points out of 100!</p>
+                    <div class="historical-context">
+                        <h4>📚 Historical Context</h4>
+                        <p id="historicalText">Trade value misunderstandings often led to conflicts between groups with different economic systems.</p>
+                    </div>
+                    <button class="restart-button" onclick="restartTradingChallenge()">Play Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini-Game Collection Screen -->
+        <div id="miniGameScreen" class="mini-game-screen" style="display: none;">
+            <button class="back-button" onclick="hideMiniGameCollection()">← Back to Main Menu</button>
+            <h2 class="mini-game-collection-title">🎮 Mini-Game Collection</h2>
+            <div class="mini-game-progress">
+                <span id="miniGameProgress">0 of 1 mini-games unlocked</span>
+            </div>
+            
+            <div class="mini-games-container">
+                <div id="tradingChallengeMiniGame" class="mini-game-item locked">
+                    <div class="mini-game-header">
+                        <span class="mini-game-emoji">🤝</span>
+                        <div class="mini-game-info">
+                            <h3 class="mini-game-title">Trading Challenge</h3>
+                            <p class="mini-game-subtitle">Dutch / Khoi-San Trade Relations</p>
+                        </div>
+                        <div class="mini-game-status">
+                            <span class="status-icon">🔒</span>
+                            <span class="status-text">Locked</span>
+                        </div>
+                    </div>
+                    <div class="mini-game-description">
+                        <p class="description-text">Match trade items with their correct values in this fast-paced challenge! Experience how cultural differences in value systems led to misunderstandings and conflicts between traders.</p>
+                        <div class="unlock-condition">
+                            <strong>Unlock by:</strong> Complete any trade-related ending (Khoi-San or Dutch)
+                        </div>
+                    </div>
+                    <div class="mini-game-actions">
+                        <button class="play-mini-game-btn" onclick="playTradingChallenge()" disabled>
+                            <span class="play-icon">▶️</span>
+                            Play Game
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

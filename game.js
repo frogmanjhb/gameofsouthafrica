@@ -11,6 +11,34 @@ let collectedEndings = JSON.parse(localStorage.getItem('collectedEndings')) || {
     britishColonist: []
 };
 
+// Mini-game unlock system
+let unlockedMiniGames = JSON.parse(localStorage.getItem('unlockedMiniGames')) || {
+    tradingChallenge: false
+};
+
+// Trading challenge mini-game data
+const tradingChallenge = {
+    items: [
+        { name: 'Cattle', khoisanValue: 10, dutchValue: 8, icon: '🐄' },
+        { name: 'Beads', khoisanValue: 8, dutchValue: 5, icon: '📿' },
+        { name: 'Iron Tools', khoisanValue: 9, dutchValue: 6, icon: '🔨' },
+        { name: 'Tobacco', khoisanValue: 6, dutchValue: 9, icon: '🚬' },
+        { name: 'Sheep', khoisanValue: 7, dutchValue: 7, icon: '🐑' },
+        { name: 'Copper', khoisanValue: 5, dutchValue: 8, icon: '🔶' },
+        { name: 'Ivory', khoisanValue: 4, dutchValue: 10, icon: '🦷' },
+        { name: 'Brandy', khoisanValue: 3, dutchValue: 6, icon: '🍺' }
+    ],
+    gameState: {
+        active: false,
+        score: 0,
+        timeLeft: 60,
+        currentItem: null,
+        perspective: 'khoisan', // 'khoisan' or 'dutch'
+        correctMatches: 0,
+        totalMatches: 0
+    }
+};
+
 // Background images for different scenes
 const backgrounds = {
     khoisan: {
@@ -586,6 +614,7 @@ gameStories["britishColonist"] = {
             }
         ],
         endings: {
+            // Allow Autonomy + Protect Khoisan + Support Abolition paths
             allow_autonomy_protect_khoisan_support_abolition_support_migration_negotiate_peace: {
                 title: "The Peacemaker",
                 text: "You chose diplomacy and fairness at every turn. You maintained peace but had limited control over the colony, leading to future instability."
@@ -601,6 +630,132 @@ gameStories["britishColonist"] = {
             allow_autonomy_protect_khoisan_support_abolition_stop_migration_military_expansion: {
                 title: "The Controlled Warrior",
                 text: "You balanced fairness with control and military action. This created lasting conflict with both Boers and Xhosa."
+            },
+            
+            // Allow Autonomy + Protect Khoisan + Defend Slavery paths
+            allow_autonomy_protect_khoisan_defend_slavery_support_migration_negotiate_peace: {
+                title: "The Contradictory Peacemaker",
+                text: "You protected Khoi-San rights but defended slavery, creating moral contradictions. Your peaceful approach maintained some stability despite these inconsistencies."
+            },
+            allow_autonomy_protect_khoisan_defend_slavery_support_migration_military_expansion: {
+                title: "The Contradictory Warrior",
+                text: "You protected indigenous rights while defending slavery and using military force. These contradictions created complex relationships with all groups."
+            },
+            allow_autonomy_protect_khoisan_defend_slavery_stop_migration_negotiate_peace: {
+                title: "The Selective Protector",
+                text: "You protected Khoi-San rights but defended slavery and controlled Boer migration. This selective approach created lasting tensions."
+            },
+            allow_autonomy_protect_khoisan_defend_slavery_stop_migration_military_expansion: {
+                title: "The Contradictory Controller",
+                text: "Your contradictory policies of protection and oppression, combined with military expansion, created a complex and unstable colonial system."
+            },
+            
+            // Allow Autonomy + Enforce Pass Laws + Support Abolition paths
+            allow_autonomy_enforce_pass_laws_support_abolition_support_migration_negotiate_peace: {
+                title: "The Inconsistent Reformer",
+                text: "You enforced pass laws against the Khoi-San but supported abolition. This inconsistent approach to freedom created confusion and resentment."
+            },
+            allow_autonomy_enforce_pass_laws_support_abolition_support_migration_military_expansion: {
+                title: "The Selective Liberator",
+                text: "You freed enslaved people but restricted Khoi-San movement. Your military expansion contradicted your reformist ideals."
+            },
+            allow_autonomy_enforce_pass_laws_support_abolition_stop_migration_negotiate_peace: {
+                title: "The Controlling Reformer",
+                text: "You supported abolition but restricted both Khoi-San and Boer movement. This created resentment among multiple groups despite good intentions."
+            },
+            allow_autonomy_enforce_pass_laws_support_abolition_stop_migration_military_expansion: {
+                title: "The Authoritarian Reformer",
+                text: "Your combination of selective freedom, movement restrictions, and military force created a complex authoritarian system with reformist elements."
+            },
+            
+            // Allow Autonomy + Enforce Pass Laws + Defend Slavery paths
+            allow_autonomy_enforce_pass_laws_defend_slavery_support_migration_negotiate_peace: {
+                title: "The Settler-Friendly Governor",
+                text: "You allowed Boer autonomy while supporting their labor systems. This created a stable but unjust colonial system that favored settlers."
+            },
+            allow_autonomy_enforce_pass_laws_defend_slavery_support_migration_military_expansion: {
+                title: "The Expansionist Settler Ally",
+                text: "You supported settler interests through autonomy, labor restrictions, and military expansion. This created a powerful but oppressive colonial system."
+            },
+            allow_autonomy_enforce_pass_laws_defend_slavery_stop_migration_negotiate_peace: {
+                title: "The Controlling Settler Ally",
+                text: "You supported settler labor systems but controlled their movement. This created tension between supporting settlers and maintaining British control."
+            },
+            allow_autonomy_enforce_pass_laws_defend_slavery_stop_migration_military_expansion: {
+                title: "The Authoritarian Settler System",
+                text: "Your support for settler labor systems combined with strict control and military expansion created a harsh but stable colonial regime."
+            },
+            
+            // Impose Laws + Protect Khoisan + Support Abolition paths
+            impose_laws_protect_khoisan_support_abolition_support_migration_negotiate_peace: {
+                title: "The Principled Administrator",
+                text: "You imposed British law while protecting indigenous rights and supporting abolition. This principled approach faced resistance but advanced justice."
+            },
+            impose_laws_protect_khoisan_support_abolition_support_migration_military_expansion: {
+                title: "The Reformist Enforcer",
+                text: "You enforced British law and protected rights through military strength. This approach advanced justice but created lasting conflicts."
+            },
+            impose_laws_protect_khoisan_support_abolition_stop_migration_negotiate_peace: {
+                title: "The Controlled Reformer",
+                text: "You imposed British law and justice while controlling colonial movement. This created a more just but tightly controlled society."
+            },
+            impose_laws_protect_khoisan_support_abolition_stop_migration_military_expansion: {
+                title: "The Authoritarian Reformer",
+                text: "Your combination of strict law enforcement, rights protection, and military expansion created a complex system of authoritarian justice."
+            },
+            
+            // Impose Laws + Protect Khoisan + Defend Slavery paths
+            impose_laws_protect_khoisan_defend_slavery_support_migration_negotiate_peace: {
+                title: "The Selective Law Enforcer",
+                text: "You imposed British law while selectively protecting some groups but not others. This created an inconsistent system of justice."
+            },
+            impose_laws_protect_khoisan_defend_slavery_support_migration_military_expansion: {
+                title: "The Contradictory Enforcer",
+                text: "You enforced British law while maintaining contradictory policies on human rights. Military expansion complicated these contradictions further."
+            },
+            impose_laws_protect_khoisan_defend_slavery_stop_migration_negotiate_peace: {
+                title: "The Controlled Contradiction",
+                text: "You imposed law and order while maintaining contradictory human rights policies. This created a controlled but morally inconsistent system."
+            },
+            impose_laws_protect_khoisan_defend_slavery_stop_migration_military_expansion: {
+                title: "The Authoritarian Contradiction",
+                text: "Your strict law enforcement combined with contradictory rights policies and military expansion created a harsh and inconsistent regime."
+            },
+            
+            // Impose Laws + Enforce Pass Laws + Support Abolition paths
+            impose_laws_enforce_pass_laws_support_abolition_support_migration_negotiate_peace: {
+                title: "The Inconsistent Administrator",
+                text: "You imposed British law and freed enslaved people but restricted indigenous movement. This inconsistent approach to freedom created confusion."
+            },
+            impose_laws_enforce_pass_laws_support_abolition_support_migration_military_expansion: {
+                title: "The Selective Liberator",
+                text: "You enforced British law with selective freedom policies. Military expansion undermined your reformist credentials."
+            },
+            impose_laws_enforce_pass_laws_support_abolition_stop_migration_negotiate_peace: {
+                title: "The Controlling Administrator",
+                text: "You imposed strict British control while selectively advancing freedom. This created a tightly controlled system with limited liberty."
+            },
+            impose_laws_enforce_pass_laws_support_abolition_stop_migration_military_expansion: {
+                title: "The Authoritarian Selective Reformer",
+                text: "Your combination of strict law, selective freedom, movement control, and military force created a complex authoritarian system."
+            },
+            
+            // Impose Laws + Enforce Pass Laws + Defend Slavery paths
+            impose_laws_enforce_pass_laws_defend_slavery_support_migration_negotiate_peace: {
+                title: "The British Traditionalist",
+                text: "You imposed British law while maintaining colonial labor systems. This created a stable but oppressive system that favored British and settler interests."
+            },
+            impose_laws_enforce_pass_laws_defend_slavery_support_migration_military_expansion: {
+                title: "The Colonial Enforcer",
+                text: "You imposed strict British control while supporting settler labor systems through military strength. This created a powerful colonial regime."
+            },
+            impose_laws_enforce_pass_laws_defend_slavery_stop_migration_negotiate_peace: {
+                title: "The Controlled Colonial System",
+                text: "You imposed British law and maintained labor restrictions while controlling all movement. This created a tightly controlled colonial hierarchy."
+            },
+            impose_laws_enforce_pass_laws_defend_slavery_stop_migration_military_expansion: {
+                title: "The Authoritarian Colonial Regime",
+                text: "Your strict enforcement of British law, labor restrictions, movement control, and military expansion created a harsh authoritarian colonial system."
             }
         }
 };
@@ -764,6 +919,9 @@ function showEnding() {
         "Try another character to see history from a different perspective!";
     
     document.getElementById('endingText').textContent = endingText;
+    
+    // Check for trading challenge opportunity
+    checkForTradingChallenge(currentCharacter, endingKey);
 }
 
 function goBack() {
@@ -908,8 +1066,704 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update collector counter on load
     updateCollectorCounter();
     
+    // Initialize mini-game display
+    updateMiniGameDisplay();
+    
     // Game is ready to play!
     console.log('Voices of the Past: South Africa - Game Ready!');
+    console.log('Trading Challenge mini-game loaded with', tradingChallenge.items.length, 'trade items');
 });
+
+// Trading Challenge Functions
+function startTradingChallenge(character) {
+    // Determine perspective based on character
+    tradingChallenge.gameState.perspective = character === 'dutch' ? 'dutch' : 'khoisan';
+    
+    // Reset game state
+    tradingChallenge.gameState.active = true;
+    tradingChallenge.gameState.score = 0;
+    tradingChallenge.gameState.timeLeft = 60;
+    tradingChallenge.gameState.correctMatches = 0;
+    tradingChallenge.gameState.totalMatches = 0;
+    
+    // Hide other screens and show trading challenge
+    hideAllScreens();
+    document.getElementById('tradingChallengeScreen').style.display = 'block';
+    
+    // Update perspective display
+    const perspectiveText = tradingChallenge.gameState.perspective === 'khoisan' ? 'Khoi-San' : 'Dutch';
+    document.getElementById('tradePerspective').textContent = perspectiveText;
+    
+    // Start the game
+    nextTradeItem();
+    startTimer();
+}
+
+function hideAllScreens() {
+    const screens = ['titleScreen', 'gameScreen', 'endingScreen', 'infoScreen', 'collectorScreen', 'tradingChallengeScreen', 'miniGameScreen'];
+    screens.forEach(screenId => {
+        document.getElementById(screenId).style.display = 'none';
+    });
+}
+
+function nextTradeItem() {
+    if (tradingChallenge.gameState.timeLeft <= 0) {
+        endTradingChallenge();
+        return;
+    }
+    
+    // Select random item
+    const randomIndex = Math.floor(Math.random() * tradingChallenge.items.length);
+    tradingChallenge.gameState.currentItem = tradingChallenge.items[randomIndex];
+    
+    // Update display
+    document.getElementById('itemIcon').textContent = tradingChallenge.gameState.currentItem.icon;
+    document.getElementById('itemName').textContent = tradingChallenge.gameState.currentItem.name;
+    
+    // Generate value options (correct value + 3 wrong values)
+    generateValueOptions();
+    
+    // Reset option styles
+    resetOptionStyles();
+}
+
+function generateValueOptions() {
+    const item = tradingChallenge.gameState.currentItem;
+    const perspective = tradingChallenge.gameState.perspective;
+    const correctValue = perspective === 'khoisan' ? item.khoisanValue : item.dutchValue;
+    
+    // Generate 3 incorrect values
+    const wrongValues = [];
+    while (wrongValues.length < 3) {
+        const randomValue = Math.floor(Math.random() * 10) + 1;
+        if (randomValue !== correctValue && !wrongValues.includes(randomValue)) {
+            wrongValues.push(randomValue);
+        }
+    }
+    
+    // Combine all values and shuffle
+    const allValues = [correctValue, ...wrongValues];
+    shuffleArray(allValues);
+    
+    // Assign to buttons
+    for (let i = 0; i < 4; i++) {
+        const button = document.getElementById(`valueOption${i + 1}`);
+        button.querySelector('.value-number').textContent = allValues[i];
+        button.dataset.value = allValues[i];
+        button.dataset.correct = allValues[i] === correctValue ? 'true' : 'false';
+    }
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function selectValue(optionNumber) {
+    if (!tradingChallenge.gameState.active) return;
+    
+    const button = document.getElementById(`valueOption${optionNumber}`);
+    const isCorrect = button.dataset.correct === 'true';
+    
+    tradingChallenge.gameState.totalMatches++;
+    
+    if (isCorrect) {
+        tradingChallenge.gameState.correctMatches++;
+        tradingChallenge.gameState.score += 10;
+        button.classList.add('correct');
+        
+        // Update score display
+        document.getElementById('challengeScore').textContent = tradingChallenge.gameState.score;
+        
+        // Wait a moment then show next item
+        setTimeout(() => {
+            nextTradeItem();
+        }, 1000);
+    } else {
+        button.classList.add('incorrect');
+        
+        // Show correct answer
+        for (let i = 1; i <= 4; i++) {
+            const option = document.getElementById(`valueOption${i}`);
+            if (option.dataset.correct === 'true') {
+                option.classList.add('correct');
+                break;
+            }
+        }
+        
+        // Wait a moment then show next item
+        setTimeout(() => {
+            nextTradeItem();
+        }, 1500);
+    }
+}
+
+function resetOptionStyles() {
+    for (let i = 1; i <= 4; i++) {
+        const button = document.getElementById(`valueOption${i}`);
+        button.classList.remove('correct', 'incorrect');
+    }
+}
+
+function startTimer() {
+    const timer = setInterval(() => {
+        tradingChallenge.gameState.timeLeft--;
+        document.getElementById('timeLeft').textContent = tradingChallenge.gameState.timeLeft;
+        
+        if (tradingChallenge.gameState.timeLeft <= 0) {
+            clearInterval(timer);
+            endTradingChallenge();
+        }
+    }, 1000);
+    
+    // Store timer reference for cleanup
+    tradingChallenge.gameState.timer = timer;
+}
+
+function endTradingChallenge() {
+    tradingChallenge.gameState.active = false;
+    
+    // Clear timer
+    if (tradingChallenge.gameState.timer) {
+        clearInterval(tradingChallenge.gameState.timer);
+    }
+    
+    // Hide game area and show results
+    document.getElementById('tradingGameArea').querySelector('.current-item').style.display = 'none';
+    document.getElementById('tradingGameArea').querySelector('.value-options').style.display = 'none';
+    
+    const resultDiv = document.getElementById('challengeResult');
+    resultDiv.style.display = 'block';
+    
+    // Calculate percentage
+    const percentage = tradingChallenge.gameState.totalMatches > 0 ? 
+        Math.round((tradingChallenge.gameState.correctMatches / tradingChallenge.gameState.totalMatches) * 100) : 0;
+    
+    // Update result display
+    document.getElementById('resultText').textContent = 
+        `You scored ${tradingChallenge.gameState.score} points! (${tradingChallenge.gameState.correctMatches}/${tradingChallenge.gameState.totalMatches} correct - ${percentage}%)`;
+    
+    // Set historical context based on performance
+    let historicalText;
+    if (percentage >= 80) {
+        historicalText = "Excellent understanding! In reality, successful traders who understood both cultures' value systems could build lasting relationships. However, many conflicts arose when traders from different backgrounds couldn't agree on fair values for goods.";
+    } else if (percentage >= 60) {
+        historicalText = "Good effort! Trade misunderstandings were common between the Khoi-San and Dutch. Different cultures valued items differently - cattle were extremely important to Khoi-San identity, while Europeans often saw them simply as commodities.";
+    } else if (percentage >= 40) {
+        historicalText = "Trade negotiations were challenging! The Khoi-San and Dutch had very different economic systems. What seemed valuable to one group might be worthless to another, leading to feelings of being cheated on both sides.";
+    } else {
+        historicalText = "Trade was complex! These value misunderstandings actually happened in history. The Khoi-San felt the Dutch didn't offer fair trades for their cattle, while the Dutch thought they were being generous. These disagreements contributed to growing tensions and eventual conflicts.";
+    }
+    
+    document.getElementById('historicalText').textContent = historicalText;
+}
+
+function restartTradingChallenge() {
+    // Hide results and show game area
+    document.getElementById('challengeResult').style.display = 'none';
+    document.getElementById('tradingGameArea').querySelector('.current-item').style.display = 'block';
+    document.getElementById('tradingGameArea').querySelector('.value-options').style.display = 'grid';
+    
+    // Restart the challenge
+    startTradingChallenge(tradingChallenge.gameState.perspective);
+}
+
+function exitTradingChallenge() {
+    tradingChallenge.gameState.active = false;
+    
+    // Clear timer
+    if (tradingChallenge.gameState.timer) {
+        clearInterval(tradingChallenge.gameState.timer);
+    }
+    
+    // Return to title screen
+    hideAllScreens();
+    document.getElementById('titleScreen').style.display = 'block';
+}
+
+// Mini-Game Collection Functions
+function showMiniGameCollection() {
+    hideAllScreens();
+    document.getElementById('miniGameScreen').style.display = 'block';
+    updateMiniGameDisplay();
+}
+
+function hideMiniGameCollection() {
+    hideAllScreens();
+    document.getElementById('titleScreen').style.display = 'block';
+}
+
+function updateMiniGameDisplay() {
+    // Update progress counter
+    const totalMiniGames = 1; // Currently only trading challenge
+    const unlockedCount = Object.values(unlockedMiniGames).filter(unlocked => unlocked).length;
+    
+    document.getElementById('miniGameProgress').textContent = `${unlockedCount} of ${totalMiniGames} mini-games unlocked`;
+    document.getElementById('miniGameCount').textContent = `${unlockedCount}/${totalMiniGames}`;
+    
+    // Update trading challenge display
+    const tradingItem = document.getElementById('tradingChallengeMiniGame');
+    const playButton = tradingItem.querySelector('.play-mini-game-btn');
+    const statusIcon = tradingItem.querySelector('.status-icon');
+    const statusText = tradingItem.querySelector('.status-text');
+    
+    if (unlockedMiniGames.tradingChallenge) {
+        tradingItem.classList.remove('locked');
+        tradingItem.classList.add('unlocked');
+        playButton.disabled = false;
+        statusIcon.textContent = '✅';
+        statusText.textContent = 'Unlocked';
+    } else {
+        tradingItem.classList.remove('unlocked');
+        tradingItem.classList.add('locked');
+        playButton.disabled = true;
+        statusIcon.textContent = '🔒';
+        statusText.textContent = 'Locked';
+    }
+}
+
+function playTradingChallenge() {
+    if (!unlockedMiniGames.tradingChallenge) {
+        return; // Shouldn't happen but safety check
+    }
+    
+    // Create perspective selection modal
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: rgba(44, 62, 80, 0.95);
+        border: 3px solid #8e44ad;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 500px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(142, 68, 173, 0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = "🤝 Trading Challenge";
+    title.style.cssText = `
+        color: #8e44ad;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const text = document.createElement('p');
+    text.textContent = "Choose which cultural perspective to experience:";
+    text.style.cssText = `
+        color: #ecf0f1;
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    `;
+    
+    const khoisanButton = document.createElement('button');
+    khoisanButton.textContent = "🏹 Khoi-San View";
+    khoisanButton.style.cssText = `
+        background: rgba(52, 152, 219, 0.8);
+        border: 2px solid #3498db;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const dutchButton = document.createElement('button');
+    dutchButton.textContent = "⚓ Dutch View";
+    dutchButton.style.cssText = `
+        background: rgba(46, 204, 113, 0.8);
+        border: 2px solid #2ecc71;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = "Cancel";
+    cancelButton.style.cssText = `
+        background: rgba(52, 73, 94, 0.8);
+        border: 2px solid #34495e;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    // Hover effects
+    khoisanButton.onmouseover = () => {
+        khoisanButton.style.background = 'rgba(52, 152, 219, 1)';
+    };
+    khoisanButton.onmouseout = () => {
+        khoisanButton.style.background = 'rgba(52, 152, 219, 0.8)';
+    };
+    
+    dutchButton.onmouseover = () => {
+        dutchButton.style.background = 'rgba(46, 204, 113, 1)';
+    };
+    dutchButton.onmouseout = () => {
+        dutchButton.style.background = 'rgba(46, 204, 113, 0.8)';
+    };
+    
+    cancelButton.onmouseover = () => {
+        cancelButton.style.background = 'rgba(52, 73, 94, 1)';
+    };
+    cancelButton.onmouseout = () => {
+        cancelButton.style.background = 'rgba(52, 73, 94, 0.8)';
+    };
+    
+    // Click handlers
+    khoisanButton.onclick = () => {
+        document.body.removeChild(overlay);
+        startTradingChallenge('khoisan');
+    };
+    
+    dutchButton.onclick = () => {
+        document.body.removeChild(overlay);
+        startTradingChallenge('dutch');
+    };
+    
+    cancelButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    buttonContainer.appendChild(khoisanButton);
+    buttonContainer.appendChild(dutchButton);
+    buttonContainer.appendChild(cancelButton);
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(buttonContainer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function unlockMiniGame(gameId) {
+    if (!unlockedMiniGames[gameId]) {
+        unlockedMiniGames[gameId] = true;
+        localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
+        updateMiniGameDisplay();
+        return true; // Newly unlocked
+    }
+    return false; // Already unlocked
+}
+
+function checkForTradingChallenge(character, endingKey) {
+    // Check if this is a trade-related ending
+    const isTradeEnding = (character === 'khoisan' && endingKey.startsWith('trade_')) ||
+                         (character === 'dutch' && endingKey.startsWith('fair_trade_'));
+    
+    if (isTradeEnding) {
+        // Unlock the trading challenge mini-game
+        const wasNewlyUnlocked = unlockMiniGame('tradingChallenge');
+        
+        // Show appropriate message after a short delay
+        setTimeout(() => {
+            if (wasNewlyUnlocked) {
+                showMiniGameUnlockedMessage(character);
+            } else {
+                showTradingChallengeOffer(character);
+            }
+        }, 2000);
+    }
+}
+
+function showMiniGameUnlockedMessage(character) {
+    // Create modal overlay for mini-game unlock announcement
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: rgba(44, 62, 80, 0.95);
+        border: 3px solid #8e44ad;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(142, 68, 173, 0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = "🎮 Mini-Game Unlocked!";
+    title.style.cssText = `
+        color: #8e44ad;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const text = document.createElement('p');
+    text.textContent = "Congratulations! You've unlocked the Trading Challenge mini-game! Visit the Mini-Game Collection to play anytime, or try it now.";
+    text.style.cssText = `
+        color: #ecf0f1;
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    `;
+    
+    const playNowButton = document.createElement('button');
+    playNowButton.textContent = "🤝 Play Now";
+    playNowButton.style.cssText = `
+        background: rgba(142, 68, 173, 0.8);
+        border: 2px solid #8e44ad;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const collectionButton = document.createElement('button');
+    collectionButton.textContent = "🎮 View Collection";
+    collectionButton.style.cssText = `
+        background: rgba(52, 152, 219, 0.8);
+        border: 2px solid #3498db;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const laterButton = document.createElement('button');
+    laterButton.textContent = "Maybe Later";
+    laterButton.style.cssText = `
+        background: rgba(52, 73, 94, 0.8);
+        border: 2px solid #34495e;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    // Hover effects
+    playNowButton.onmouseover = () => {
+        playNowButton.style.background = 'rgba(142, 68, 173, 1)';
+    };
+    playNowButton.onmouseout = () => {
+        playNowButton.style.background = 'rgba(142, 68, 173, 0.8)';
+    };
+    
+    collectionButton.onmouseover = () => {
+        collectionButton.style.background = 'rgba(52, 152, 219, 1)';
+    };
+    collectionButton.onmouseout = () => {
+        collectionButton.style.background = 'rgba(52, 152, 219, 0.8)';
+    };
+    
+    laterButton.onmouseover = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 1)';
+    };
+    laterButton.onmouseout = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 0.8)';
+    };
+    
+    // Click handlers
+    playNowButton.onclick = () => {
+        document.body.removeChild(overlay);
+        playTradingChallenge();
+    };
+    
+    collectionButton.onclick = () => {
+        document.body.removeChild(overlay);
+        showMiniGameCollection();
+    };
+    
+    laterButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    buttonContainer.appendChild(playNowButton);
+    buttonContainer.appendChild(collectionButton);
+    buttonContainer.appendChild(laterButton);
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(buttonContainer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function showTradingChallengeOffer(character) {
+    // Create modal overlay for trading challenge offer
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: rgba(44, 62, 80, 0.95);
+        border: 3px solid #f39c12;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = "🤝 Trading Challenge Unlocked!";
+    title.style.cssText = `
+        color: #f39c12;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const text = document.createElement('p');
+    text.textContent = "You've completed a trade-related ending! Try the Trading Challenge mini-game to understand how trade value misunderstandings led to historical conflicts.";
+    text.style.cssText = `
+        color: #ecf0f1;
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    `;
+    
+    const playButton = document.createElement('button');
+    playButton.textContent = "Play Challenge";
+    playButton.style.cssText = `
+        background: rgba(46, 204, 113, 0.8);
+        border: 2px solid #2ecc71;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const skipButton = document.createElement('button');
+    skipButton.textContent = "Maybe Later";
+    skipButton.style.cssText = `
+        background: rgba(52, 73, 94, 0.8);
+        border: 2px solid #34495e;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    playButton.onmouseover = () => {
+        playButton.style.background = 'rgba(46, 204, 113, 1)';
+    };
+    
+    playButton.onmouseout = () => {
+        playButton.style.background = 'rgba(46, 204, 113, 0.8)';
+    };
+    
+    skipButton.onmouseover = () => {
+        skipButton.style.background = 'rgba(52, 73, 94, 1)';
+    };
+    
+    skipButton.onmouseout = () => {
+        skipButton.style.background = 'rgba(52, 73, 94, 0.8)';
+    };
+    
+    playButton.onclick = () => {
+        document.body.removeChild(overlay);
+        startTradingChallenge(character);
+    };
+    
+    skipButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    buttonContainer.appendChild(playButton);
+    buttonContainer.appendChild(skipButton);
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(buttonContainer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
 
 // End of file
