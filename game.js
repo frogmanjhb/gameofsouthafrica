@@ -2668,14 +2668,19 @@ function showPreview(e) {
     const supply = harborHustle.supplies.find(s => s.id === harborHustle.draggedItem);
     if (!supply || supply.loaded) return;
     
-    // Calculate grid position from mouse coordinates
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // Get the grid container for accurate positioning
+    const loadingZone = document.getElementById('loadingZone');
+    const gridContainer = loadingZone.querySelector('div[style*="grid-template-columns"]');
+    if (!gridContainer) return;
     
-    // Convert to grid coordinates (accounting for grid offset)
-    const gridX = Math.floor((x - 10) / 32); // 30px cell + 2px gap
-    const gridY = Math.floor((y - 10) / 32);
+    // Calculate grid position from mouse coordinates relative to grid container
+    const gridRect = gridContainer.getBoundingClientRect();
+    const x = e.clientX - gridRect.left;
+    const y = e.clientY - gridRect.top;
+    
+    // Convert to grid coordinates (30px cell + 2px gap = 32px total)
+    const gridX = Math.floor(x / 32);
+    const gridY = Math.floor(y / 32);
     
     // Clear previous preview
     clearPreview();
@@ -2705,6 +2710,17 @@ function showGridPreview(supply, gridX, gridY, isValid) {
     loadingZone.style.position = 'relative';
     loadingZone.appendChild(previewOverlay);
     
+    // Get the grid container to align with it
+    const gridContainer = loadingZone.querySelector('div[style*="grid-template-columns"]');
+    if (!gridContainer) return;
+    
+    const gridRect = gridContainer.getBoundingClientRect();
+    const loadingRect = loadingZone.getBoundingClientRect();
+    
+    // Calculate offset from loading zone to grid container
+    const offsetX = gridRect.left - loadingRect.left;
+    const offsetY = gridRect.top - loadingRect.top;
+    
     // Draw preview cells
     for (let y = 0; y < supply.height; y++) {
         for (let x = 0; x < supply.width; x++) {
@@ -2719,8 +2735,8 @@ function showGridPreview(supply, gridX, gridY, isValid) {
                     const previewCell = document.createElement('div');
                     previewCell.style.cssText = `
                         position: absolute;
-                        left: ${10 + previewX * 32}px;
-                        top: ${10 + previewY * 32}px;
+                        left: ${offsetX + previewX * 32}px;
+                        top: ${offsetY + previewY * 32}px;
                         width: 30px;
                         height: 30px;
                         border: 2px solid ${isValid ? '#00ff00' : '#ff0000'};
@@ -2730,6 +2746,7 @@ function showGridPreview(supply, gridX, gridY, isValid) {
                         justify-content: center;
                         font-size: 12px;
                         z-index: 11;
+                        box-sizing: border-box;
                     `;
                     
                     // Show supply emoji in preview
@@ -2797,14 +2814,18 @@ function setupHarborDragAndDrop() {
                 // Start timer on first drop
                 startTimer();
                 
-                // Calculate grid position from drop coordinates
-                const rect = loadingZone.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                // Get the grid container for accurate positioning
+                const gridContainer = loadingZone.querySelector('div[style*="grid-template-columns"]');
+                if (!gridContainer) return;
                 
-                // Convert to grid coordinates (accounting for grid offset)
-                const gridX = Math.floor((x - 10) / 32); // 30px cell + 2px gap
-                const gridY = Math.floor((y - 10) / 32);
+                // Calculate grid position from drop coordinates relative to grid container
+                const gridRect = gridContainer.getBoundingClientRect();
+                const x = e.clientX - gridRect.left;
+                const y = e.clientY - gridRect.top;
+                
+                // Convert to grid coordinates (30px cell + 2px gap = 32px total)
+                const gridX = Math.floor(x / 32);
+                const gridY = Math.floor(y / 32);
                 
                 // Check if supply can be placed
                 if (canPlaceSupply(supply, gridX, gridY)) {
