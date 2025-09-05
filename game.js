@@ -2662,6 +2662,92 @@ function placeSupply(supply, gridX, gridY) {
     drawShipGrid();
 }
 
+function showPreview(e) {
+    if (!harborHustle.draggedItem) return;
+    
+    const supply = harborHustle.supplies.find(s => s.id === harborHustle.draggedItem);
+    if (!supply || supply.loaded) return;
+    
+    // Calculate grid position from mouse coordinates
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Convert to grid coordinates (accounting for grid offset)
+    const gridX = Math.floor((x - 10) / 32); // 30px cell + 2px gap
+    const gridY = Math.floor((y - 10) / 32);
+    
+    // Clear previous preview
+    clearPreview();
+    
+    // Check if placement is valid
+    const isValid = canPlaceSupply(supply, gridX, gridY);
+    
+    // Show preview
+    showGridPreview(supply, gridX, gridY, isValid);
+}
+
+function showGridPreview(supply, gridX, gridY, isValid) {
+    // Create preview overlay
+    const previewOverlay = document.createElement('div');
+    previewOverlay.id = 'preview-overlay';
+    previewOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+    `;
+    
+    const loadingZone = document.getElementById('loadingZone');
+    loadingZone.style.position = 'relative';
+    loadingZone.appendChild(previewOverlay);
+    
+    // Draw preview cells
+    for (let y = 0; y < supply.height; y++) {
+        for (let x = 0; x < supply.width; x++) {
+            if (supply.shape[y] && supply.shape[y][x]) {
+                const previewX = gridX + x;
+                const previewY = gridY + y;
+                
+                // Check bounds
+                if (previewX >= 0 && previewX < harborHustle.gridWidth && 
+                    previewY >= 0 && previewY < harborHustle.gridHeight) {
+                    
+                    const previewCell = document.createElement('div');
+                    previewCell.style.cssText = `
+                        position: absolute;
+                        left: ${10 + previewX * 32}px;
+                        top: ${10 + previewY * 32}px;
+                        width: 30px;
+                        height: 30px;
+                        border: 2px solid ${isValid ? '#00ff00' : '#ff0000'};
+                        background: ${isValid ? 'rgba(0, 255, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)'};
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                        z-index: 11;
+                    `;
+                    
+                    // Show supply emoji in preview
+                    previewCell.textContent = supply.emoji;
+                    previewOverlay.appendChild(previewCell);
+                }
+            }
+        }
+    }
+}
+
+function clearPreview() {
+    const previewOverlay = document.getElementById('preview-overlay');
+    if (previewOverlay) {
+        previewOverlay.remove();
+    }
+}
+
 function setupHarborDragAndDrop() {
     const supplies = document.querySelectorAll('.supply-item');
     const loadingZone = document.getElementById('loadingZone');
@@ -2678,6 +2764,7 @@ function setupHarborDragAndDrop() {
         supply.addEventListener('dragend', (e) => {
             supply.classList.remove('dragging');
             harborHustle.draggedItem = null;
+            clearPreview();
         });
     });
     
@@ -2685,15 +2772,22 @@ function setupHarborDragAndDrop() {
         e.preventDefault();
         loadingZone.classList.add('drag-over');
         e.dataTransfer.dropEffect = 'move';
+        
+        // Show preview when dragging over grid
+        if (harborHustle.draggedItem) {
+            showPreview(e);
+        }
     });
     
     loadingZone.addEventListener('dragleave', (e) => {
         loadingZone.classList.remove('drag-over');
+        clearPreview();
     });
     
     loadingZone.addEventListener('drop', (e) => {
         e.preventDefault();
         loadingZone.classList.remove('drag-over');
+        clearPreview();
         
         if (harborHustle.draggedItem) {
             const supplyId = harborHustle.draggedItem;
