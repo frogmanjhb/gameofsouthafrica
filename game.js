@@ -76,20 +76,56 @@ const harborHustle = {
         active: false,
         score: 0,
         level: 1,
-        timeLeft: 60,
+        timeLeft: 30,
         suppliesLoaded: 0,
         suppliesNeeded: 10,
-        gameSpeed: 1
+        gameSpeed: 1,
+        timerStarted: false
     },
     supplies: [],
     ships: [],
     draggedItem: null,
     gameTimer: null,
+    shipGrid: [], // 8x6 grid for ship cargo
+    gridWidth: 8,
+    gridHeight: 6,
     supplyTypes: [
-        { name: 'Food', emoji: '🍞', points: 10, color: '#e74c3c' },
-        { name: 'Water', emoji: '💧', points: 15, color: '#3498db' },
-        { name: 'Livestock', emoji: '🐄', points: 25, color: '#8e44ad' },
-        { name: 'Tools', emoji: '🔧', points: 20, color: '#f39c12' }
+        { 
+            name: 'Food', 
+            emoji: '🍞', 
+            points: 10, 
+            color: '#e74c3c',
+            shape: [[1, 1], [1, 1]], // 2x2 square
+            width: 2,
+            height: 2
+        },
+        { 
+            name: 'Water', 
+            emoji: '💧', 
+            points: 15, 
+            color: '#3498db',
+            shape: [[1, 1, 1]], // 1x3 line
+            width: 3,
+            height: 1
+        },
+        { 
+            name: 'Livestock', 
+            emoji: '🐄', 
+            points: 25, 
+            color: '#8e44ad',
+            shape: [[1], [1], [1]], // 3x1 line
+            width: 1,
+            height: 3
+        },
+        { 
+            name: 'Tools', 
+            emoji: '🔧', 
+            points: 20, 
+            color: '#f39c12',
+            shape: [[1, 1], [1, 0]], // L-shape
+            width: 2,
+            height: 2
+        }
     ]
 };
 
@@ -2449,15 +2485,25 @@ function initializeHarborHustle() {
         active: false,
         score: 0,
         level: 1,
-        timeLeft: 60,
+        timeLeft: 30,
         suppliesLoaded: 0,
         suppliesNeeded: 10,
-        gameSpeed: 1
+        gameSpeed: 1,
+        timerStarted: false
     };
     
     harborHustle.supplies = [];
     harborHustle.ships = [];
     harborHustle.draggedItem = null;
+    
+    // Initialize ship grid (8x6)
+    harborHustle.shipGrid = [];
+    for (let y = 0; y < harborHustle.gridHeight; y++) {
+        harborHustle.shipGrid[y] = [];
+        for (let x = 0; x < harborHustle.gridWidth; x++) {
+            harborHustle.shipGrid[y][x] = 0; // 0 = empty, 1 = occupied
+        }
+    }
     
     // Clear any existing timer
     if (harborHustle.gameTimer) {
@@ -2467,6 +2513,7 @@ function initializeHarborHustle() {
     updateHarborGameStats();
     generateSupplies();
     setupHarborDragAndDrop();
+    drawShipGrid();
     
     // Show start button
     document.getElementById('startHarborBtn').style.display = 'inline-block';
@@ -2478,15 +2525,8 @@ function startHarborHustle() {
     harborHustle.gameState.active = true;
     document.getElementById('startHarborBtn').style.display = 'none';
     
-    // Start timer
-    harborHustle.gameTimer = setInterval(() => {
-        harborHustle.gameState.timeLeft--;
-        updateHarborGameStats();
-        
-        if (harborHustle.gameState.timeLeft <= 0) {
-            endHarborHustle();
-        }
-    }, 1000);
+    // Timer will start when first supply is dropped
+    // No timer initialization here
 }
 
 function updateHarborGameStats() {
@@ -2509,7 +2549,10 @@ function generateSupplies() {
             emoji: supplyType.emoji,
             points: supplyType.points,
             color: supplyType.color,
-            loaded: false
+            loaded: false,
+            shape: supplyType.shape,
+            width: supplyType.width,
+            height: supplyType.height
         };
         
         harborHustle.supplies.push(supply);
@@ -2525,6 +2568,98 @@ function generateSupplies() {
         
         container.appendChild(supplyElement);
     }
+}
+
+function drawShipGrid() {
+    const loadingZone = document.getElementById('loadingZone');
+    loadingZone.innerHTML = '';
+    
+    // Create grid container
+    const gridContainer = document.createElement('div');
+    gridContainer.style.cssText = `
+        display: grid;
+        grid-template-columns: repeat(${harborHustle.gridWidth}, 30px);
+        grid-template-rows: repeat(${harborHustle.gridHeight}, 30px);
+        gap: 2px;
+        margin: 10px auto;
+        width: fit-content;
+    `;
+    
+    // Create grid cells
+    for (let y = 0; y < harborHustle.gridHeight; y++) {
+        for (let x = 0; x < harborHustle.gridWidth; x++) {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            cell.id = `grid_${x}_${y}`;
+            cell.style.cssText = `
+                width: 30px;
+                height: 30px;
+                border: 1px solid #555;
+                background: ${harborHustle.shipGrid[y][x] ? '#666' : '#222'};
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+            `;
+            gridContainer.appendChild(cell);
+        }
+    }
+    
+    loadingZone.appendChild(gridContainer);
+}
+
+function startTimer() {
+    if (!harborHustle.gameState.timerStarted) {
+        harborHustle.gameState.timerStarted = true;
+        
+        harborHustle.gameTimer = setInterval(() => {
+            harborHustle.gameState.timeLeft--;
+            updateHarborGameStats();
+            
+            if (harborHustle.gameState.timeLeft <= 0) {
+                endHarborHustle();
+            }
+        }, 1000);
+    }
+}
+
+function canPlaceSupply(supply, gridX, gridY) {
+    // Check if supply can be placed at the given grid position
+    for (let y = 0; y < supply.height; y++) {
+        for (let x = 0; x < supply.width; x++) {
+            if (supply.shape[y] && supply.shape[y][x]) {
+                const checkX = gridX + x;
+                const checkY = gridY + y;
+                
+                // Check bounds
+                if (checkX >= harborHustle.gridWidth || checkY >= harborHustle.gridHeight) {
+                    return false;
+                }
+                
+                // Check if cell is already occupied
+                if (harborHustle.shipGrid[checkY][checkX] !== 0) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function placeSupply(supply, gridX, gridY) {
+    // Place the supply on the grid
+    for (let y = 0; y < supply.height; y++) {
+        for (let x = 0; x < supply.width; x++) {
+            if (supply.shape[y] && supply.shape[y][x]) {
+                const placeX = gridX + x;
+                const placeY = gridY + y;
+                harborHustle.shipGrid[placeY][placeX] = supply.id;
+            }
+        }
+    }
+    
+    // Update visual grid
+    drawShipGrid();
 }
 
 function setupHarborDragAndDrop() {
@@ -2565,31 +2700,45 @@ function setupHarborDragAndDrop() {
             const supply = harborHustle.supplies.find(s => s.id === supplyId);
             
             if (supply && !supply.loaded) {
-                // Load the supply
-                supply.loaded = true;
-                harborHustle.gameState.suppliesLoaded++;
-                harborHustle.gameState.score += supply.points;
+                // Start timer on first drop
+                startTimer();
                 
-                // Remove from dock
-                const supplyElement = document.getElementById(supplyId);
-                supplyElement.style.display = 'none';
+                // Calculate grid position from drop coordinates
+                const rect = loadingZone.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
                 
-                // Add to ship
-                const loadedSupply = document.createElement('div');
-                loadedSupply.className = 'supply-item';
-                loadedSupply.style.backgroundColor = supply.color;
-                loadedSupply.style.margin = '5px';
-                loadedSupply.innerHTML = `
-                    <div class="supply-emoji">${supply.emoji}</div>
-                    <div class="supply-name">${supply.type}</div>
-                `;
-                loadingZone.appendChild(loadedSupply);
+                // Convert to grid coordinates (accounting for grid offset)
+                const gridX = Math.floor((x - 10) / 32); // 30px cell + 2px gap
+                const gridY = Math.floor((y - 10) / 32);
                 
-                updateHarborGameStats();
-                
-                // Check win condition
-                if (harborHustle.gameState.suppliesLoaded >= harborHustle.gameState.suppliesNeeded) {
-                    nextHarborLevel();
+                // Check if supply can be placed
+                if (canPlaceSupply(supply, gridX, gridY)) {
+                    // Place the supply
+                    placeSupply(supply, gridX, gridY);
+                    
+                    // Mark as loaded
+                    supply.loaded = true;
+                    harborHustle.gameState.suppliesLoaded++;
+                    harborHustle.gameState.score += supply.points;
+                    
+                    // Remove from dock
+                    const supplyElement = document.getElementById(supplyId);
+                    supplyElement.style.display = 'none';
+                    
+                    updateHarborGameStats();
+                    
+                    // Check win condition
+                    if (harborHustle.gameState.suppliesLoaded >= harborHustle.gameState.suppliesNeeded) {
+                        nextHarborLevel();
+                    }
+                } else {
+                    // Invalid placement - show feedback
+                    const supplyElement = document.getElementById(supplyId);
+                    supplyElement.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        supplyElement.style.animation = '';
+                    }, 500);
                 }
             }
         }
@@ -2601,15 +2750,25 @@ function nextHarborLevel() {
     harborHustle.gameState.suppliesNeeded += 5;
     harborHustle.gameState.timeLeft += 30; // Bonus time
     harborHustle.gameState.suppliesLoaded = 0;
+    harborHustle.gameState.timerStarted = false;
     
-    // Clear loading zone
-    const loadingZone = document.getElementById('loadingZone');
-    loadingZone.innerHTML = '<p>Drop supplies here!</p>';
+    // Clear timer
+    if (harborHustle.gameTimer) {
+        clearInterval(harborHustle.gameTimer);
+    }
+    
+    // Reset ship grid
+    for (let y = 0; y < harborHustle.gridHeight; y++) {
+        for (let x = 0; x < harborHustle.gridWidth; x++) {
+            harborHustle.shipGrid[y][x] = 0;
+        }
+    }
     
     // Generate new supplies
     harborHustle.supplies = [];
     generateSupplies();
     setupHarborDragAndDrop();
+    drawShipGrid();
     
     updateHarborGameStats();
 }

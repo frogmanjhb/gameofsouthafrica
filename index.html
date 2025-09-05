@@ -1114,6 +1114,12 @@
             font-size: 1.1em;
         }
 
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
         /* Cattle Chase Styles */
         .cattle-chase-screen {
             text-align: center;
@@ -1513,7 +1519,7 @@
             <div class="harbor-stats">
                 <div class="stat">
                     <span class="stat-label">Time:</span>
-                    <span id="harborTime" class="stat-value">60</span>
+                    <span id="harborTime" class="stat-value">30</span>
                 </div>
                 <div class="stat">
                     <span class="stat-label">Score:</span>
