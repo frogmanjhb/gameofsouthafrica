@@ -70,6 +70,29 @@ const cattleChase = {
     ctx: null
 };
 
+// Harbor Hustle mini-game data
+const harborHustle = {
+    gameState: {
+        active: false,
+        score: 0,
+        level: 1,
+        timeLeft: 60,
+        suppliesLoaded: 0,
+        suppliesNeeded: 10,
+        gameSpeed: 1
+    },
+    supplies: [],
+    ships: [],
+    draggedItem: null,
+    gameTimer: null,
+    supplyTypes: [
+        { name: 'Food', emoji: '🍞', points: 10, color: '#e74c3c' },
+        { name: 'Water', emoji: '💧', points: 15, color: '#3498db' },
+        { name: 'Livestock', emoji: '🐄', points: 25, color: '#8e44ad' },
+        { name: 'Tools', emoji: '🔧', points: 20, color: '#f39c12' }
+    ]
+};
+
 // Background images for different scenes
 const backgrounds = {
     khoisan: {
@@ -994,6 +1017,11 @@ function saveCollectedEnding(character, endingKey, ending) {
         if (character === 'khoisan') {
             checkAllKhoisanEndingsCollected();
         }
+        
+        // Check if 8 Dutch endings are collected for Harbor Hustle unlock
+        if (character === 'dutch') {
+            checkDutchEndingsForHarborHustle();
+        }
     }
 }
 
@@ -1136,7 +1164,7 @@ function startTradingChallenge(character) {
 }
 
 function hideAllScreens() {
-    const screens = ['titleScreen', 'gameScreen', 'endingScreen', 'infoScreen', 'collectorScreen', 'tradingChallengeScreen', 'miniGameScreen', 'cattleChaseScreen'];
+    const screens = ['titleScreen', 'gameScreen', 'endingScreen', 'infoScreen', 'collectorScreen', 'tradingChallengeScreen', 'miniGameScreen', 'cattleChaseScreen', 'harborHustleScreen'];
     screens.forEach(screenId => {
         document.getElementById(screenId).style.display = 'none';
     });
@@ -1333,7 +1361,7 @@ function hideMiniGameCollection() {
 
 function updateMiniGameDisplay() {
     // Update progress counter
-    const totalMiniGames = 2; // Trading challenge and cattle chase
+    const totalMiniGames = 3; // Trading challenge, cattle chase, and harbor hustle
     const unlockedCount = Object.values(unlockedMiniGames).filter(unlocked => unlocked).length;
     
     document.getElementById('miniGameProgress').textContent = `${unlockedCount} of ${totalMiniGames} mini-games unlocked`;
@@ -1377,6 +1405,26 @@ function updateMiniGameDisplay() {
         cattlePlayButton.disabled = true;
         cattleStatusIcon.textContent = '🔒';
         cattleStatusText.textContent = 'Locked';
+    }
+    
+    // Update harbor hustle display
+    const harborItem = document.getElementById('harborHustleMiniGame');
+    const harborPlayButton = harborItem.querySelector('.play-mini-game-btn');
+    const harborStatusIcon = harborItem.querySelector('.status-icon');
+    const harborStatusText = harborItem.querySelector('.status-text');
+    
+    if (unlockedMiniGames.harborHustle) {
+        harborItem.classList.remove('locked');
+        harborItem.classList.add('unlocked');
+        harborPlayButton.disabled = false;
+        harborStatusIcon.textContent = '✅';
+        harborStatusText.textContent = 'Unlocked';
+    } else {
+        harborItem.classList.remove('unlocked');
+        harborItem.classList.add('locked');
+        harborPlayButton.disabled = true;
+        harborStatusIcon.textContent = '🔒';
+        harborStatusText.textContent = 'Complete 8 Dutch endings';
     }
 }
 
@@ -2388,6 +2436,437 @@ function exitCattleChase() {
     document.getElementById('titleScreen').style.display = 'block';
 }
 
+// Harbor Hustle Functions
+function playHarborHustle() {
+    hideAllScreens();
+    document.getElementById('harborHustleScreen').style.display = 'block';
+    initializeHarborHustle();
+}
+
+function initializeHarborHustle() {
+    // Reset game state
+    harborHustle.gameState = {
+        active: false,
+        score: 0,
+        level: 1,
+        timeLeft: 60,
+        suppliesLoaded: 0,
+        suppliesNeeded: 10,
+        gameSpeed: 1
+    };
+    
+    harborHustle.supplies = [];
+    harborHustle.ships = [];
+    harborHustle.draggedItem = null;
+    
+    // Clear any existing timer
+    if (harborHustle.gameTimer) {
+        clearInterval(harborHustle.gameTimer);
+    }
+    
+    updateHarborGameStats();
+    generateSupplies();
+    setupHarborDragAndDrop();
+    
+    // Show start button
+    document.getElementById('startHarborBtn').style.display = 'inline-block';
+    document.getElementById('restartHarborBtn').style.display = 'none';
+    document.getElementById('harborGameOver').style.display = 'none';
+}
+
+function startHarborHustle() {
+    harborHustle.gameState.active = true;
+    document.getElementById('startHarborBtn').style.display = 'none';
+    
+    // Start timer
+    harborHustle.gameTimer = setInterval(() => {
+        harborHustle.gameState.timeLeft--;
+        updateHarborGameStats();
+        
+        if (harborHustle.gameState.timeLeft <= 0) {
+            endHarborHustle();
+        }
+    }, 1000);
+}
+
+function updateHarborGameStats() {
+    document.getElementById('harborTime').textContent = harborHustle.gameState.timeLeft;
+    document.getElementById('harborScore').textContent = harborHustle.gameState.score;
+    document.getElementById('harborLoaded').textContent = `${harborHustle.gameState.suppliesLoaded}/${harborHustle.gameState.suppliesNeeded}`;
+    document.getElementById('harborLevel').textContent = harborHustle.gameState.level;
+}
+
+function generateSupplies() {
+    const container = document.getElementById('suppliesContainer');
+    container.innerHTML = '';
+    
+    // Generate 15 supplies (more than needed to create choice)
+    for (let i = 0; i < 15; i++) {
+        const supplyType = harborHustle.supplyTypes[Math.floor(Math.random() * harborHustle.supplyTypes.length)];
+        const supply = {
+            id: `supply_${i}`,
+            type: supplyType.name,
+            emoji: supplyType.emoji,
+            points: supplyType.points,
+            color: supplyType.color,
+            loaded: false
+        };
+        
+        harborHustle.supplies.push(supply);
+        
+        const supplyElement = document.createElement('div');
+        supplyElement.className = 'supply-item';
+        supplyElement.id = supply.id;
+        supplyElement.style.backgroundColor = supply.color;
+        supplyElement.innerHTML = `
+            <div class="supply-emoji">${supply.emoji}</div>
+            <div class="supply-name">${supply.type}</div>
+        `;
+        
+        container.appendChild(supplyElement);
+    }
+}
+
+function setupHarborDragAndDrop() {
+    const supplies = document.querySelectorAll('.supply-item');
+    const loadingZone = document.getElementById('loadingZone');
+    
+    supplies.forEach(supply => {
+        supply.draggable = true;
+        
+        supply.addEventListener('dragstart', (e) => {
+            harborHustle.draggedItem = supply.id;
+            supply.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+        
+        supply.addEventListener('dragend', (e) => {
+            supply.classList.remove('dragging');
+            harborHustle.draggedItem = null;
+        });
+    });
+    
+    loadingZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        loadingZone.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+    });
+    
+    loadingZone.addEventListener('dragleave', (e) => {
+        loadingZone.classList.remove('drag-over');
+    });
+    
+    loadingZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        loadingZone.classList.remove('drag-over');
+        
+        if (harborHustle.draggedItem) {
+            const supplyId = harborHustle.draggedItem;
+            const supply = harborHustle.supplies.find(s => s.id === supplyId);
+            
+            if (supply && !supply.loaded) {
+                // Load the supply
+                supply.loaded = true;
+                harborHustle.gameState.suppliesLoaded++;
+                harborHustle.gameState.score += supply.points;
+                
+                // Remove from dock
+                const supplyElement = document.getElementById(supplyId);
+                supplyElement.style.display = 'none';
+                
+                // Add to ship
+                const loadedSupply = document.createElement('div');
+                loadedSupply.className = 'supply-item';
+                loadedSupply.style.backgroundColor = supply.color;
+                loadedSupply.style.margin = '5px';
+                loadedSupply.innerHTML = `
+                    <div class="supply-emoji">${supply.emoji}</div>
+                    <div class="supply-name">${supply.type}</div>
+                `;
+                loadingZone.appendChild(loadedSupply);
+                
+                updateHarborGameStats();
+                
+                // Check win condition
+                if (harborHustle.gameState.suppliesLoaded >= harborHustle.gameState.suppliesNeeded) {
+                    nextHarborLevel();
+                }
+            }
+        }
+    });
+}
+
+function nextHarborLevel() {
+    harborHustle.gameState.level++;
+    harborHustle.gameState.suppliesNeeded += 5;
+    harborHustle.gameState.timeLeft += 30; // Bonus time
+    harborHustle.gameState.suppliesLoaded = 0;
+    
+    // Clear loading zone
+    const loadingZone = document.getElementById('loadingZone');
+    loadingZone.innerHTML = '<p>Drop supplies here!</p>';
+    
+    // Generate new supplies
+    harborHustle.supplies = [];
+    generateSupplies();
+    setupHarborDragAndDrop();
+    
+    updateHarborGameStats();
+}
+
+function endHarborHustle() {
+    harborHustle.gameState.active = false;
+    clearInterval(harborHustle.gameTimer);
+    
+    const won = harborHustle.gameState.suppliesLoaded >= harborHustle.gameState.suppliesNeeded;
+    
+    document.getElementById('harborGameOverTitle').textContent = won ? 'Level Complete!' : 'Time\'s Up!';
+    document.getElementById('harborGameOverText').textContent = won ? 
+        `Great job! You loaded all supplies in time!` : 
+        `You loaded ${harborHustle.gameState.suppliesLoaded} of ${harborHustle.gameState.suppliesNeeded} supplies.`;
+    
+    document.getElementById('harborFinalScore').textContent = harborHustle.gameState.score;
+    document.getElementById('harborFinalLoaded').textContent = harborHustle.gameState.suppliesLoaded;
+    document.getElementById('harborFinalNeeded').textContent = harborHustle.gameState.suppliesNeeded;
+    document.getElementById('harborFinalLevel').textContent = harborHustle.gameState.level;
+    
+    document.getElementById('harborGameOver').style.display = 'block';
+    document.getElementById('restartHarborBtn').style.display = 'inline-block';
+}
+
+function restartHarborHustle() {
+    initializeHarborHustle();
+}
+
+function exitHarborHustle() {
+    hideAllScreens();
+    document.getElementById('titleScreen').style.display = 'block';
+}
+
+// Test Mini-Games Functions
+function showTestMiniGames() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border: 3px solid #e67e22;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        max-width: 600px;
+        color: white;
+        font-family: 'Courier New', monospace;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    `;
+    
+    const title = document.createElement('h2');
+    title.textContent = '🧪 Test All Mini-Games';
+    title.style.cssText = `
+        color: #e67e22;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+    `;
+    
+    const text = document.createElement('p');
+    text.innerHTML = `
+        Choose a mini-game to test directly. These are unlocked for testing purposes only.<br><br>
+        <em>Note: This bypasses normal unlock requirements for testing.</em>
+    `;
+    text.style.cssText = `
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-size: 1.1em;
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    `;
+    
+    // Trading Challenge Button
+    const tradingButton = document.createElement('button');
+    tradingButton.innerHTML = '🎯 Trading Challenge<br><small>Item matching game</small>';
+    tradingButton.style.cssText = `
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+        line-height: 1.4;
+    `;
+    
+    // Cattle Chase Button
+    const cattleButton = document.createElement('button');
+    cattleButton.innerHTML = '🐄 Cattle Chase<br><small>Herding game</small>';
+    cattleButton.style.cssText = `
+        background: #8e44ad;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+        line-height: 1.4;
+    `;
+    
+    // Harbor Hustle Button
+    const harborButton = document.createElement('button');
+    harborButton.innerHTML = '⚓ Harbor Hustle<br><small>Loading game</small>';
+    harborButton.style.cssText = `
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+        line-height: 1.4;
+    `;
+    
+    // Close Button
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Close';
+    closeButton.style.cssText = `
+        background: #95a5a6;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    // Hover effects
+    tradingButton.onmouseover = () => {
+        tradingButton.style.background = '#c0392b';
+        tradingButton.style.transform = 'translateY(-2px)';
+    };
+    tradingButton.onmouseout = () => {
+        tradingButton.style.background = '#e74c3c';
+        tradingButton.style.transform = 'translateY(0)';
+    };
+    
+    cattleButton.onmouseover = () => {
+        cattleButton.style.background = '#7d3c98';
+        cattleButton.style.transform = 'translateY(-2px)';
+    };
+    cattleButton.onmouseout = () => {
+        cattleButton.style.background = '#8e44ad';
+        cattleButton.style.transform = 'translateY(0)';
+    };
+    
+    harborButton.onmouseover = () => {
+        harborButton.style.background = '#2980b9';
+        harborButton.style.transform = 'translateY(-2px)';
+    };
+    harborButton.onmouseout = () => {
+        harborButton.style.background = '#3498db';
+        harborButton.style.transform = 'translateY(0)';
+    };
+    
+    closeButton.onmouseover = () => {
+        closeButton.style.background = '#7f8c8d';
+        closeButton.style.transform = 'translateY(-2px)';
+    };
+    closeButton.onmouseout = () => {
+        closeButton.style.background = '#95a5a6';
+        closeButton.style.transform = 'translateY(0)';
+    };
+    
+    // Click handlers
+    tradingButton.onclick = () => {
+        document.body.removeChild(overlay);
+        testTradingChallenge();
+    };
+    
+    cattleButton.onclick = () => {
+        document.body.removeChild(overlay);
+        testCattleChase();
+    };
+    
+    harborButton.onclick = () => {
+        document.body.removeChild(overlay);
+        testHarborHustle();
+    };
+    
+    closeButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    buttonContainer.appendChild(tradingButton);
+    buttonContainer.appendChild(cattleButton);
+    buttonContainer.appendChild(harborButton);
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(buttonContainer);
+    modal.appendChild(closeButton);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function testTradingChallenge() {
+    // Temporarily unlock trading challenge for testing
+    unlockedMiniGames.tradingChallenge = true;
+    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
+    
+    hideAllScreens();
+    document.getElementById('tradingChallengeScreen').style.display = 'block';
+    
+    // Update perspective display
+    document.getElementById('tradePerspective').textContent = 'Khoi-San';
+    
+    // Start the game
+    nextTradeItem();
+    startTimer();
+}
+
+function testCattleChase() {
+    // Temporarily unlock cattle chase for testing
+    unlockedMiniGames.cattleChase = true;
+    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
+    
+    hideAllScreens();
+    document.getElementById('cattleChaseScreen').style.display = 'block';
+    initializeCattleChase();
+}
+
+function testHarborHustle() {
+    // Temporarily unlock harbor hustle for testing
+    unlockedMiniGames.harborHustle = true;
+    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
+    
+    hideAllScreens();
+    document.getElementById('harborHustleScreen').style.display = 'block';
+    initializeHarborHustle();
+}
+
 function checkAllKhoisanEndingsCollected() {
     const totalKhoisanEndings = Object.keys(gameStories.khoisan.endings).length;
     const collectedKhoisanEndings = collectedEndings.khoisan.length;
@@ -2400,6 +2879,103 @@ function checkAllKhoisanEndingsCollected() {
             }, 2000);
         }
     }
+}
+
+function checkDutchEndingsForHarborHustle() {
+    const collectedDutchEndings = collectedEndings.dutch.length;
+    
+    if (collectedDutchEndings >= 8) {
+        const wasNewlyUnlocked = unlockMiniGame('harborHustle');
+        if (wasNewlyUnlocked) {
+            setTimeout(() => {
+                showHarborHustleUnlockedMessage();
+            }, 2000);
+        }
+    }
+}
+
+function showHarborHustleUnlockedMessage() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        border: 3px solid #f39c12;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        max-width: 500px;
+        color: white;
+        font-family: 'Courier New', monospace;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    `;
+    
+    const title = document.createElement('h2');
+    title.textContent = '⚓ New Mini-Game Unlocked!';
+    title.style.cssText = `
+        color: #f39c12;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+    `;
+    
+    const text = document.createElement('p');
+    text.innerHTML = `
+        <strong>Harbor Hustle</strong> is now available!<br><br>
+        Load supplies onto ships before they sail in this fast-paced sorting game. 
+        Cape Town was a vital resupply station for ships traveling to the East Indies!<br><br>
+        <em>Access it from the Mini-Game Collection.</em>
+    `;
+    text.style.cssText = `
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-size: 1.1em;
+    `;
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Awesome!';
+    closeButton.style.cssText = `
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    closeButton.onmouseover = () => {
+        closeButton.style.background = '#c0392b';
+        closeButton.style.transform = 'translateY(-2px)';
+    };
+    
+    closeButton.onmouseout = () => {
+        closeButton.style.background = '#e74c3c';
+        closeButton.style.transform = 'translateY(0)';
+    };
+    
+    closeButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(closeButton);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
 }
 
 function showCattleChaseUnlockedMessage() {

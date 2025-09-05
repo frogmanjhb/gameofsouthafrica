@@ -366,6 +366,39 @@
             margin-bottom: 2px;
         }
 
+        .test-mini-games-button {
+            background: rgba(230, 126, 34, 0.8);
+            border: 2px solid #e67e22;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .test-mini-games-button:hover {
+            background: rgba(230, 126, 34, 1);
+            border-color: #d35400;
+            transform: translateY(-2px);
+        }
+
+        .test-icon {
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+
+        .test-text {
+            font-size: 0.8em;
+            opacity: 0.9;
+            text-align: center;
+        }
+
         .mini-game-text {
             font-size: 0.8em;
             opacity: 0.9;
@@ -855,6 +888,232 @@
             75% { transform: translateX(5px); }
         }
 
+        /* Harbor Hustle Styles */
+        .harbor-hustle-screen {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+        }
+
+        .harbor-title {
+            text-align: center;
+            color: #f39c12;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .harbor-info {
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #3498db;
+        }
+
+        .harbor-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-top: 10px;
+        }
+
+        .harbor-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .harbor-game-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            min-height: 400px;
+        }
+
+        .dock-area, .ship-area {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .dock-area h3, .ship-area h3 {
+            text-align: center;
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+
+        .supplies-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            min-height: 200px;
+        }
+
+        .supply-item {
+            background: #e74c3c;
+            border: 2px solid #c0392b;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
+
+        .supply-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .supply-item:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .supply-item.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg);
+            z-index: 1000;
+        }
+
+        .supply-emoji {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .supply-name {
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .ship-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .ship {
+            background: #8b4513;
+            border: 3px solid #654321;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            min-width: 200px;
+            min-height: 150px;
+        }
+
+        .ship-deck {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ship-mast {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+        }
+
+        .loading-zone {
+            background: rgba(52, 152, 219, 0.3);
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .loading-zone.drag-over {
+            background: rgba(52, 152, 219, 0.6);
+            border-color: #f39c12;
+            transform: scale(1.02);
+        }
+
+        .harbor-instructions {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .harbor-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .start-harbor-btn, .restart-harbor-btn, .exit-harbor-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-family: 'Courier New', monospace;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .start-harbor-btn:hover, .restart-harbor-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .exit-harbor-btn {
+            background: #95a5a6;
+        }
+
+        .exit-harbor-btn:hover {
+            background: #7f8c8d;
+        }
+
+        .harbor-game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: 3px solid #e74c3c;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            z-index: 1000;
+            min-width: 400px;
+        }
+
+        .harbor-final-stats {
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .harbor-final-stats p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
         /* Cattle Chase Styles */
         .cattle-chase-screen {
             text-align: center;
@@ -1095,8 +1354,12 @@
                 </button>
                 <button id="miniGameButton" class="mini-game-button" onclick="showMiniGameCollection()">
                     <span class="mini-game-icon">🎮</span>
-                    <span id="miniGameCount" class="mini-game-count">0/2</span>
+                    <span id="miniGameCount" class="mini-game-count">0/3</span>
                     <span class="mini-game-text">Mini-Games</span>
+                </button>
+                <button id="testMiniGamesButton" class="test-mini-games-button" onclick="showTestMiniGames()">
+                    <span class="test-icon">🧪</span>
+                    <span class="test-text">Test All Games</span>
                 </button>
             </div>
             
@@ -1238,6 +1501,80 @@
             </div>
         </div>
 
+        <!-- Harbor Hustle Screen -->
+        <div id="harborHustleScreen" class="harbor-hustle-screen" style="display: none;">
+            <button class="back-button" onclick="exitHarborHustle()">← Exit Game</button>
+            <h2 class="harbor-title">⚓ Harbor Hustle</h2>
+            <div class="harbor-info">
+                <p>Load supplies onto ships before they sail! Drag items from the dock to the ship.</p>
+                <p class="harbor-subtitle">Cape Town was a vital resupply station for ships traveling to the East Indies!</p>
+            </div>
+            
+            <div class="harbor-stats">
+                <div class="stat">
+                    <span class="stat-label">Time:</span>
+                    <span id="harborTime" class="stat-value">60</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="harborScore" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Loaded:</span>
+                    <span id="harborLoaded" class="stat-value">0/10</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Level:</span>
+                    <span id="harborLevel" class="stat-value">1</span>
+                </div>
+            </div>
+            
+            <div class="harbor-game-area">
+                <div class="dock-area">
+                    <h3>Dock Supplies</h3>
+                    <div id="suppliesContainer" class="supplies-container">
+                        <!-- Supplies will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="ship-area">
+                    <h3>Ship Loading Zone</h3>
+                    <div id="shipContainer" class="ship-container">
+                        <div class="ship" id="mainShip">
+                            <div class="ship-deck">
+                                <div class="ship-mast">⛵</div>
+                                <div class="loading-zone" id="loadingZone">
+                                    <p>Drop supplies here!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="harbor-instructions">
+                <p><strong>Instructions:</strong> Drag supplies from the dock to the ship's loading zone. Load all required supplies before time runs out!</p>
+                <p><strong>Controls:</strong> Click and drag items, or use touch on mobile devices.</p>
+            </div>
+            
+            <div class="harbor-controls">
+                <button id="startHarborBtn" class="start-harbor-btn" onclick="startHarborHustle()">Start Loading!</button>
+                <button id="restartHarborBtn" class="restart-harbor-btn" onclick="restartHarborHustle()" style="display: none;">Try Again</button>
+            </div>
+            
+            <div id="harborGameOver" class="harbor-game-over" style="display: none;">
+                <h3 id="harborGameOverTitle">Game Over!</h3>
+                <p id="harborGameOverText">You didn't load enough supplies in time!</p>
+                <div class="harbor-final-stats">
+                    <p>Final Score: <span id="harborFinalScore">0</span></p>
+                    <p>Supplies Loaded: <span id="harborFinalLoaded">0</span>/<span id="harborFinalNeeded">10</span></p>
+                    <p>Level Reached: <span id="harborFinalLevel">1</span></p>
+                </div>
+                <button class="restart-harbor-btn" onclick="restartHarborHustle()">Try Again</button>
+                <button class="exit-harbor-btn" onclick="exitHarborHustle()">Exit to Collection</button>
+            </div>
+        </div>
+
         <!-- Cattle Chase Screen -->
         <div id="cattleChaseScreen" class="cattle-chase-screen" style="display: none;">
             <button class="back-button" onclick="exitCattleChase()">← Exit Game</button>
@@ -1357,7 +1694,7 @@
             <button class="back-button" onclick="hideMiniGameCollection()">← Back to Main Menu</button>
             <h2 class="mini-game-collection-title">🎮 Mini-Game Collection</h2>
             <div class="mini-game-progress">
-                <span id="miniGameProgress">0 of 2 mini-games unlocked</span>
+                <span id="miniGameProgress">0 of 3 mini-games unlocked</span>
             </div>
             
             <div class="mini-games-container">
@@ -1407,6 +1744,32 @@
                     </div>
                     <div class="mini-game-actions">
                         <button class="play-mini-game-btn" onclick="playCattleChase()" disabled>
+                            <span class="play-icon">▶️</span>
+                            Play Game
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="harborHustleMiniGame" class="mini-game-item locked">
+                    <div class="mini-game-header">
+                        <span class="mini-game-emoji">⚓</span>
+                        <div class="mini-game-info">
+                            <h3 class="mini-game-title">Harbor Hustle</h3>
+                            <p class="mini-game-subtitle">Dutch/British Loading Challenge</p>
+                        </div>
+                        <div class="mini-game-status">
+                            <span class="status-icon">🔒</span>
+                            <span class="status-text">Locked</span>
+                        </div>
+                    </div>
+                    <div class="mini-game-description">
+                        <p class="description-text">Load supplies onto ships before they sail! Drag items from the dock to the ship in this fast-paced sorting game. Cape Town was a vital resupply station for ships traveling to the East Indies.</p>
+                        <div class="unlock-condition">
+                            <strong>Unlock by:</strong> Complete 8 Dutch endings
+                        </div>
+                    </div>
+                    <div class="mini-game-actions">
+                        <button class="play-mini-game-btn" onclick="playHarborHustle()" disabled>
                             <span class="play-icon">▶️</span>
                             Play Game
                         </button>
