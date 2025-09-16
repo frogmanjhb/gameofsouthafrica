@@ -43,18 +43,31 @@ const tradingChallenge = {
     }
 };
 
-// Frontier Wars mini-game data
+// Frontier Wars mini-game data (Space Invaders style)
 const frontierWars = {
     gameState: {
         active: false,
         score: 0,
         lives: 3,
         wave: 1,
-        defenders: 5,
-        enemies: [],
-        projectiles: [],
-        lastSpawn: 0,
-        waveComplete: false
+        playerX: 400, // Player ship position
+        playerWidth: 60,
+        playerHeight: 40,
+        enemies: [], // Array of enemy objects
+        playerBullets: [], // Player's bullets
+        enemyBullets: [], // Enemy bullets
+        lastEnemySpawn: 0,
+        lastEnemyShot: 0,
+        enemyDirection: 1, // 1 for right, -1 for left
+        enemySpeed: 1,
+        enemyDropDistance: 20,
+        waveComplete: false,
+        gameOver: false,
+        keys: {
+            left: false,
+            right: false,
+            space: false
+        }
     }
 };
 
@@ -1463,7 +1476,7 @@ function startTradingChallenge(character) {
 }
 
 function hideAllScreens() {
-    const screens = ['titleScreen', 'gameScreen', 'endingScreen', 'infoScreen', 'collectorScreen', 'tradingChallengeScreen', 'miniGameScreen', 'cattleChaseScreen', 'harborHustleScreen'];
+    const screens = ['titleScreen', 'gameScreen', 'endingScreen', 'infoScreen', 'collectorScreen', 'tradingChallengeScreen', 'miniGameScreen', 'cattleChaseScreen', 'harborHustleScreen', 'frontierWarsScreen'];
     screens.forEach(screenId => {
         document.getElementById(screenId).style.display = 'none';
     });
@@ -1660,7 +1673,7 @@ function hideMiniGameCollection() {
 
 function updateMiniGameDisplay() {
     // Update progress counter
-    const totalMiniGames = 3; // Trading challenge, cattle chase, and harbor hustle
+    const totalMiniGames = 4; // Trading challenge, cattle chase, harbor hustle, and frontier wars
     const unlockedCount = Object.values(unlockedMiniGames).filter(unlocked => unlocked).length;
     
     document.getElementById('miniGameProgress').textContent = `${unlockedCount} of ${totalMiniGames} mini-games unlocked`;
@@ -2879,7 +2892,7 @@ function drawShipGrid() {
     loadingZone.appendChild(gridContainer);
 }
 
-function startTimer() {
+function startHarborTimer() {
     if (!harborHustle.gameState.timerStarted) {
         harborHustle.gameState.timerStarted = true;
         
@@ -3083,7 +3096,7 @@ function setupHarborDragAndDrop() {
             
             if (supply && !supply.loaded) {
                 // Start timer on first drop
-                startTimer();
+                startHarborTimer();
                 
                 // Get the grid container for accurate positioning
                 const gridContainer = loadingZone.querySelector('div[style*="grid-template-columns"]');
@@ -3188,7 +3201,7 @@ function exitHarborHustle() {
     document.getElementById('titleScreen').style.display = 'block';
 }
 
-// Frontier Wars Functions
+// Frontier Wars Functions (Space Invaders style)
 function initializeFrontierWars() {
     // Reset game state
     frontierWars.gameState = {
@@ -3196,11 +3209,25 @@ function initializeFrontierWars() {
         score: 0,
         lives: 3,
         wave: 1,
-        defenders: 5,
+        playerX: 400,
+        playerY: 550, // Player ship Y position (near bottom of canvas)
+        playerWidth: 60,
+        playerHeight: 40,
         enemies: [],
-        projectiles: [],
-        lastSpawn: 0,
-        waveComplete: false
+        playerBullets: [],
+        enemyBullets: [],
+        lastEnemySpawn: 0,
+        lastEnemyShot: 0,
+        enemyDirection: 1,
+        enemySpeed: 1,
+        enemyDropDistance: 20,
+        waveComplete: false,
+        gameOver: false,
+        keys: {
+            left: false,
+            right: false,
+            space: false
+        }
     };
     
     // Update UI
@@ -3209,32 +3236,332 @@ function initializeFrontierWars() {
     // Show instructions
     document.getElementById('frontierInstructions').style.display = 'block';
     document.getElementById('frontierGameOver').style.display = 'none';
+    
+    // Setup controls
+    setupFrontierWarsControls();
+}
+
+function setupFrontierWarsControls() {
+    // Remove existing event listeners
+    document.removeEventListener('keydown', handleFrontierKeyDown);
+    document.removeEventListener('keyup', handleFrontierKeyUp);
+    
+    // Add new event listeners
+    document.addEventListener('keydown', handleFrontierKeyDown);
+    document.addEventListener('keyup', handleFrontierKeyUp);
+}
+
+function handleFrontierKeyDown(event) {
+    if (!frontierWars.gameState.active) return;
+    
+    switch(event.code) {
+        case 'ArrowLeft':
+        case 'KeyA':
+            frontierWars.gameState.keys.left = true;
+            event.preventDefault();
+            break;
+        case 'ArrowRight':
+        case 'KeyD':
+            frontierWars.gameState.keys.right = true;
+            event.preventDefault();
+            break;
+        case 'Space':
+            if (!frontierWars.gameState.keys.space) {
+                frontierWars.gameState.keys.space = true;
+                shootPlayerBullet();
+            }
+            event.preventDefault();
+            break;
+    }
+}
+
+function handleFrontierKeyUp(event) {
+    if (!frontierWars.gameState.active) return;
+    
+    switch(event.code) {
+        case 'ArrowLeft':
+        case 'KeyA':
+            frontierWars.gameState.keys.left = false;
+            break;
+        case 'ArrowRight':
+        case 'KeyD':
+            frontierWars.gameState.keys.right = false;
+            break;
+        case 'Space':
+            frontierWars.gameState.keys.space = false;
+            break;
+    }
 }
 
 function startFrontierWars() {
     frontierWars.gameState.active = true;
+    frontierWars.gameState.gameOver = false;
     document.getElementById('frontierInstructions').style.display = 'none';
     
+    // Create initial wave of enemies
+    createEnemyWave();
+    
     // Start the game loop
-    gameLoop();
+    frontierWarsGameLoop();
+}
+
+function createEnemyWave() {
+    const canvas = document.getElementById('frontierCanvas');
+    const enemyRows = 5;
+    const enemyCols = 10;
+    const enemyWidth = 40;
+    const enemyHeight = 30;
+    const startX = 50;
+    const startY = 50;
+    const spacing = 60;
+    
+    frontierWars.gameState.enemies = [];
+    
+    for (let row = 0; row < enemyRows; row++) {
+        for (let col = 0; col < enemyCols; col++) {
+            frontierWars.gameState.enemies.push({
+                x: startX + col * spacing,
+                y: startY + row * (enemyHeight + 10),
+                width: enemyWidth,
+                height: enemyHeight,
+                speed: frontierWars.gameState.enemySpeed,
+                points: (enemyRows - row) * 10 // Higher rows worth more points
+            });
+        }
+    }
+}
+
+function frontierWarsGameLoop() {
+    if (!frontierWars.gameState.active || frontierWars.gameState.gameOver) return;
+    
+    updateFrontierWarsGame();
+    drawFrontierWarsGame();
+    
+    requestAnimationFrame(frontierWarsGameLoop);
+}
+
+function updateFrontierWarsGame() {
+    const canvas = document.getElementById('frontierCanvas');
+    const gameState = frontierWars.gameState;
+    
+    // Update player position
+    if (gameState.keys.left && gameState.playerX > 0) {
+        gameState.playerX -= 5;
+    }
+    if (gameState.keys.right && gameState.playerX < canvas.width - gameState.playerWidth) {
+        gameState.playerX += 5;
+    }
+    
+    // Update player bullets
+    for (let i = gameState.playerBullets.length - 1; i >= 0; i--) {
+        const bullet = gameState.playerBullets[i];
+        bullet.y -= 7;
+        
+        if (bullet.y < 0) {
+            gameState.playerBullets.splice(i, 1);
+        }
+    }
+    
+    // Update enemy bullets
+    for (let i = gameState.enemyBullets.length - 1; i >= 0; i--) {
+        const bullet = gameState.enemyBullets[i];
+        bullet.y += 4;
+        
+        if (bullet.y > canvas.height) {
+            gameState.enemyBullets.splice(i, 1);
+        }
+    }
+    
+    // Update enemies
+    let shouldDrop = false;
+    for (let enemy of gameState.enemies) {
+        enemy.x += gameState.enemyDirection * gameState.enemySpeed;
+        
+        // Check if any enemy hits the edge
+        if (enemy.x <= 0 || enemy.x + enemy.width >= canvas.width) {
+            shouldDrop = true;
+        }
+    }
+    
+    if (shouldDrop) {
+        gameState.enemyDirection *= -1;
+        for (let enemy of gameState.enemies) {
+            enemy.y += gameState.enemyDropDistance;
+        }
+    }
+    
+    // Enemy shooting
+    if (Date.now() - gameState.lastEnemyShot > 1000) {
+        const shootingEnemies = gameState.enemies.filter(enemy => 
+            Math.random() < 0.02 && enemy.y < canvas.height - 100
+        );
+        
+        if (shootingEnemies.length > 0) {
+            const shooter = shootingEnemies[Math.floor(Math.random() * shootingEnemies.length)];
+            gameState.enemyBullets.push({
+                x: shooter.x + shooter.width / 2,
+                y: shooter.y + shooter.height,
+                width: 4,
+                height: 10
+            });
+            gameState.lastEnemyShot = Date.now();
+        }
+    }
+    
+    // Check collisions
+    checkFrontierWarsCollisions();
+    
+    // Check win/lose conditions
+    if (gameState.enemies.length === 0) {
+        nextWave();
+    }
+    
+    if (gameState.lives <= 0) {
+        gameOver();
+    }
+}
+
+function checkFrontierWarsCollisions() {
+    const gameState = frontierWars.gameState;
+    
+    // Player bullets vs enemies
+    for (let i = gameState.playerBullets.length - 1; i >= 0; i--) {
+        const bullet = gameState.playerBullets[i];
+        
+        for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+            const enemy = gameState.enemies[j];
+            
+            if (bullet.x < enemy.x + enemy.width &&
+                bullet.x + bullet.width > enemy.x &&
+                bullet.y < enemy.y + enemy.height &&
+                bullet.y + bullet.height > enemy.y) {
+                
+                // Hit!
+                gameState.score += enemy.points;
+                gameState.enemies.splice(j, 1);
+                gameState.playerBullets.splice(i, 1);
+                break;
+            }
+        }
+    }
+    
+    // Enemy bullets vs player
+    for (let i = gameState.enemyBullets.length - 1; i >= 0; i--) {
+        const bullet = gameState.enemyBullets[i];
+        
+        if (bullet.x < gameState.playerX + gameState.playerWidth &&
+            bullet.x + bullet.width > gameState.playerX &&
+            bullet.y < gameState.playerY + gameState.playerHeight &&
+            bullet.y + bullet.height > gameState.playerY) {
+            
+            // Hit player!
+            gameState.lives--;
+            gameState.enemyBullets.splice(i, 1);
+            updateFrontierWarsUI();
+        }
+    }
+    
+    // Enemies vs player (collision)
+    for (let enemy of gameState.enemies) {
+        if (enemy.x < gameState.playerX + gameState.playerWidth &&
+            enemy.x + enemy.width > gameState.playerX &&
+            enemy.y < gameState.playerY + gameState.playerHeight &&
+            enemy.y + enemy.height > gameState.playerY) {
+            
+            // Enemy reached player!
+            gameState.lives = 0;
+            gameOver();
+            break;
+        }
+    }
+}
+
+function shootPlayerBullet() {
+    const gameState = frontierWars.gameState;
+    gameState.playerBullets.push({
+        x: gameState.playerX + gameState.playerWidth / 2 - 2,
+        y: gameState.playerY,
+        width: 4,
+        height: 10
+    });
+}
+
+function nextWave() {
+    const gameState = frontierWars.gameState;
+    gameState.wave++;
+    gameState.enemySpeed += 0.5;
+    gameState.enemyDropDistance += 5;
+    
+    // Clear bullets
+    gameState.playerBullets = [];
+    gameState.enemyBullets = [];
+    
+    // Create new wave
+    createEnemyWave();
+    
+    updateFrontierWarsUI();
+}
+
+function gameOver() {
+    frontierWars.gameState.active = false;
+    frontierWars.gameState.gameOver = true;
+    
+    document.getElementById('frontierResultTitle').textContent = 'Game Over!';
+    document.getElementById('frontierResultText').textContent = `Final Score: ${frontierWars.gameState.score}`;
+    document.getElementById('frontierGameOver').style.display = 'block';
+    
+    updateFrontierWarsUI();
+}
+
+function drawFrontierWarsGame() {
+    const canvas = document.getElementById('frontierCanvas');
+    const ctx = canvas.getContext('2d');
+    const gameState = frontierWars.gameState;
+    
+    // Clear canvas
+    ctx.fillStyle = '#000011';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw stars background
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 100; i++) {
+        const x = (i * 7) % canvas.width;
+        const y = (i * 11) % canvas.height;
+        ctx.fillRect(x, y, 1, 1);
+    }
+    
+    // Draw player (Bantu warrior with bow and arrow)
+    ctx.font = '40px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏹', gameState.playerX + gameState.playerWidth/2, gameState.playerY + gameState.playerHeight - 5);
+    
+    // Draw player bullets (arrows)
+    ctx.font = '20px Arial';
+    ctx.fillStyle = '#ffff00';
+    for (let bullet of gameState.playerBullets) {
+        ctx.fillText('→', bullet.x + bullet.width/2, bullet.y + bullet.height);
+    }
+    
+    // Draw enemy bullets
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#ff0000';
+    for (let bullet of gameState.enemyBullets) {
+        ctx.fillText('↓', bullet.x + bullet.width/2, bullet.y + bullet.height);
+    }
+    
+    // Draw enemies (British soldiers)
+    ctx.font = '30px Arial';
+    ctx.fillStyle = '#ffffff';
+    for (let enemy of gameState.enemies) {
+        ctx.fillText('💂', enemy.x + enemy.width/2, enemy.y + enemy.height - 5);
+    }
 }
 
 function updateFrontierWarsUI() {
     document.getElementById('frontierLives').textContent = frontierWars.gameState.lives;
     document.getElementById('frontierScore').textContent = frontierWars.gameState.score;
     document.getElementById('frontierWave').textContent = frontierWars.gameState.wave;
-    document.getElementById('frontierDefenders').textContent = frontierWars.gameState.defenders;
-}
-
-function gameLoop() {
-    if (!frontierWars.gameState.active) return;
-    
-    // Simple game logic - just show completion after 5 seconds
-    setTimeout(() => {
-        if (frontierWars.gameState.active) {
-            completeFrontierWars();
-        }
-    }, 5000);
+    document.getElementById('frontierDefenders').textContent = frontierWars.gameState.enemies.length;
 }
 
 function completeFrontierWars() {
