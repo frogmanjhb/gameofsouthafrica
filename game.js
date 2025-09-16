@@ -8,13 +8,16 @@ let gameHistory = [];
 let collectedEndings = JSON.parse(localStorage.getItem('collectedEndings')) || {
     khoisan: [],
     dutch: [],
-    britishColonist: []
+    britishColonist: [],
+    bantu: []
 };
 
 // Mini-game unlock system
 let unlockedMiniGames = JSON.parse(localStorage.getItem('unlockedMiniGames')) || {
     tradingChallenge: false,
-    cattleChase: false
+    cattleChase: false,
+    harborHustle: false,
+    frontierWars: false
 };
 
 // Trading challenge mini-game data
@@ -37,6 +40,21 @@ const tradingChallenge = {
         perspective: 'khoisan', // 'khoisan' or 'dutch'
         correctMatches: 0,
         totalMatches: 0
+    }
+};
+
+// Frontier Wars mini-game data
+const frontierWars = {
+    gameState: {
+        active: false,
+        score: 0,
+        lives: 3,
+        wave: 1,
+        defenders: 5,
+        enemies: [],
+        projectiles: [],
+        lastSpawn: 0,
+        waveComplete: false
     }
 };
 
@@ -151,6 +169,13 @@ const backgrounds = {
         parliament: 'Images/British/3.png',
         plantation: 'Images/British/4.png',
         frontier: 'Images/British/5.png'
+    },
+    bantu: {
+        intro: 'Images/Khoisan/download.png', // Using existing images for now
+        farm: 'Images/Dutch/2.png',
+        conflict: 'Images/Khoisan/download (1).png',
+        war: 'Images/British/5.png',
+        migration: 'Images/Khoisan/download (4).png'
     }
 };
 
@@ -850,6 +875,234 @@ gameStories["britishColonist"] = {
         }
 };
 
+// Bantu character data
+gameStories.bantu = {
+    scenes: [
+        {
+            background: 'intro',
+            text: "You are from a Bantu-speaking community that has migrated southward over centuries. Your people are farmers and herders, and cattle are central to your wealth and status. As you establish new settlements, you encounter other groups already living in these lands.",
+            choices: [
+                {
+                    text: "Migrate peacefully and trade with existing groups (build alliances)",
+                    nextScene: 1,
+                    consequence: "peaceful_migration",
+                    historyNote: "Bantu groups migrated southward over centuries, often establishing trade relationships with existing communities."
+                },
+                {
+                    text: "Defend land forcefully against rivals (secure territory)",
+                    nextScene: 1,
+                    consequence: "forceful_migration",
+                    historyNote: "Bantu groups migrated southward over centuries, often establishing trade relationships with existing communities."
+                }
+            ]
+        },
+        {
+            background: 'farm',
+            text: "Your community is establishing farms and expanding cattle herds. The surrounding lands are rich and fertile, but other groups also need these resources for their own survival.",
+            choices: [
+                {
+                    text: "Share grazing and crops with neighbors (build alliances)",
+                    nextScene: 2,
+                    consequence: "share_resources",
+                    historyNote: "Agricultural communities often had to balance cooperation with competition for land and resources."
+                },
+                {
+                    text: "Keep land exclusive (cause tension but maintain resources)",
+                    nextScene: 2,
+                    consequence: "exclusive_land",
+                    historyNote: "Agricultural communities often had to balance cooperation with competition for land and resources."
+                }
+            ]
+        },
+        {
+            background: 'conflict',
+            text: "Strange ships have appeared at the coast, and new people with different customs are establishing settlements. They seem interested in trading, but their ways are unfamiliar and their intentions unclear.",
+            choices: [
+                {
+                    text: "Trade cattle and crops with settlers (gain goods, risk dependence)",
+                    nextScene: 3,
+                    consequence: "trade_settlers",
+                    historyNote: "Early contact between Bantu groups and European settlers involved complex trade relationships."
+                },
+                {
+                    text: "Reject trade and guard land (preserve independence, risk conflict)",
+                    nextScene: 3,
+                    consequence: "reject_trade",
+                    historyNote: "Early contact between Bantu groups and European settlers involved complex trade relationships."
+                }
+            ]
+        },
+        {
+            background: 'war',
+            text: "Conflict is spreading across the frontier as settlers push deeper into traditional lands. Your community must decide how to respond to these growing pressures and threats.",
+            choices: [
+                {
+                    text: "Join neighboring groups in resistance wars (united front)",
+                    nextScene: 4,
+                    consequence: "join_resistance",
+                    historyNote: "The frontier wars involved complex alliances and conflicts between different groups."
+                },
+                {
+                    text: "Negotiate peace to reduce losses (diplomatic approach)",
+                    nextScene: 4,
+                    consequence: "negotiate_peace",
+                    historyNote: "The frontier wars involved complex alliances and conflicts between different groups."
+                }
+            ]
+        },
+        {
+            background: 'migration',
+            text: "The pressure from settlers continues to grow, and your traditional way of life is under threat. You must decide how to preserve your culture and community in these changing times.",
+            choices: [
+                {
+                    text: "Preserve language, traditions, and cattle economy despite pressure (cultural resistance)",
+                    nextScene: 'ending',
+                    consequence: "preserve_culture",
+                    historyNote: "Many Bantu communities worked to maintain their cultural identity despite colonial pressures."
+                },
+                {
+                    text: "Adopt some European practices for survival (cultural adaptation)",
+                    nextScene: 'ending',
+                    consequence: "adapt_culture",
+                    historyNote: "Many Bantu communities worked to maintain their cultural identity despite colonial pressures."
+                }
+            ]
+        }
+    ],
+    endings: {
+        // Peaceful Migration + Share Resources + Trade Settlers + Join Resistance + Preserve Culture
+        peaceful_migration_share_resources_trade_settlers_join_resistance_preserve_culture: {
+            title: "The Guardian of Traditions",
+            text: "Through peaceful migration and strategic alliances, you built strong relationships with neighboring groups. Your willingness to trade with settlers brought new goods while maintaining your cultural independence. Joining the resistance wars showed your commitment to protecting your people, and you successfully preserved your language, traditions, and cattle economy despite colonial pressures."
+        },
+        peaceful_migration_share_resources_trade_settlers_join_resistance_adapt_culture: {
+            title: "The Pragmatic Guardian",
+            text: "Your peaceful approach and resource sharing built strong alliances, while trading with settlers brought valuable goods. Joining the resistance wars demonstrated your commitment to your people, but you also recognized the need to adapt some European practices to ensure your community's survival while maintaining core cultural values."
+        },
+        peaceful_migration_share_resources_trade_settlers_negotiate_peace_preserve_culture: {
+            title: "The Diplomatic Farmer",
+            text: "Your peaceful migration and resource sharing created strong relationships, while trade with settlers brought prosperity. Your diplomatic approach to conflict helped reduce losses and maintain stability, allowing you to preserve your cultural traditions and cattle economy in a changing world."
+        },
+        peaceful_migration_share_resources_trade_settlers_negotiate_peace_adapt_culture: {
+            title: "The Bridge Builder",
+            text: "Through peaceful migration and resource sharing, you built strong alliances. Trade with settlers brought prosperity, and your diplomatic approach to conflict helped maintain stability. You successfully balanced cultural preservation with necessary adaptation, creating a bridge between traditional and new ways of life."
+        },
+        peaceful_migration_share_resources_reject_trade_join_resistance_preserve_culture: {
+            title: "The Proud Farmer",
+            text: "Your peaceful migration and resource sharing built strong alliances with neighboring groups. Rejecting trade with settlers maintained your independence, and joining the resistance wars showed your commitment to protecting your people. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        peaceful_migration_share_resources_reject_trade_join_resistance_adapt_culture: {
+            title: "The Independent Warrior",
+            text: "Your peaceful migration and resource sharing created strong relationships, while rejecting trade with settlers maintained your independence. Joining the resistance wars demonstrated your commitment to your people, and you balanced cultural preservation with necessary adaptation to ensure survival."
+        },
+        peaceful_migration_share_resources_reject_trade_negotiate_peace_preserve_culture: {
+            title: "The Resilient Farmer",
+            text: "Through peaceful migration and resource sharing, you built strong alliances. Rejecting trade with settlers maintained your independence, while your diplomatic approach to conflict helped reduce losses. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        peaceful_migration_share_resources_reject_trade_negotiate_peace_adapt_culture: {
+            title: "The Selective Adapter",
+            text: "Your peaceful migration and resource sharing created strong relationships, while rejecting trade with settlers maintained your independence. Your diplomatic approach to conflict helped maintain stability, and you balanced cultural preservation with necessary adaptation to ensure your community's survival."
+        },
+        peaceful_migration_exclusive_land_trade_settlers_join_resistance_preserve_culture: {
+            title: "The Territorial Guardian",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Trade with settlers brought new goods, and joining the resistance wars showed your commitment to protecting your people. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        peaceful_migration_exclusive_land_trade_settlers_join_resistance_adapt_culture: {
+            title: "The Strategic Adapter",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Trade with settlers brought prosperity, and joining the resistance wars demonstrated your commitment. You balanced cultural preservation with necessary adaptation to ensure survival."
+        },
+        peaceful_migration_exclusive_land_trade_settlers_negotiate_peace_preserve_culture: {
+            title: "The Diplomatic Guardian",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Trade with settlers brought prosperity, and your diplomatic approach to conflict helped maintain stability. You successfully preserved your cultural traditions and cattle economy."
+        },
+        peaceful_migration_exclusive_land_trade_settlers_negotiate_peace_adapt_culture: {
+            title: "The Pragmatic Diplomat",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Trade with settlers brought prosperity, and your diplomatic approach to conflict helped maintain stability. You balanced cultural preservation with necessary adaptation to ensure your community's survival."
+        },
+        peaceful_migration_exclusive_land_reject_trade_join_resistance_preserve_culture: {
+            title: "The Pure Guardian",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and joining the resistance wars showed your commitment to protecting your people. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        peaceful_migration_exclusive_land_reject_trade_join_resistance_adapt_culture: {
+            title: "The Independent Adapter",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and joining the resistance wars demonstrated your commitment. You balanced cultural preservation with necessary adaptation to ensure survival."
+        },
+        peaceful_migration_exclusive_land_reject_trade_negotiate_peace_preserve_culture: {
+            title: "The Isolated Guardian",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and your diplomatic approach to conflict helped reduce losses. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        peaceful_migration_exclusive_land_reject_trade_negotiate_peace_adapt_culture: {
+            title: "The Isolated Adapter",
+            text: "Your peaceful migration established your community, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and your diplomatic approach to conflict helped maintain stability. You balanced cultural preservation with necessary adaptation to ensure your community's survival."
+        },
+        // Forceful Migration paths
+        forceful_migration_share_resources_trade_settlers_join_resistance_preserve_culture: {
+            title: "The Warrior of the Frontier",
+            text: "Your forceful migration secured territory for your community, while resource sharing built alliances with neighboring groups. Trade with settlers brought new goods, and joining the resistance wars showed your commitment to protecting your people. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        forceful_migration_share_resources_trade_settlers_join_resistance_adapt_culture: {
+            title: "The Warrior Adapter",
+            text: "Your forceful migration secured territory, while resource sharing built alliances. Trade with settlers brought prosperity, and joining the resistance wars demonstrated your commitment. You balanced cultural preservation with necessary adaptation to ensure survival."
+        },
+        forceful_migration_share_resources_trade_settlers_negotiate_peace_preserve_culture: {
+            title: "The Diplomatic Warrior",
+            text: "Your forceful migration secured territory, while resource sharing built alliances. Trade with settlers brought prosperity, and your diplomatic approach to conflict helped maintain stability. You successfully preserved your cultural traditions and cattle economy."
+        },
+        forceful_migration_share_resources_trade_settlers_negotiate_peace_adapt_culture: {
+            title: "The Strategic Warrior",
+            text: "Your forceful migration secured territory, while resource sharing built alliances. Trade with settlers brought prosperity, and your diplomatic approach to conflict helped maintain stability. You balanced cultural preservation with necessary adaptation to ensure your community's survival."
+        },
+        forceful_migration_share_resources_reject_trade_join_resistance_preserve_culture: {
+            title: "The Defender",
+            text: "Your forceful migration secured territory, while resource sharing built alliances. Rejecting trade with settlers maintained your independence, and joining the resistance wars showed your commitment to protecting your people. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        forceful_migration_share_resources_reject_trade_join_resistance_adapt_culture: {
+            title: "The Independent Warrior",
+            text: "Your forceful migration secured territory, while resource sharing built alliances. Rejecting trade with settlers maintained your independence, and joining the resistance wars demonstrated your commitment. You balanced cultural preservation with necessary adaptation to ensure survival."
+        },
+        forceful_migration_share_resources_reject_trade_negotiate_peace_preserve_culture: {
+            title: "The Resilient Defender",
+            text: "Your forceful migration secured territory, while resource sharing built alliances. Rejecting trade with settlers maintained your independence, and your diplomatic approach to conflict helped reduce losses. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        forceful_migration_share_resources_reject_trade_negotiate_peace_adapt_culture: {
+            title: "The Pragmatic Defender",
+            text: "Your forceful migration secured territory, while resource sharing built alliances. Rejecting trade with settlers maintained your independence, and your diplomatic approach to conflict helped maintain stability. You balanced cultural preservation with necessary adaptation to ensure your community's survival."
+        },
+        forceful_migration_exclusive_land_trade_settlers_join_resistance_preserve_culture: {
+            title: "The Territorial Warrior",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Trade with settlers brought new goods, and joining the resistance wars showed your commitment to protecting your people. You successfully preserved your cultural traditions and cattle economy despite colonial pressures."
+        },
+        forceful_migration_exclusive_land_trade_settlers_join_resistance_adapt_culture: {
+            title: "The Territorial Adapter",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Trade with settlers brought prosperity, and joining the resistance wars demonstrated your commitment. You balanced cultural preservation with necessary adaptation to ensure survival."
+        },
+        forceful_migration_exclusive_land_trade_settlers_negotiate_peace_preserve_culture: {
+            title: "The Diplomatic Territorial",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Trade with settlers brought prosperity, and your diplomatic approach to conflict helped maintain stability. You successfully preserved your cultural traditions and cattle economy."
+        },
+        forceful_migration_exclusive_land_trade_settlers_negotiate_peace_adapt_culture: {
+            title: "The Strategic Territorial",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Trade with settlers brought prosperity, and your diplomatic approach to conflict helped maintain stability. You balanced cultural preservation with necessary adaptation to ensure your community's survival."
+        },
+        forceful_migration_exclusive_land_reject_trade_join_resistance_preserve_culture: {
+            title: "The Last Stand",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and joining the resistance wars showed your commitment to protecting your people. You successfully preserved your cultural traditions and cattle economy despite colonial pressures, making a final stand for your way of life."
+        },
+        forceful_migration_exclusive_land_reject_trade_join_resistance_adapt_culture: {
+            title: "The Resilient Warrior",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and joining the resistance wars demonstrated your commitment. You balanced cultural preservation with necessary adaptation to ensure survival despite the challenges."
+        },
+        forceful_migration_exclusive_land_reject_trade_negotiate_peace_preserve_culture: {
+            title: "The Isolated Guardian",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and your diplomatic approach to conflict helped reduce losses. You successfully preserved your cultural traditions and cattle economy despite colonial pressures, maintaining your isolation."
+        },
+        forceful_migration_exclusive_land_reject_trade_negotiate_peace_adapt_culture: {
+            title: "The Isolated Survivor",
+            text: "Your forceful migration secured territory, while keeping land exclusive maintained your resources. Rejecting trade with settlers maintained your independence, and your diplomatic approach to conflict helped maintain stability. You balanced cultural preservation with necessary adaptation to ensure your community's survival despite isolation."
+        }
+    }
+};
+
 // Game functions
 function startGame(character) {
     currentCharacter = character;
@@ -1058,16 +1311,23 @@ function saveCollectedEnding(character, endingKey, ending) {
         if (character === 'dutch') {
             checkDutchEndingsForHarborHustle();
         }
+        
+        // Check if all Bantu endings are collected for Frontier Wars unlock
+        if (character === 'bantu') {
+            checkAllBantuEndingsCollected();
+        }
     }
 }
 
 function updateCollectorCounter() {
     const totalCollected = collectedEndings.khoisan.length + 
                           collectedEndings.dutch.length + 
-                          collectedEndings.britishColonist.length;
+                          collectedEndings.britishColonist.length +
+                          collectedEndings.bantu.length;
     const totalPossible = Object.keys(gameStories.khoisan.endings).length + 
                          Object.keys(gameStories.dutch.endings).length + 
-                         Object.keys(gameStories.britishColonist.endings).length;
+                         Object.keys(gameStories.britishColonist.endings).length +
+                         Object.keys(gameStories.bantu.endings).length;
     
     document.getElementById('collectorCount').textContent = `${totalCollected}/${totalPossible}`;
     
@@ -1085,10 +1345,12 @@ function updateCharacterCounts() {
     const khoisanTotal = Object.keys(gameStories.khoisan.endings).length;
     const dutchTotal = Object.keys(gameStories.dutch.endings).length;
     const britishTotal = Object.keys(gameStories.britishColonist.endings).length;
+    const bantuTotal = Object.keys(gameStories.bantu.endings).length;
     
     document.getElementById('khoisanCount').textContent = `(${collectedEndings.khoisan.length}/${khoisanTotal})`;
     document.getElementById('dutchCount').textContent = `(${collectedEndings.dutch.length}/${dutchTotal})`;
     document.getElementById('britishCount').textContent = `(${collectedEndings.britishColonist.length}/${britishTotal})`;
+    document.getElementById('bantuCount').textContent = `(${collectedEndings.bantu.length}/${bantuTotal})`;
 }
 
 function showCollector() {
@@ -1125,6 +1387,7 @@ function populateAllEndings() {
     populateCharacterEndings('khoisan');
     populateCharacterEndings('dutch');
     populateCharacterEndings('britishColonist');
+    populateCharacterEndings('bantu');
 }
 
 function populateCharacterEndings(character) {
@@ -2479,6 +2742,14 @@ function playHarborHustle() {
     initializeHarborHustle();
 }
 
+function playFrontierWars() {
+    if (unlockedMiniGames.frontierWars) {
+        hideAllScreens();
+        document.getElementById('frontierWarsScreen').style.display = 'block';
+        initializeFrontierWars();
+    }
+}
+
 function initializeHarborHustle() {
     // Reset game state
     harborHustle.gameState = {
@@ -2917,6 +3188,75 @@ function exitHarborHustle() {
     document.getElementById('titleScreen').style.display = 'block';
 }
 
+// Frontier Wars Functions
+function initializeFrontierWars() {
+    // Reset game state
+    frontierWars.gameState = {
+        active: false,
+        score: 0,
+        lives: 3,
+        wave: 1,
+        defenders: 5,
+        enemies: [],
+        projectiles: [],
+        lastSpawn: 0,
+        waveComplete: false
+    };
+    
+    // Update UI
+    updateFrontierWarsUI();
+    
+    // Show instructions
+    document.getElementById('frontierInstructions').style.display = 'block';
+    document.getElementById('frontierGameOver').style.display = 'none';
+}
+
+function startFrontierWars() {
+    frontierWars.gameState.active = true;
+    document.getElementById('frontierInstructions').style.display = 'none';
+    
+    // Start the game loop
+    gameLoop();
+}
+
+function updateFrontierWarsUI() {
+    document.getElementById('frontierLives').textContent = frontierWars.gameState.lives;
+    document.getElementById('frontierScore').textContent = frontierWars.gameState.score;
+    document.getElementById('frontierWave').textContent = frontierWars.gameState.wave;
+    document.getElementById('frontierDefenders').textContent = frontierWars.gameState.defenders;
+}
+
+function gameLoop() {
+    if (!frontierWars.gameState.active) return;
+    
+    // Simple game logic - just show completion after 5 seconds
+    setTimeout(() => {
+        if (frontierWars.gameState.active) {
+            completeFrontierWars();
+        }
+    }, 5000);
+}
+
+function completeFrontierWars() {
+    frontierWars.gameState.active = false;
+    frontierWars.gameState.score += 1000;
+    
+    document.getElementById('frontierResultTitle').textContent = 'Defense Complete!';
+    document.getElementById('frontierResultText').textContent = `You successfully defended your community! Final Score: ${frontierWars.gameState.score}`;
+    document.getElementById('frontierGameOver').style.display = 'block';
+    
+    updateFrontierWarsUI();
+}
+
+function restartFrontierWars() {
+    initializeFrontierWars();
+}
+
+function exitFrontierWars() {
+    hideAllScreens();
+    document.getElementById('titleScreen').style.display = 'block';
+}
+
 // Test Mini-Games Functions
 function showTestMiniGames() {
     const overlay = document.createElement('div');
@@ -3021,6 +3361,22 @@ function showTestMiniGames() {
         line-height: 1.4;
     `;
     
+    // Frontier Wars Button
+    const frontierButton = document.createElement('button');
+    frontierButton.innerHTML = '⚔️ Frontier Wars<br><small>Defense game</small>';
+    frontierButton.style.cssText = `
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+        line-height: 1.4;
+    `;
+    
     // Close Button
     const closeButton = document.createElement('button');
     closeButton.textContent = 'Close';
@@ -3064,6 +3420,15 @@ function showTestMiniGames() {
         harborButton.style.transform = 'translateY(0)';
     };
     
+    frontierButton.onmouseover = () => {
+        frontierButton.style.background = '#c0392b';
+        frontierButton.style.transform = 'translateY(-2px)';
+    };
+    frontierButton.onmouseout = () => {
+        frontierButton.style.background = '#e74c3c';
+        frontierButton.style.transform = 'translateY(0)';
+    };
+    
     closeButton.onmouseover = () => {
         closeButton.style.background = '#7f8c8d';
         closeButton.style.transform = 'translateY(-2px)';
@@ -3089,6 +3454,11 @@ function showTestMiniGames() {
         testHarborHustle();
     };
     
+    frontierButton.onclick = () => {
+        document.body.removeChild(overlay);
+        testFrontierWars();
+    };
+    
     closeButton.onclick = () => {
         document.body.removeChild(overlay);
     };
@@ -3096,6 +3466,7 @@ function showTestMiniGames() {
     buttonContainer.appendChild(tradingButton);
     buttonContainer.appendChild(cattleButton);
     buttonContainer.appendChild(harborButton);
+    buttonContainer.appendChild(frontierButton);
     
     modal.appendChild(title);
     modal.appendChild(text);
@@ -3141,6 +3512,16 @@ function testHarborHustle() {
     initializeHarborHustle();
 }
 
+function testFrontierWars() {
+    // Temporarily unlock frontier wars for testing
+    unlockedMiniGames.frontierWars = true;
+    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
+    
+    hideAllScreens();
+    document.getElementById('frontierWarsScreen').style.display = 'block';
+    initializeFrontierWars();
+}
+
 function checkAllKhoisanEndingsCollected() {
     const totalKhoisanEndings = Object.keys(gameStories.khoisan.endings).length;
     const collectedKhoisanEndings = collectedEndings.khoisan.length;
@@ -3150,6 +3531,20 @@ function checkAllKhoisanEndingsCollected() {
         if (wasNewlyUnlocked) {
             setTimeout(() => {
                 showCattleChaseUnlockedMessage();
+            }, 2000);
+        }
+    }
+}
+
+function checkAllBantuEndingsCollected() {
+    const totalBantuEndings = Object.keys(gameStories.bantu.endings).length;
+    const collectedBantuEndings = collectedEndings.bantu.length;
+    
+    if (collectedBantuEndings >= totalBantuEndings) {
+        const wasNewlyUnlocked = unlockMiniGame('frontierWars');
+        if (wasNewlyUnlocked) {
+            setTimeout(() => {
+                showFrontierWarsUnlockedMessage();
             }, 2000);
         }
     }
@@ -3384,6 +3779,151 @@ function showCattleChaseUnlockedMessage() {
     
     laterButton.onclick = () => {
         document.body.removeChild(overlay);
+    };
+    
+    buttonContainer.appendChild(playNowButton);
+    buttonContainer.appendChild(collectionButton);
+    buttonContainer.appendChild(laterButton);
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(buttonContainer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function showFrontierWarsUnlockedMessage() {
+    // Create modal overlay for frontier wars unlock announcement
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: rgba(44, 62, 80, 0.95);
+        border: 3px solid #e74c3c;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = "⚔️ Frontier Wars Unlocked!";
+    title.style.cssText = `
+        color: #e74c3c;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const text = document.createElement('p');
+    text.textContent = "Incredible! You've collected all Bantu endings and unlocked the Frontier Wars mini-game! Experience the challenges of defending your community against colonial forces in this strategic defense game.";
+    text.style.cssText = `
+        color: #ecf0f1;
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    `;
+    
+    const playNowButton = document.createElement('button');
+    playNowButton.textContent = "Play Now!";
+    playNowButton.style.cssText = `
+        background: rgba(231, 76, 60, 0.8);
+        border: 2px solid #e74c3c;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const collectionButton = document.createElement('button');
+    collectionButton.textContent = "View Collection";
+    collectionButton.style.cssText = `
+        background: rgba(142, 68, 173, 0.8);
+        border: 2px solid #8e44ad;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const laterButton = document.createElement('button');
+    laterButton.textContent = "Maybe Later";
+    laterButton.style.cssText = `
+        background: rgba(52, 73, 94, 0.8);
+        border: 2px solid #34495e;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    // Button event handlers
+    playNowButton.onclick = () => {
+        overlay.remove();
+        playFrontierWars();
+    };
+    
+    collectionButton.onclick = () => {
+        overlay.remove();
+        showMiniGameCollection();
+    };
+    
+    laterButton.onclick = () => {
+        overlay.remove();
+    };
+    
+    // Hover effects
+    playNowButton.onmouseover = () => {
+        playNowButton.style.background = 'rgba(231, 76, 60, 1)';
+    };
+    playNowButton.onmouseout = () => {
+        playNowButton.style.background = 'rgba(231, 76, 60, 0.8)';
+    };
+    
+    collectionButton.onmouseover = () => {
+        collectionButton.style.background = 'rgba(142, 68, 173, 1)';
+    };
+    collectionButton.onmouseout = () => {
+        collectionButton.style.background = 'rgba(142, 68, 173, 0.8)';
+    };
+    
+    laterButton.onmouseover = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 1)';
+    };
+    laterButton.onmouseout = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 0.8)';
     };
     
     buttonContainer.appendChild(playNowButton);

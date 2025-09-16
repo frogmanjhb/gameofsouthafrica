@@ -1241,6 +1241,127 @@
             margin-bottom: 20px;
         }
 
+        /* Frontier Wars Styles */
+        .frontier-wars-screen {
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .frontier-wars-title {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .frontier-wars-info {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .frontier-wars-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-top: 10px;
+        }
+
+        .frontier-wars-stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(52, 73, 94, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .frontier-game-area {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #c0392b;
+        }
+
+        #frontierCanvas {
+            border: 3px solid #e74c3c;
+            border-radius: 10px;
+            background: #2ecc71;
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .frontier-instructions {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .frontier-instructions h3 {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .frontier-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .start-frontier-btn {
+            background: rgba(231, 76, 60, 0.8);
+            border: 2px solid #e74c3c;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto 0;
+            width: fit-content;
+        }
+
+        .start-frontier-btn:hover {
+            background: rgba(231, 76, 60, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .frontier-game-over {
+            background: rgba(52, 73, 94, 0.9);
+            border: 3px solid #e74c3c;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .frontier-game-over h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .frontier-game-over p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
         @media (max-width: 600px) {
             .character-selection {
                 flex-direction: column;
@@ -1355,12 +1476,12 @@
                 <button id="infoButton" class="info-button" onclick="showInfo()">ℹ️ Game Info</button>
                 <button id="collectorButton" class="collector-button" onclick="showCollector()">
                     <span class="collector-icon">🏆</span>
-                    <span id="collectorCount" class="collector-count">0/96</span>
+                    <span id="collectorCount" class="collector-count">0/128</span>
                     <span class="collector-text">Endings Collected</span>
                 </button>
                 <button id="miniGameButton" class="mini-game-button" onclick="showMiniGameCollection()">
                     <span class="mini-game-icon">🎮</span>
-                    <span id="miniGameCount" class="mini-game-count">0/3</span>
+                    <span id="miniGameCount" class="mini-game-count">0/4</span>
                     <span class="mini-game-text">Mini-Games</span>
                 </button>
                 <button id="testMiniGamesButton" class="test-mini-games-button" onclick="showTestMiniGames()">
@@ -1387,6 +1508,12 @@
                     <div class="character-name">British Colonist</div>
                     <div class="character-description">A British official helping to expand British control over the Cape</div>
                 </div>
+                
+                <div class="character-card" onclick="startGame('bantu')">
+                    <div class="character-icon">🌾</div>
+                    <div class="character-name">Bantu Farmer</div>
+                    <div class="character-description">A farmer and herder from a Bantu-speaking community migrating southward</div>
+                </div>
             </div>
         </div>
 
@@ -1410,7 +1537,7 @@
             <button class="back-button" onclick="hideInfo()">← Back to Main Menu</button>
             <h2 class="info-title">About the Game</h2>
             <div class="info-content">
-                <p class="info-intro">The game allows players to experience South African colonial history (1652-1800s) through the eyes of three different characters:</p>
+                <p class="info-intro">The game allows players to experience South African colonial history (1400s-1800s) through the eyes of four different characters:</p>
                 
                 <div class="character-info">
                     <h3>1. Khoi-San Character 🏹</h3>
@@ -1457,6 +1584,21 @@
                     <p><strong>Historical Focus:</strong> Imperial administration, legal changes, and colonial conflicts</p>
                 </div>
 
+                <div class="character-info">
+                    <h3>4. Bantu Character 🌾</h3>
+                    <p><strong>Role:</strong> A farmer and herder from a Bantu-speaking community</p>
+                    <p><strong>Timeline:</strong> From 1400s migration through the 1800s</p>
+                    <p><strong>Key Challenges:</strong></p>
+                    <ul>
+                        <li>Migration southward and establishing new settlements</li>
+                        <li>Competition for land and resources with other groups</li>
+                        <li>First contact with European settlers and trade decisions</li>
+                        <li>Frontier conflicts and resistance wars</li>
+                        <li>Cultural preservation vs. adaptation to colonial pressures</li>
+                    </ul>
+                    <p><strong>Historical Focus:</strong> Migration, agricultural development, and cultural survival</p>
+                </div>
+
                 <div class="game-mechanics">
                     <h3>Game Mechanics 🎯</h3>
                     
@@ -1464,6 +1606,7 @@
                     <ul>
                         <li>5 scenes per character with 2 choices each</li>
                         <li>32 possible endings per character (based on choice combinations)</li>
+                        <li>128 total possible endings across all four characters</li>
                         <li>Historical context boxes appear after major decisions</li>
                         <li>Visual backgrounds change with each scene using period-appropriate images</li>
                     </ul>
@@ -1478,7 +1621,7 @@
 
                     <h4>Collector System 🏆</h4>
                     <ul>
-                        <li><strong>Ending Collection:</strong> Track all 96 possible endings across all three characters</li>
+                        <li><strong>Ending Collection:</strong> Track all 128 possible endings across all four characters</li>
                         <li><strong>Progress Counter:</strong> See how many endings you've discovered on the main menu</li>
                         <li><strong>Unlock System:</strong> Collected endings are fully visible, while locked ones appear blurred with mystery titles</li>
                         <li><strong>Character Progress:</strong> View individual progress for each historical perspective (32 endings each)</li>
@@ -1710,7 +1853,7 @@
             <button class="back-button" onclick="hideMiniGameCollection()">← Back to Main Menu</button>
             <h2 class="mini-game-collection-title">🎮 Mini-Game Collection</h2>
             <div class="mini-game-progress">
-                <span id="miniGameProgress">0 of 3 mini-games unlocked</span>
+                <span id="miniGameProgress">0 of 4 mini-games unlocked</span>
             </div>
             
             <div class="mini-games-container">
@@ -1791,6 +1934,87 @@
                         </button>
                     </div>
                 </div>
+                
+                <div id="frontierWarsMiniGame" class="mini-game-item locked">
+                    <div class="mini-game-header">
+                        <span class="mini-game-emoji">⚔️</span>
+                        <div class="mini-game-info">
+                            <h3 class="mini-game-title">Frontier Wars</h3>
+                            <p class="mini-game-subtitle">Bantu Resistance Challenge</p>
+                        </div>
+                        <div class="mini-game-status">
+                            <span class="status-icon">🔒</span>
+                            <span class="status-text">Locked</span>
+                        </div>
+                    </div>
+                    <div class="mini-game-description">
+                        <p class="description-text">Defend your community against colonial forces in this strategic defense game! Experience the challenges of frontier warfare and resistance that Bantu communities faced during colonial expansion.</p>
+                        <div class="unlock-condition">
+                            <strong>Unlock by:</strong> Collect all Bantu endings (32/32)
+                        </div>
+                    </div>
+                    <div class="mini-game-actions">
+                        <button class="play-mini-game-btn" onclick="playFrontierWars()" disabled>
+                            <span class="play-icon">▶️</span>
+                            Play Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frontier Wars Screen -->
+        <div id="frontierWarsScreen" class="frontier-wars-screen" style="display: none;">
+            <button class="back-button" onclick="exitFrontierWars()">← Exit Game</button>
+            <h2 class="frontier-wars-title">⚔️ Frontier Wars</h2>
+            <div class="frontier-wars-info">
+                <p>Defend your community against colonial forces! Use strategy and tactics to protect your people and land.</p>
+                <p class="frontier-wars-subtitle">Experience the challenges of frontier warfare and resistance!</p>
+            </div>
+            
+            <div class="frontier-wars-stats">
+                <div class="stat">
+                    <span class="stat-label">Lives:</span>
+                    <span id="frontierLives" class="stat-value">3</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="frontierScore" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Wave:</span>
+                    <span id="frontierWave" class="stat-value">1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Defenders:</span>
+                    <span id="frontierDefenders" class="stat-value">5</span>
+                </div>
+            </div>
+            
+            <div id="frontierGameArea" class="frontier-game-area">
+                <canvas id="frontierCanvas" width="800" height="600"></canvas>
+                
+                <div id="frontierInstructions" class="frontier-instructions">
+                    <h3>🎮 How to Play</h3>
+                    <p><strong>Goal:</strong> Defend your community for 5 waves of attacks</p>
+                    <p><strong>Controls:</strong> Click to place defenders, drag to move them</p>
+                    <p><strong>Strategy:</strong> Use different defender types to counter different enemy attacks</p>
+                    <p><strong>Resources:</strong> Manage your limited defenders wisely!</p>
+                    <button class="start-frontier-btn" onclick="startFrontierWars()">
+                        <span class="play-icon">▶️</span>
+                        Start Defense
+                    </button>
+                </div>
+                
+                <div id="frontierGameOver" class="frontier-game-over" style="display: none;">
+                    <h3 id="frontierResultTitle">Defense Complete!</h3>
+                    <p id="frontierResultText">You successfully defended your community!</p>
+                    <div class="historical-context">
+                        <h4>📚 Historical Context</h4>
+                        <p id="frontierHistoricalText">The frontier wars were complex conflicts involving multiple groups fighting for land, resources, and survival. Bantu communities used various strategies to resist colonial expansion and protect their way of life.</p>
+                    </div>
+                    <button class="restart-button" onclick="restartFrontierWars()">Play Again</button>
+                </div>
             </div>
         </div>
 
@@ -1799,7 +2023,7 @@
             <button class="back-button" onclick="hideCollector()">← Back to Main Menu</button>
             <h2 class="collector-title">🏆 Endings Collection</h2>
             <div class="collector-progress">
-                <span id="collectorProgress">0 of 96 endings discovered</span>
+                <span id="collectorProgress">0 of 128 endings discovered</span>
             </div>
             
             <div class="character-tabs">
@@ -1812,6 +2036,9 @@
                 <button class="tab-button" onclick="showCharacterEndings('britishColonist')">
                     🏴 British <span id="britishCount">(0/32)</span>
                 </button>
+                <button class="tab-button" onclick="showCharacterEndings('bantu')">
+                    🌾 Bantu <span id="bantuCount">(0/32)</span>
+                </button>
             </div>
 
             <div class="endings-container">
@@ -1822,6 +2049,9 @@
                     <!-- Endings will be populated by JavaScript -->
                 </div>
                 <div id="britishColonistEndings" class="character-endings">
+                    <!-- Endings will be populated by JavaScript -->
+                </div>
+                <div id="bantuEndings" class="character-endings">
                     <!-- Endings will be populated by JavaScript -->
                 </div>
             </div>
