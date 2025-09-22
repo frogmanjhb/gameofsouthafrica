@@ -582,6 +582,52 @@
             transform: none;
         }
 
+        /* Progress Bar Styles */
+        .progress-bar-container {
+            margin: 10px 0;
+            padding: 8px 0;
+        }
+
+        .progress-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #ecf0f1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #34495e;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #2c3e50;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+            min-width: 0%;
+        }
+
+        .mini-game-item.unlocked .progress-bar-container {
+            display: none;
+        }
+
+        /* Mobile responsiveness for progress bars */
+        @media (max-width: 768px) {
+            .progress-bar-label {
+                font-size: 0.8em;
+            }
+            
+            .progress-bar {
+                height: 10px;
+            }
+        }
+
         .play-icon {
             font-size: 1em;
         }
@@ -1880,6 +1926,15 @@
                             <strong>Unlock by:</strong> Complete 8 trade-related endings (any character)
                         </div>
                     </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label">
+                            <span>Progress</span>
+                            <span id="tradingProgressText">0/8</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="tradingProgressFill" class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
                     <div class="mini-game-actions">
                         <button class="play-mini-game-btn" onclick="playTradingChallenge()" disabled>
                             <span class="play-icon">▶️</span>
@@ -1904,6 +1959,15 @@
                         <p class="description-text">Guide your precious cattle into the kraal while avoiding wild animals and settlers! A Frogger-style chase game that shows how central cattle were to Khoi-San wealth and survival.</p>
                         <div class="unlock-condition">
                             <strong>Unlock by:</strong> Complete 8 Farmer/Survival themed endings (any character)
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label">
+                            <span>Progress</span>
+                            <span id="cattleProgressText">0/8</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="cattleProgressFill" class="progress-bar-fill" style="width: 0%"></div>
                         </div>
                     </div>
                     <div class="mini-game-actions">
@@ -1932,6 +1996,15 @@
                             <strong>Unlock by:</strong> Complete 5 Diplomatic/Cooperation themed endings (any character)
                         </div>
                     </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label">
+                            <span>Progress</span>
+                            <span id="harborProgressText">0/5</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="harborProgressFill" class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
                     <div class="mini-game-actions">
                         <button class="play-mini-game-btn" onclick="playHarborHustle()" disabled>
                             <span class="play-icon">▶️</span>
@@ -1956,6 +2029,15 @@
                         <p class="description-text">Defend your community against colonial forces in this Space Invaders-style battle! Fight off waves of British soldiers using traditional Bantu weapons. Experience the intensity of frontier warfare and resistance that Bantu communities faced during colonial expansion.</p>
                         <div class="unlock-condition">
                             <strong>Unlock by:</strong> Complete 8 Warrior/Resistance themed endings (any character)
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label">
+                            <span>Progress</span>
+                            <span id="frontierProgressText">0/8</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="frontierProgressFill" class="progress-bar-fill" style="width: 0%"></div>
                         </div>
                     </div>
                     <div class="mini-game-actions">

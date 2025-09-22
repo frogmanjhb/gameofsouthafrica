@@ -1707,6 +1707,15 @@ function updateMiniGameDisplay() {
         tradingPlayButton.disabled = true;
         tradingStatusIcon.textContent = '🔒';
         tradingStatusText.textContent = 'Complete 8 trade endings';
+        
+        // Update progress bar
+        const tradingProgressText = document.getElementById('tradingProgressText');
+        const tradingProgressFill = document.getElementById('tradingProgressFill');
+        const tradeCount = countTradeEndings();
+        const progress = Math.round((tradeCount / 8) * 100);
+        
+        tradingProgressText.textContent = `${tradeCount}/8`;
+        tradingProgressFill.style.width = `${progress}%`;
     }
     
     // Update cattle chase display
@@ -1727,6 +1736,15 @@ function updateMiniGameDisplay() {
         cattlePlayButton.disabled = true;
         cattleStatusIcon.textContent = '🔒';
         cattleStatusText.textContent = 'Complete 8 Farmer/Survival endings';
+        
+        // Update progress bar
+        const cattleProgressText = document.getElementById('cattleProgressText');
+        const cattleProgressFill = document.getElementById('cattleProgressFill');
+        const farmerSurvivalCount = countFarmerSurvivalEndings();
+        const progress = Math.round((farmerSurvivalCount / 8) * 100);
+        
+        cattleProgressText.textContent = `${farmerSurvivalCount}/8`;
+        cattleProgressFill.style.width = `${progress}%`;
     }
     
     // Update harbor hustle display
@@ -1747,6 +1765,15 @@ function updateMiniGameDisplay() {
         harborPlayButton.disabled = true;
         harborStatusIcon.textContent = '🔒';
         harborStatusText.textContent = 'Complete 5 Diplomatic/Cooperation endings';
+        
+        // Update progress bar
+        const harborProgressText = document.getElementById('harborProgressText');
+        const harborProgressFill = document.getElementById('harborProgressFill');
+        const diplomaticCount = countDiplomaticEndings();
+        const progress = Math.round((diplomaticCount / 5) * 100);
+        
+        harborProgressText.textContent = `${diplomaticCount}/5`;
+        harborProgressFill.style.width = `${progress}%`;
     }
     
     // Update frontier wars display
@@ -1767,6 +1794,15 @@ function updateMiniGameDisplay() {
         frontierPlayButton.disabled = true;
         frontierStatusIcon.textContent = '🔒';
         frontierStatusText.textContent = 'Complete 8 Warrior/Resistance endings';
+        
+        // Update progress bar
+        const frontierProgressText = document.getElementById('frontierProgressText');
+        const frontierProgressFill = document.getElementById('frontierProgressFill');
+        const warriorResistanceCount = countWarriorResistanceEndings();
+        const progress = Math.round((warriorResistanceCount / 8) * 100);
+        
+        frontierProgressText.textContent = `${warriorResistanceCount}/8`;
+        frontierProgressFill.style.width = `${progress}%`;
     }
 }
 
