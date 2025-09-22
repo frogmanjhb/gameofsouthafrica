@@ -1315,17 +1315,27 @@ function saveCollectedEnding(character, endingKey, ending) {
         localStorage.setItem('collectedEndings', JSON.stringify(collectedEndings));
         updateCollectorCounter();
         
-        // Check if all Khoi-San endings are collected for Cattle Chase unlock
+        // Check for Trading Challenge unlock (trade-related endings)
+        checkForTradingChallenge(character, endingKey);
+        
+        // Check for Cattle Chase unlock (farmer/survival themed endings)
+        checkForCattleChase(character, endingKey);
+        
+        // Check for Harbor Hustle unlock (diplomatic/cooperation themed endings)
+        checkForHarborHustle(character, endingKey);
+        
+        // Check for Frontier Wars unlock (warrior/resistance themed endings)
+        checkForFrontierWars(character, endingKey);
+        
+        // Legacy checks (keeping for backward compatibility)
         if (character === 'khoisan') {
             checkAllKhoisanEndingsCollected();
         }
         
-        // Check if 8 Dutch endings are collected for Harbor Hustle unlock
         if (character === 'dutch') {
             checkDutchEndingsForHarborHustle();
         }
         
-        // Check if all Bantu endings are collected for Frontier Wars unlock
         if (character === 'bantu') {
             checkAllBantuEndingsCollected();
         }
@@ -1696,7 +1706,7 @@ function updateMiniGameDisplay() {
         tradingItem.classList.add('locked');
         tradingPlayButton.disabled = true;
         tradingStatusIcon.textContent = '🔒';
-        tradingStatusText.textContent = 'Locked';
+        tradingStatusText.textContent = 'Complete 8 trade endings';
     }
     
     // Update cattle chase display
@@ -1716,7 +1726,7 @@ function updateMiniGameDisplay() {
         cattleItem.classList.add('locked');
         cattlePlayButton.disabled = true;
         cattleStatusIcon.textContent = '🔒';
-        cattleStatusText.textContent = 'Locked';
+        cattleStatusText.textContent = 'Complete 8 Farmer/Survival endings';
     }
     
     // Update harbor hustle display
@@ -1736,7 +1746,27 @@ function updateMiniGameDisplay() {
         harborItem.classList.add('locked');
         harborPlayButton.disabled = true;
         harborStatusIcon.textContent = '🔒';
-        harborStatusText.textContent = 'Complete 8 Dutch endings';
+        harborStatusText.textContent = 'Complete 5 Diplomatic/Cooperation endings';
+    }
+    
+    // Update frontier wars display
+    const frontierItem = document.getElementById('frontierWarsMiniGame');
+    const frontierPlayButton = frontierItem.querySelector('.play-mini-game-btn');
+    const frontierStatusIcon = frontierItem.querySelector('.status-icon');
+    const frontierStatusText = frontierItem.querySelector('.status-text');
+    
+    if (unlockedMiniGames.frontierWars) {
+        frontierItem.classList.remove('locked');
+        frontierItem.classList.add('unlocked');
+        frontierPlayButton.disabled = false;
+        frontierStatusIcon.textContent = '✅';
+        frontierStatusText.textContent = 'Unlocked';
+    } else {
+        frontierItem.classList.remove('unlocked');
+        frontierItem.classList.add('locked');
+        frontierPlayButton.disabled = true;
+        frontierStatusIcon.textContent = '🔒';
+        frontierStatusText.textContent = 'Complete 8 Warrior/Resistance endings';
     }
 }
 
@@ -1949,6 +1979,172 @@ function countTradeEndings() {
     return count;
 }
 
+// Theme-based ending checking functions
+function checkFarmerSurvivalTheme(character, endingKey) {
+    const ending = gameStories[character].endings[endingKey];
+    if (!ending) return false;
+    
+    const title = ending.title.toLowerCase();
+    const text = ending.text.toLowerCase();
+    
+    // Check for farmer/survival themes
+    const farmerSurvivalKeywords = [
+        'farmer', 'survival', 'adaptation', 'pragmatic', 'independent', 
+        'resilient', 'selective', 'guardian', 'diplomatic', 'bridge builder'
+    ];
+    
+    return farmerSurvivalKeywords.some(keyword => 
+        title.includes(keyword) || text.includes(keyword)
+    );
+}
+
+function checkDiplomaticTheme(character, endingKey) {
+    const ending = gameStories[character].endings[endingKey];
+    if (!ending) return false;
+    
+    const title = ending.title.toLowerCase();
+    const text = ending.text.toLowerCase();
+    
+    // Check for diplomatic/cooperation themes
+    const diplomaticKeywords = [
+        'diplomatic', 'cooperation', 'bridge builder', 'pragmatic', 
+        'reluctant adaptation', 'compromise', 'negotiate', 'peaceful'
+    ];
+    
+    return diplomaticKeywords.some(keyword => 
+        title.includes(keyword) || text.includes(keyword)
+    );
+}
+
+function checkWarriorResistanceTheme(character, endingKey) {
+    const ending = gameStories[character].endings[endingKey];
+    if (!ending) return false;
+    
+    const title = ending.title.toLowerCase();
+    const text = ending.text.toLowerCase();
+    
+    // Check for warrior/resistance themes
+    const warriorResistanceKeywords = [
+        'warrior', 'resistance', 'independent', 'pure', 'ultimate', 
+        'struggle', 'fight', 'defend', 'proud', 'selective resistance'
+    ];
+    
+    return warriorResistanceKeywords.some(keyword => 
+        title.includes(keyword) || text.includes(keyword)
+    );
+}
+
+function countFarmerSurvivalEndings() {
+    let count = 0;
+    
+    // Count across all characters
+    Object.keys(collectedEndings).forEach(character => {
+        collectedEndings[character].forEach(endingKey => {
+            if (checkFarmerSurvivalTheme(character, endingKey)) {
+                count++;
+            }
+        });
+    });
+    
+    return count;
+}
+
+function countDiplomaticEndings() {
+    let count = 0;
+    
+    // Count across all characters
+    Object.keys(collectedEndings).forEach(character => {
+        collectedEndings[character].forEach(endingKey => {
+            if (checkDiplomaticTheme(character, endingKey)) {
+                count++;
+            }
+        });
+    });
+    
+    return count;
+}
+
+function countWarriorResistanceEndings() {
+    let count = 0;
+    
+    // Count across all characters
+    Object.keys(collectedEndings).forEach(character => {
+        collectedEndings[character].forEach(endingKey => {
+            if (checkWarriorResistanceTheme(character, endingKey)) {
+                count++;
+            }
+        });
+    });
+    
+    return count;
+}
+
+function checkForCattleChase(character, endingKey) {
+    // Check if this is a farmer/survival themed ending
+    const isFarmerSurvivalEnding = checkFarmerSurvivalTheme(character, endingKey);
+    
+    if (isFarmerSurvivalEnding) {
+        const farmerSurvivalCount = countFarmerSurvivalEndings();
+        
+        if (farmerSurvivalCount >= 8) {
+            const wasNewlyUnlocked = unlockMiniGame('cattleChase');
+            if (wasNewlyUnlocked) {
+                setTimeout(() => {
+                    showCattleChaseUnlockedMessage();
+                }, 2000);
+            }
+        } else {
+            setTimeout(() => {
+                showCattleChaseProgress(farmerSurvivalCount);
+            }, 2000);
+        }
+    }
+}
+
+function checkForHarborHustle(character, endingKey) {
+    // Check if this is a diplomatic/cooperation themed ending
+    const isDiplomaticEnding = checkDiplomaticTheme(character, endingKey);
+    
+    if (isDiplomaticEnding) {
+        const diplomaticCount = countDiplomaticEndings();
+        
+        if (diplomaticCount >= 5) {
+            const wasNewlyUnlocked = unlockMiniGame('harborHustle');
+            if (wasNewlyUnlocked) {
+                setTimeout(() => {
+                    showHarborHustleUnlockedMessage();
+                }, 2000);
+            }
+        } else {
+            setTimeout(() => {
+                showHarborHustleProgress(diplomaticCount);
+            }, 2000);
+        }
+    }
+}
+
+function checkForFrontierWars(character, endingKey) {
+    // Check if this is a warrior/resistance themed ending
+    const isWarriorResistanceEnding = checkWarriorResistanceTheme(character, endingKey);
+    
+    if (isWarriorResistanceEnding) {
+        const warriorResistanceCount = countWarriorResistanceEndings();
+        
+        if (warriorResistanceCount >= 8) {
+            const wasNewlyUnlocked = unlockMiniGame('frontierWars');
+            if (wasNewlyUnlocked) {
+                setTimeout(() => {
+                    showFrontierWarsUnlockedMessage();
+                }, 2000);
+            }
+        } else {
+            setTimeout(() => {
+                showFrontierWarsProgress(warriorResistanceCount);
+            }, 2000);
+        }
+    }
+}
+
 function showTradingChallengeProgress(currentCount) {
     const overlay = document.createElement('div');
     overlay.style.cssText = `
@@ -1999,6 +2195,255 @@ function showTradingChallengeProgress(currentCount) {
     
     const closeButton = document.createElement('button');
     closeButton.textContent = 'Continue Learning';
+    closeButton.style.cssText = `
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    closeButton.onmouseover = () => {
+        closeButton.style.background = '#c0392b';
+        closeButton.style.transform = 'translateY(-2px)';
+    };
+    
+    closeButton.onmouseout = () => {
+        closeButton.style.background = '#e74c3c';
+        closeButton.style.transform = 'translateY(0)';
+    };
+    
+    closeButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(closeButton);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function showCattleChaseProgress(currentCount) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border: 3px solid #f39c12;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        max-width: 500px;
+        color: white;
+        font-family: 'Courier New', monospace;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    `;
+    
+    const title = document.createElement('h2');
+    title.textContent = '🐄 Cattle Chase Progress';
+    title.style.cssText = `
+        color: #f39c12;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+    `;
+    
+    const text = document.createElement('p');
+    text.innerHTML = `
+        You've completed <strong>${currentCount} of 8</strong> Farmer/Survival themed endings!<br><br>
+        Complete <strong>${8 - currentCount} more</strong> endings with themes like "Farmer", "Survival", "Adaptation", or "Guardian" to unlock the Cattle Chase mini-game.<br><br>
+        <em>Explore different characters to find these thematic endings!</em>
+    `;
+    text.style.cssText = `
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-size: 1.1em;
+    `;
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Continue Exploring';
+    closeButton.style.cssText = `
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    closeButton.onmouseover = () => {
+        closeButton.style.background = '#c0392b';
+        closeButton.style.transform = 'translateY(-2px)';
+    };
+    
+    closeButton.onmouseout = () => {
+        closeButton.style.background = '#e74c3c';
+        closeButton.style.transform = 'translateY(0)';
+    };
+    
+    closeButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(closeButton);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function showHarborHustleProgress(currentCount) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border: 3px solid #f39c12;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        max-width: 500px;
+        color: white;
+        font-family: 'Courier New', monospace;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    `;
+    
+    const title = document.createElement('h2');
+    title.textContent = '⚓ Harbor Hustle Progress';
+    title.style.cssText = `
+        color: #f39c12;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+    `;
+    
+    const text = document.createElement('p');
+    text.innerHTML = `
+        You've completed <strong>${currentCount} of 5</strong> Diplomatic/Cooperation themed endings!<br><br>
+        Complete <strong>${5 - currentCount} more</strong> endings with themes like "Diplomatic", "Cooperation", "Bridge Builder", or "Peaceful" to unlock the Harbor Hustle mini-game.<br><br>
+        <em>Look for endings that show negotiation and peaceful solutions!</em>
+    `;
+    text.style.cssText = `
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-size: 1.1em;
+    `;
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Continue Exploring';
+    closeButton.style.cssText = `
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    closeButton.onmouseover = () => {
+        closeButton.style.background = '#c0392b';
+        closeButton.style.transform = 'translateY(-2px)';
+    };
+    
+    closeButton.onmouseout = () => {
+        closeButton.style.background = '#e74c3c';
+        closeButton.style.transform = 'translateY(0)';
+    };
+    
+    closeButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(closeButton);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function showFrontierWarsProgress(currentCount) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border: 3px solid #f39c12;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        max-width: 500px;
+        color: white;
+        font-family: 'Courier New', monospace;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    `;
+    
+    const title = document.createElement('h2');
+    title.textContent = '⚔️ Frontier Wars Progress';
+    title.style.cssText = `
+        color: #f39c12;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+    `;
+    
+    const text = document.createElement('p');
+    text.innerHTML = `
+        You've completed <strong>${currentCount} of 8</strong> Warrior/Resistance themed endings!<br><br>
+        Complete <strong>${8 - currentCount} more</strong> endings with themes like "Warrior", "Resistance", "Independent", or "Struggle" to unlock the Frontier Wars mini-game.<br><br>
+        <em>Look for endings that show fighting spirit and determination!</em>
+    `;
+    text.style.cssText = `
+        margin-bottom: 25px;
+        line-height: 1.6;
+        font-size: 1.1em;
+    `;
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Continue Exploring';
     closeButton.style.cssText = `
         background: #e74c3c;
         color: white;
