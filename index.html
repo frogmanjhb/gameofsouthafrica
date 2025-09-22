@@ -1287,6 +1287,220 @@
             margin-bottom: 20px;
         }
 
+        /* Land Grab Maze Styles */
+        .land-grab-maze-screen {
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        .maze-title {
+            font-size: 2.5em;
+            color: #f39c12;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .maze-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+
+        .maze-info {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .maze-stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(52, 73, 94, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .maze-game-area {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #e67e22;
+        }
+
+        #mazeCanvas {
+            border: 3px solid #f39c12;
+            border-radius: 10px;
+            background: #2c3e50;
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .maze-instructions {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .maze-instructions h3 {
+            color: #f39c12;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .maze-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .start-maze-btn {
+            background: rgba(243, 156, 18, 0.8);
+            border: 2px solid #f39c12;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto 0;
+            width: fit-content;
+        }
+
+        .start-maze-btn:hover {
+            background: rgba(243, 156, 18, 1);
+            border-color: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .maze-game-over {
+            background: rgba(52, 73, 94, 0.9);
+            border: 3px solid #f39c12;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .maze-game-over h3 {
+            color: #f39c12;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .maze-game-over p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .character-selection-maze {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .character-card-maze {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .character-card-maze:hover {
+            border-color: #f39c12;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .character-card-maze.selected {
+            border-color: #f39c12;
+            background: rgba(243, 156, 18, 0.2);
+        }
+
+        .character-icon-maze {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .character-name-maze {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .character-card-maze.selected .character-name-maze {
+            color: #f39c12;
+        }
+
+        .character-description-maze {
+            font-size: 0.8em;
+            color: #bdc3c7;
+        }
+
+        .power-up-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .power-up-item {
+            background: rgba(46, 204, 113, 0.8);
+            border: 2px solid #2ecc71;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .power-up-item.active {
+            background: rgba(46, 204, 113, 1);
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+
+        .power-up-icon {
+            font-size: 1.5em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .power-up-name {
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .power-up-timer {
+            font-size: 0.7em;
+            color: #f39c12;
+        }
+
         /* Frontier Wars Styles */
         .frontier-wars-screen {
             text-align: center;
@@ -1527,7 +1741,7 @@
                 </button>
                 <button id="miniGameButton" class="mini-game-button" onclick="showMiniGameCollection()">
                     <span class="mini-game-icon">🎮</span>
-                    <span id="miniGameCount" class="mini-game-count">0/4</span>
+                    <span id="miniGameCount" class="mini-game-count">0/5</span>
                     <span class="mini-game-text">Mini-Games</span>
                 </button>
                 <!-- Temporarily removed test mini-games button
@@ -1904,7 +2118,7 @@
             <button class="back-button" onclick="hideMiniGameCollection()">← Back to Main Menu</button>
             <h2 class="mini-game-collection-title">🎮 Mini-Game Collection</h2>
             <div class="mini-game-progress">
-                <span id="miniGameProgress">0 of 4 mini-games unlocked</span>
+                <span id="miniGameProgress">0 of 5 mini-games unlocked</span>
             </div>
             
             <div class="mini-games-container">
@@ -2047,6 +2261,41 @@
                         </button>
                     </div>
                 </div>
+                
+                <div id="landGrabMazeMiniGame" class="mini-game-item locked">
+                    <div class="mini-game-header">
+                        <span class="mini-game-emoji">🏰</span>
+                        <div class="mini-game-info">
+                            <h3 class="mini-game-title">Land Grab Maze</h3>
+                            <p class="mini-game-subtitle">Ultimate Achievement Challenge</p>
+                        </div>
+                        <div class="mini-game-status">
+                            <span class="status-icon">🔒</span>
+                            <span class="status-text">Locked</span>
+                        </div>
+                    </div>
+                    <div class="mini-game-description">
+                        <p class="description-text">The ultimate challenge! A Pac-Man inspired maze game where you navigate through South African colonial history, collecting resources while avoiding the ghosts of history. Choose your character and experience the land grab from different perspectives!</p>
+                        <div class="unlock-condition">
+                            <strong>Unlock by:</strong> Complete ALL 128 endings across all characters (100% completion)
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label">
+                            <span>Progress</span>
+                            <span id="mazeProgressText">0/128</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="mazeProgressFill" class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="mini-game-actions">
+                        <button class="play-mini-game-btn" onclick="playLandGrabMaze()" disabled>
+                            <span class="play-icon">▶️</span>
+                            Play Game
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -2101,6 +2350,102 @@
                         <p id="frontierHistoricalText">The frontier wars were complex conflicts involving multiple groups fighting for land, resources, and survival. Bantu communities used various strategies to resist colonial expansion and protect their way of life.</p>
                     </div>
                     <button class="restart-button" onclick="restartFrontierWars()">Play Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Land Grab Maze Screen -->
+        <div id="landGrabMazeScreen" class="land-grab-maze-screen" style="display: none;">
+            <button class="back-button" onclick="exitLandGrabMaze()">← Exit Game</button>
+            <h2 class="maze-title">🏰 Land Grab Maze</h2>
+            <div class="maze-info">
+                <p>Navigate the maze, collect resources, and avoid the ghosts of history!</p>
+                <p class="maze-subtitle">A Pac-Man inspired adventure through South African colonial history</p>
+            </div>
+            
+            <div class="maze-stats">
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="mazeScore" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Lives:</span>
+                    <span id="mazeLives" class="stat-value">3</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Resources:</span>
+                    <span id="mazeResources" class="stat-value">0/50</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Level:</span>
+                    <span id="mazeLevel" class="stat-value">1</span>
+                </div>
+            </div>
+            
+            <div class="character-selection-maze">
+                <div class="character-card-maze" onclick="selectMazeCharacter('khoisan')">
+                    <div class="character-icon-maze">🏹</div>
+                    <div class="character-name-maze">Khoi-San</div>
+                    <div class="character-description-maze">Hunter & Herder</div>
+                </div>
+                <div class="character-card-maze" onclick="selectMazeCharacter('dutch')">
+                    <div class="character-icon-maze">⚓</div>
+                    <div class="character-name-maze">Dutch Settler</div>
+                    <div class="character-description-maze">Colonist & Trader</div>
+                </div>
+                <div class="character-card-maze" onclick="selectMazeCharacter('british')">
+                    <div class="character-icon-maze">🏴</div>
+                    <div class="character-name-maze">British Colonist</div>
+                    <div class="character-description-maze">Administrator & Ruler</div>
+                </div>
+                <div class="character-card-maze" onclick="selectMazeCharacter('bantu')">
+                    <div class="character-icon-maze">🌽</div>
+                    <div class="character-name-maze">Bantu Farmer</div>
+                    <div class="character-description-maze">Farmer & Warrior</div>
+                </div>
+            </div>
+            
+            <div class="power-up-display">
+                <div id="peaceTreaty" class="power-up-item">
+                    <div class="power-up-icon">🕊️</div>
+                    <div class="power-up-name">Peace Treaty</div>
+                    <div class="power-up-timer" id="peaceTimer">0s</div>
+                </div>
+                <div id="resistanceShield" class="power-up-item">
+                    <div class="power-up-icon">🛡️</div>
+                    <div class="power-up-name">Resistance Shield</div>
+                    <div class="power-up-timer" id="shieldTimer">0s</div>
+                </div>
+                <div id="migrationPath" class="power-up-item">
+                    <div class="power-up-icon">🚶</div>
+                    <div class="power-up-name">Migration Path</div>
+                    <div class="power-up-timer" id="migrationTimer">0s</div>
+                </div>
+            </div>
+            
+            <div id="mazeGameArea" class="maze-game-area">
+                <canvas id="mazeCanvas" width="800" height="800"></canvas>
+                
+                <div id="mazeInstructions" class="maze-instructions">
+                    <h3>🎮 How to Play</h3>
+                    <p><strong>Goal:</strong> Collect all resources (🐄🌽💎🛠️) while avoiding the ghosts!</p>
+                    <p><strong>Controls:</strong> Arrow keys or WASD to move</p>
+                    <p><strong>Ghosts:</strong> 🦠 Disease (random), 🏰 Colonial (hunts you), ⚖️ Law (blocks paths), ⚔️ War (charges)</p>
+                    <p><strong>Power-ups:</strong> 🕊️ Peace Treaty (ghosts avoid you), 🛡️ Resistance Shield (chase ghosts), 🚶 Migration Path (shortcuts)</p>
+                    <button class="start-maze-btn" onclick="startLandGrabMaze()">
+                        <span class="play-icon">▶️</span>
+                        Start Game
+                    </button>
+                </div>
+                
+                <div id="mazeGameOver" class="maze-game-over" style="display: none;">
+                    <h3 id="mazeResultTitle">Game Complete!</h3>
+                    <p id="mazeResultText">You successfully collected all resources!</p>
+                    <div class="historical-context">
+                        <h4>📚 Historical Reflection</h4>
+                        <p id="mazeHistoricalText">Your people survived but lost much of their land.</p>
+                    </div>
+                    <button class="restart-button" onclick="restartLandGrabMaze()">Play Again</button>
                 </div>
             </div>
         </div>

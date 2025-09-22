@@ -17,7 +17,8 @@ let unlockedMiniGames = JSON.parse(localStorage.getItem('unlockedMiniGames')) ||
     tradingChallenge: false,
     cattleChase: false,
     harborHustle: false,
-    frontierWars: false
+    frontierWars: false,
+    landGrabMaze: false
 };
 
 // Trading challenge mini-game data
@@ -1732,13 +1733,23 @@ function checkAllUnlockConditions() {
         }, 1000);
     }
     
+    // Check Land Grab Maze unlock (requires ALL 128 endings)
+    const totalEndings = countAllEndings();
+    if (totalEndings >= 128 && !unlockedMiniGames.landGrabMaze) {
+        console.log('Land Grab Maze: Auto-unlocking...');
+        unlockMiniGame('landGrabMaze');
+        setTimeout(() => {
+            showLandGrabMazeUnlockedMessage();
+        }, 1000);
+    }
+    
     // Update display after potential unlocks
     updateMiniGameDisplay();
 }
 
 function updateMiniGameDisplay() {
     // Update progress counter
-    const totalMiniGames = 4; // Trading challenge, cattle chase, harbor hustle, and frontier wars
+    const totalMiniGames = 5; // Trading challenge, cattle chase, harbor hustle, frontier wars, and land grab maze
     const unlockedCount = Object.values(unlockedMiniGames).filter(unlocked => unlocked).length;
     
     document.getElementById('miniGameProgress').textContent = `${unlockedCount} of ${totalMiniGames} mini-games unlocked`;
@@ -1858,6 +1869,35 @@ function updateMiniGameDisplay() {
         
         frontierProgressText.textContent = `${warriorResistanceCount}/8`;
         frontierProgressFill.style.width = `${progress}%`;
+    }
+    
+    // Update Land Grab Maze display
+    const mazeItem = document.getElementById('landGrabMazeMiniGame');
+    const mazePlayButton = mazeItem.querySelector('.play-mini-game-btn');
+    const mazeStatusIcon = mazeItem.querySelector('.status-icon');
+    const mazeStatusText = mazeItem.querySelector('.status-text');
+    
+    if (unlockedMiniGames.landGrabMaze) {
+        mazeItem.classList.remove('locked');
+        mazeItem.classList.add('unlocked');
+        mazePlayButton.disabled = false;
+        mazeStatusIcon.textContent = '✅';
+        mazeStatusText.textContent = 'Unlocked';
+    } else {
+        mazeItem.classList.remove('unlocked');
+        mazeItem.classList.add('locked');
+        mazePlayButton.disabled = true;
+        mazeStatusIcon.textContent = '🔒';
+        mazeStatusText.textContent = 'Complete ALL 128 endings';
+        
+        // Update progress bar
+        const mazeProgressText = document.getElementById('mazeProgressText');
+        const mazeProgressFill = document.getElementById('mazeProgressFill');
+        const totalEndings = countAllEndings();
+        const progress = Math.round((totalEndings / 128) * 100);
+        
+        mazeProgressText.textContent = `${totalEndings}/128`;
+        mazeProgressFill.style.width = `${progress}%`;
     }
 }
 
@@ -2191,6 +2231,15 @@ function countWarriorResistanceEndings() {
     });
     
     console.log(`Warrior/Resistance endings count: ${count}`);
+    return count;
+}
+
+function countAllEndings() {
+    let count = 0;
+    Object.values(collectedEndings).forEach(characterEndings => {
+        count += characterEndings.length;
+    });
+    console.log(`Total endings count: ${count}`);
     return count;
 }
 
@@ -4836,6 +4885,151 @@ function showFrontierWarsUnlockedMessage() {
     document.body.appendChild(overlay);
 }
 
+function showLandGrabMazeUnlockedMessage() {
+    // Create modal overlay for land grab maze unlock announcement
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: rgba(44, 62, 80, 0.95);
+        border: 3px solid #f39c12;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 700px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = "🏰 Land Grab Maze Unlocked!";
+    title.style.cssText = `
+        color: #f39c12;
+        font-size: 2em;
+        margin-bottom: 20px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const text = document.createElement('p');
+    text.textContent = "AMAZING! You've collected ALL 128 endings across all characters! You've unlocked the ultimate challenge - the Land Grab Maze! Experience South African colonial history through a Pac-Man inspired adventure where you navigate the maze, collect resources, and avoid the ghosts of history. Choose your character and see how the land grab looked from different perspectives!";
+    text.style.cssText = `
+        color: #ecf0f1;
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    `;
+    
+    const playNowButton = document.createElement('button');
+    playNowButton.textContent = "Play Land Grab Maze";
+    playNowButton.style.cssText = `
+        background: rgba(243, 156, 18, 0.8);
+        border: 2px solid #f39c12;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const collectionButton = document.createElement('button');
+    collectionButton.textContent = "View Collection";
+    collectionButton.style.cssText = `
+        background: rgba(142, 68, 173, 0.8);
+        border: 2px solid #8e44ad;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    const laterButton = document.createElement('button');
+    laterButton.textContent = "Maybe Later";
+    laterButton.style.cssText = `
+        background: rgba(52, 73, 94, 0.8);
+        border: 2px solid #34495e;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    // Button event handlers
+    playNowButton.onclick = () => {
+        overlay.remove();
+        playLandGrabMaze();
+    };
+    
+    collectionButton.onclick = () => {
+        overlay.remove();
+        showMiniGameCollection();
+    };
+    
+    laterButton.onclick = () => {
+        overlay.remove();
+    };
+    
+    // Hover effects
+    playNowButton.onmouseover = () => {
+        playNowButton.style.background = 'rgba(243, 156, 18, 1)';
+    };
+    playNowButton.onmouseout = () => {
+        playNowButton.style.background = 'rgba(243, 156, 18, 0.8)';
+    };
+    
+    collectionButton.onmouseover = () => {
+        collectionButton.style.background = 'rgba(142, 68, 173, 1)';
+    };
+    collectionButton.onmouseout = () => {
+        collectionButton.style.background = 'rgba(142, 68, 173, 0.8)';
+    };
+    
+    laterButton.onmouseover = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 1)';
+    };
+    laterButton.onmouseout = () => {
+        laterButton.style.background = 'rgba(52, 73, 94, 0.8)';
+    };
+    
+    buttonContainer.appendChild(playNowButton);
+    buttonContainer.appendChild(collectionButton);
+    buttonContainer.appendChild(laterButton);
+    
+    modal.appendChild(title);
+    modal.appendChild(text);
+    modal.appendChild(buttonContainer);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
 // Test function for Cattle Chase
 function testCattleChase() {
     // Temporarily unlock cattle chase for testing
@@ -4874,6 +5068,731 @@ function testCattleChase() {
             unlockedMiniGames.cattleChase = originalValue;
         }, 5000);
     }, 1000);
+}
+
+// ============================================================================
+// LAND GRAB MAZE GAME IMPLEMENTATION
+// ============================================================================
+
+// Land Grab Maze game data
+const landGrabMaze = {
+    gameState: {
+        active: false,
+        score: 0,
+        lives: 3,
+        level: 1,
+        resourcesCollected: 0,
+        totalResources: 50,
+        selectedCharacter: 'khoisan',
+        gameOver: false,
+        gameWon: false,
+        keys: {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        }
+    },
+    player: {
+        x: 400,
+        y: 400,
+        size: 20,
+        speed: 3,
+        color: '#f39c12'
+    },
+    maze: {
+        width: 40,
+        height: 40,
+        cellSize: 20,
+        walls: [],
+        resources: [],
+        powerUps: []
+    },
+    ghosts: [
+        { x: 200, y: 200, type: 'disease', color: '#e74c3c', speed: 1.5, direction: 0, behavior: 'random' },
+        { x: 600, y: 200, type: 'colonial', color: '#8e44ad', speed: 2, direction: 0, behavior: 'hunt' },
+        { x: 200, y: 600, type: 'law', color: '#3498db', speed: 1, direction: 0, behavior: 'block' },
+        { x: 600, y: 600, type: 'war', color: '#e67e22', speed: 2.5, direction: 0, behavior: 'charge' }
+    ],
+    powerUps: {
+        peaceTreaty: { active: false, timer: 0, duration: 5000 },
+        resistanceShield: { active: false, timer: 0, duration: 5000 },
+        migrationPath: { active: false, timer: 0, duration: 10000 }
+    },
+    canvas: null,
+    ctx: null,
+    animationId: null
+};
+
+// Character configurations for the maze game
+const mazeCharacters = {
+    khoisan: { icon: '🏹', color: '#f39c12', name: 'Khoi-San' },
+    dutch: { icon: '⚓', color: '#3498db', name: 'Dutch Settler' },
+    british: { icon: '🏴', color: '#e74c3c', name: 'British Colonist' },
+    bantu: { icon: '🌽', color: '#2ecc71', name: 'Bantu Farmer' }
+};
+
+// Historical reflections for each character
+const historicalReflections = {
+    khoisan: "Your people survived but lost much of their land. The traditional way of life was forever changed by colonial expansion, but your culture and resilience endured through the generations.",
+    dutch: "Your farms expanded, but conflict grew. The Dutch settlers established a foothold in the Cape, but their expansion created tensions with indigenous peoples that would shape South African history for centuries.",
+    british: "You established control, but unrest continued. British rule brought new laws and systems, but also resistance from both Boers and indigenous peoples, leading to decades of conflict and struggle.",
+    bantu: "Your communities remained resilient despite pressure. Bantu-speaking peoples adapted to changing circumstances while maintaining their cultural identity, demonstrating remarkable strength and perseverance."
+};
+
+// Initialize the maze game
+function initLandGrabMaze() {
+    landGrabMaze.canvas = document.getElementById('mazeCanvas');
+    landGrabMaze.ctx = landGrabMaze.canvas.getContext('2d');
+    
+    // Set up event listeners
+    document.addEventListener('keydown', handleMazeKeyDown);
+    document.addEventListener('keyup', handleMazeKeyUp);
+    
+    // Generate initial maze
+    generateMaze();
+    generateResources();
+    generatePowerUps();
+}
+
+// Generate the maze structure
+function generateMaze() {
+    const { width, height, cellSize } = landGrabMaze.maze;
+    landGrabMaze.maze.walls = [];
+    
+    // Create a simple maze pattern (can be enhanced with more complex algorithms)
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            // Create walls around the perimeter
+            if (x === 0 || x === width - 1 || y === 0 || y === height - 1) {
+                landGrabMaze.maze.walls.push({ x: x * cellSize, y: y * cellSize, width: cellSize, height: cellSize });
+            }
+            // Create some internal walls (simplified pattern)
+            else if ((x % 4 === 0 && y % 4 === 0) || (x % 6 === 0 && y % 6 === 0)) {
+                if (Math.random() > 0.3) {
+                    landGrabMaze.maze.walls.push({ x: x * cellSize, y: y * cellSize, width: cellSize, height: cellSize });
+                }
+            }
+        }
+    }
+}
+
+// Generate resources to collect
+function generateResources() {
+    const { width, height, cellSize } = landGrabMaze.maze;
+    landGrabMaze.maze.resources = [];
+    
+    const resourceTypes = [
+        { icon: '🐄', name: 'Cattle', points: 10 },
+        { icon: '🌽', name: 'Corn', points: 5 },
+        { icon: '💎', name: 'Beads', points: 15 },
+        { icon: '🛠️', name: 'Tools', points: 8 }
+    ];
+    
+    for (let i = 0; i < landGrabMaze.gameState.totalResources; i++) {
+        let x, y;
+        let attempts = 0;
+        
+        do {
+            x = Math.floor(Math.random() * (width - 2)) + 1;
+            y = Math.floor(Math.random() * (height - 2)) + 1;
+            attempts++;
+        } while (isWall(x * cellSize, y * cellSize) && attempts < 100);
+        
+        if (attempts < 100) {
+            const resourceType = resourceTypes[Math.floor(Math.random() * resourceTypes.length)];
+            landGrabMaze.maze.resources.push({
+                x: x * cellSize + cellSize / 2,
+                y: y * cellSize + cellSize / 2,
+                type: resourceType.name,
+                icon: resourceType.icon,
+                points: resourceType.points,
+                collected: false
+            });
+        }
+    }
+}
+
+// Generate power-ups
+function generatePowerUps() {
+    const { width, height, cellSize } = landGrabMaze.maze;
+    landGrabMaze.maze.powerUps = [];
+    
+    const powerUpTypes = [
+        { icon: '🕊️', name: 'Peace Treaty', type: 'peaceTreaty' },
+        { icon: '🛡️', name: 'Resistance Shield', type: 'resistanceShield' },
+        { icon: '🚶', name: 'Migration Path', type: 'migrationPath' }
+    ];
+    
+    for (let i = 0; i < 3; i++) {
+        let x, y;
+        let attempts = 0;
+        
+        do {
+            x = Math.floor(Math.random() * (width - 2)) + 1;
+            y = Math.floor(Math.random() * (height - 2)) + 1;
+            attempts++;
+        } while (isWall(x * cellSize, y * cellSize) && attempts < 100);
+        
+        if (attempts < 100) {
+            const powerUpType = powerUpTypes[i];
+            landGrabMaze.maze.powerUps.push({
+                x: x * cellSize + cellSize / 2,
+                y: y * cellSize + cellSize / 2,
+                type: powerUpType.type,
+                icon: powerUpType.icon,
+                name: powerUpType.name,
+                collected: false
+            });
+        }
+    }
+}
+
+// Check if a position is a wall
+function isWall(x, y) {
+    const { cellSize } = landGrabMaze.maze;
+    return landGrabMaze.maze.walls.some(wall => 
+        x >= wall.x && x < wall.x + wall.width &&
+        y >= wall.y && y < wall.y + wall.height
+    );
+}
+
+// Handle key press events
+function handleMazeKeyDown(e) {
+    if (!landGrabMaze.gameState.active) return;
+    
+    switch(e.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+            landGrabMaze.gameState.keys.up = true;
+            e.preventDefault();
+            break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+            landGrabMaze.gameState.keys.down = true;
+            e.preventDefault();
+            break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+            landGrabMaze.gameState.keys.left = true;
+            e.preventDefault();
+            break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+            landGrabMaze.gameState.keys.right = true;
+            e.preventDefault();
+            break;
+    }
+}
+
+// Handle key release events
+function handleMazeKeyUp(e) {
+    if (!landGrabMaze.gameState.active) return;
+    
+    switch(e.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+            landGrabMaze.gameState.keys.up = false;
+            break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+            landGrabMaze.gameState.keys.down = false;
+            break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+            landGrabMaze.gameState.keys.left = false;
+            break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+            landGrabMaze.gameState.keys.right = false;
+            break;
+    }
+}
+
+// Update game state
+function updateLandGrabMaze() {
+    if (!landGrabMaze.gameState.active) return;
+    
+    // Update player position
+    updatePlayer();
+    
+    // Update ghosts
+    updateGhosts();
+    
+    // Check collisions
+    checkCollisions();
+    
+    // Update power-ups
+    updatePowerUps();
+    
+    // Check win/lose conditions
+    checkGameState();
+    
+    // Update UI
+    updateMazeUI();
+}
+
+// Update player position
+function updatePlayer() {
+    const player = landGrabMaze.player;
+    const { keys } = landGrabMaze.gameState;
+    const { cellSize } = landGrabMaze.maze;
+    
+    let newX = player.x;
+    let newY = player.y;
+    
+    if (keys.up) newY -= player.speed;
+    if (keys.down) newY += player.speed;
+    if (keys.left) newX -= player.speed;
+    if (keys.right) newX += player.speed;
+    
+    // Check wall collisions
+    if (!isWall(newX - player.size/2, newY - player.size/2) &&
+        !isWall(newX + player.size/2, newY - player.size/2) &&
+        !isWall(newX - player.size/2, newY + player.size/2) &&
+        !isWall(newX + player.size/2, newY + player.size/2)) {
+        player.x = newX;
+        player.y = newY;
+    }
+    
+    // Keep player within bounds
+    player.x = Math.max(player.size/2, Math.min(800 - player.size/2, player.x));
+    player.y = Math.max(player.size/2, Math.min(800 - player.size/2, player.y));
+}
+
+// Update ghost AI
+function updateGhosts() {
+    const player = landGrabMaze.player;
+    
+    landGrabMaze.ghosts.forEach(ghost => {
+        const dx = player.x - ghost.x;
+        const dy = player.y - ghost.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        let targetX = ghost.x;
+        let targetY = ghost.y;
+        
+        switch(ghost.behavior) {
+            case 'random':
+                // Disease Ghost - moves randomly
+                if (Math.random() < 0.1) {
+                    ghost.direction = Math.random() * Math.PI * 2;
+                }
+                targetX += Math.cos(ghost.direction) * ghost.speed;
+                targetY += Math.sin(ghost.direction) * ghost.speed;
+                break;
+                
+            case 'hunt':
+                // Colonial Ghost - hunts the player
+                if (distance > 0) {
+                    targetX += (dx / distance) * ghost.speed;
+                    targetY += (dy / distance) * ghost.speed;
+                }
+                break;
+                
+            case 'block':
+                // Law Ghost - tries to block player's path
+                if (distance < 200) {
+                    const angle = Math.atan2(dy, dx);
+                    targetX += Math.cos(angle + Math.PI/2) * ghost.speed;
+                    targetY += Math.sin(angle + Math.PI/2) * ghost.speed;
+                } else {
+                    targetX += Math.cos(ghost.direction) * ghost.speed;
+                    targetY += Math.sin(ghost.direction) * ghost.speed;
+                }
+                break;
+                
+            case 'charge':
+                // War Ghost - charges in bursts
+                if (distance < 150 && Math.random() < 0.3) {
+                    targetX += (dx / distance) * ghost.speed * 2;
+                    targetY += (dy / distance) * ghost.speed * 2;
+                } else {
+                    targetX += Math.cos(ghost.direction) * ghost.speed;
+                    targetY += Math.sin(ghost.direction) * ghost.speed;
+                }
+                break;
+        }
+        
+        // Check wall collisions for ghosts
+        if (!isWall(targetX - 10, targetY - 10) &&
+            !isWall(targetX + 10, targetY - 10) &&
+            !isWall(targetX - 10, targetY + 10) &&
+            !isWall(targetX + 10, targetY + 10)) {
+            ghost.x = targetX;
+            ghost.y = targetY;
+        }
+        
+        // Keep ghosts within bounds
+        ghost.x = Math.max(10, Math.min(790, ghost.x));
+        ghost.y = Math.max(10, Math.min(790, ghost.y));
+    });
+}
+
+// Check collisions
+function checkCollisions() {
+    const player = landGrabMaze.player;
+    
+    // Check resource collisions
+    landGrabMaze.maze.resources.forEach(resource => {
+        if (!resource.collected) {
+            const dx = player.x - resource.x;
+            const dy = player.y - resource.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 15) {
+                resource.collected = true;
+                landGrabMaze.gameState.score += resource.points;
+                landGrabMaze.gameState.resourcesCollected++;
+            }
+        }
+    });
+    
+    // Check power-up collisions
+    landGrabMaze.maze.powerUps.forEach(powerUp => {
+        if (!powerUp.collected) {
+            const dx = player.x - powerUp.x;
+            const dy = player.y - powerUp.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 15) {
+                powerUp.collected = true;
+                activatePowerUp(powerUp.type);
+            }
+        }
+    });
+    
+    // Check ghost collisions
+    if (!landGrabMaze.powerUps.resistanceShield.active) {
+        landGrabMaze.ghosts.forEach(ghost => {
+            const dx = player.x - ghost.x;
+            const dy = player.y - ghost.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 20) {
+                // Player caught by ghost
+                landGrabMaze.gameState.lives--;
+                if (landGrabMaze.gameState.lives <= 0) {
+                    landGrabMaze.gameState.gameOver = true;
+                } else {
+                    // Reset player position
+                    landGrabMaze.player.x = 400;
+                    landGrabMaze.player.y = 400;
+                }
+            }
+        });
+    }
+}
+
+// Activate power-up
+function activatePowerUp(type) {
+    landGrabMaze.powerUps[type].active = true;
+    landGrabMaze.powerUps[type].timer = landGrabMaze.powerUps[type].duration;
+}
+
+// Update power-ups
+function updatePowerUps() {
+    Object.keys(landGrabMaze.powerUps).forEach(key => {
+        const powerUp = landGrabMaze.powerUps[key];
+        if (powerUp.active) {
+            powerUp.timer -= 16; // Assuming 60fps
+            if (powerUp.timer <= 0) {
+                powerUp.active = false;
+                powerUp.timer = 0;
+            }
+        }
+    });
+}
+
+// Check game state
+function checkGameState() {
+    if (landGrabMaze.gameState.resourcesCollected >= landGrabMaze.gameState.totalResources) {
+        landGrabMaze.gameState.gameWon = true;
+        landGrabMaze.gameState.active = false;
+    }
+}
+
+// Update UI
+function updateMazeUI() {
+    document.getElementById('mazeScore').textContent = landGrabMaze.gameState.score;
+    document.getElementById('mazeLives').textContent = landGrabMaze.gameState.lives;
+    document.getElementById('mazeResources').textContent = `${landGrabMaze.gameState.resourcesCollected}/${landGrabMaze.gameState.totalResources}`;
+    document.getElementById('mazeLevel').textContent = landGrabMaze.gameState.level;
+    
+    // Update power-up displays
+    updatePowerUpDisplay('peaceTreaty', landGrabMaze.powerUps.peaceTreaty);
+    updatePowerUpDisplay('resistanceShield', landGrabMaze.powerUps.resistanceShield);
+    updatePowerUpDisplay('migrationPath', landGrabMaze.powerUps.migrationPath);
+}
+
+// Update power-up display
+function updatePowerUpDisplay(powerUpId, powerUp) {
+    const element = document.getElementById(powerUpId);
+    const timerElement = document.getElementById(powerUpId.replace('Treaty', 'Timer').replace('Shield', 'Timer').replace('Path', 'Timer'));
+    
+    if (powerUp.active) {
+        element.classList.add('active');
+        timerElement.textContent = Math.ceil(powerUp.timer / 1000) + 's';
+    } else {
+        element.classList.remove('active');
+        timerElement.textContent = '0s';
+    }
+}
+
+// Render the game
+function renderLandGrabMaze() {
+    if (!landGrabMaze.ctx) return;
+    
+    const { ctx, canvas } = landGrabMaze;
+    
+    // Clear canvas
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw walls
+    ctx.fillStyle = '#34495e';
+    landGrabMaze.maze.walls.forEach(wall => {
+        ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+    });
+    
+    // Draw resources
+    landGrabMaze.maze.resources.forEach(resource => {
+        if (!resource.collected) {
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#f39c12';
+            ctx.fillText(resource.icon, resource.x, resource.y + 5);
+        }
+    });
+    
+    // Draw power-ups
+    landGrabMaze.maze.powerUps.forEach(powerUp => {
+        if (!powerUp.collected) {
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#2ecc71';
+            ctx.fillText(powerUp.icon, powerUp.x, powerUp.y + 5);
+        }
+    });
+    
+    // Draw ghosts
+    landGrabMaze.ghosts.forEach(ghost => {
+        ctx.fillStyle = ghost.color;
+        ctx.beginPath();
+        ctx.arc(ghost.x, ghost.y, 12, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Draw ghost emoji
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#fff';
+        const ghostEmojis = { disease: '🦠', colonial: '🏰', law: '⚖️', war: '⚔️' };
+        ctx.fillText(ghostEmojis[ghost.type], ghost.x, ghost.y + 4);
+    });
+    
+    // Draw player
+    const character = mazeCharacters[landGrabMaze.gameState.selectedCharacter];
+    ctx.fillStyle = character.color;
+    ctx.beginPath();
+    ctx.arc(landGrabMaze.player.x, landGrabMaze.player.y, landGrabMaze.player.size/2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Draw player character icon
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(character.icon, landGrabMaze.player.x, landGrabMaze.player.y + 5);
+    
+    // Draw power-up effects
+    if (landGrabMaze.powerUps.peaceTreaty.active) {
+        ctx.strokeStyle = '#2ecc71';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([5, 5]);
+        ctx.strokeRect(landGrabMaze.player.x - 25, landGrabMaze.player.y - 25, 50, 50);
+        ctx.setLineDash([]);
+    }
+    
+    if (landGrabMaze.powerUps.resistanceShield.active) {
+        ctx.strokeStyle = '#e74c3c';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(landGrabMaze.player.x, landGrabMaze.player.y, 20, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+}
+
+// Game loop
+function gameLoop() {
+    if (landGrabMaze.gameState.active) {
+        updateLandGrabMaze();
+        renderLandGrabMaze();
+        landGrabMaze.animationId = requestAnimationFrame(gameLoop);
+    }
+}
+
+// Character selection for maze
+function selectMazeCharacter(character) {
+    // Remove previous selection
+    document.querySelectorAll('.character-card-maze').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selection to clicked card
+    event.currentTarget.classList.add('selected');
+    
+    // Update game state
+    landGrabMaze.gameState.selectedCharacter = character;
+    landGrabMaze.player.color = mazeCharacters[character].color;
+}
+
+// Start the maze game
+function startLandGrabMaze() {
+    if (!landGrabMaze.gameState.selectedCharacter) {
+        alert('Please select a character first!');
+        return;
+    }
+    
+    // Hide instructions
+    document.getElementById('mazeInstructions').style.display = 'none';
+    
+    // Reset game state
+    landGrabMaze.gameState.active = true;
+    landGrabMaze.gameState.gameOver = false;
+    landGrabMaze.gameState.gameWon = false;
+    landGrabMaze.gameState.score = 0;
+    landGrabMaze.gameState.lives = 3;
+    landGrabMaze.gameState.resourcesCollected = 0;
+    
+    // Reset player position
+    landGrabMaze.player.x = 400;
+    landGrabMaze.player.y = 400;
+    
+    // Reset resources
+    landGrabMaze.maze.resources.forEach(resource => {
+        resource.collected = false;
+    });
+    
+    // Reset power-ups
+    landGrabMaze.maze.powerUps.forEach(powerUp => {
+        powerUp.collected = false;
+    });
+    
+    // Reset power-up states
+    Object.keys(landGrabMaze.powerUps).forEach(key => {
+        landGrabMaze.powerUps[key].active = false;
+        landGrabMaze.powerUps[key].timer = 0;
+    });
+    
+    // Start game loop
+    gameLoop();
+}
+
+// Show game over screen
+function showMazeGameOver() {
+    const gameOverDiv = document.getElementById('mazeGameOver');
+    const titleElement = document.getElementById('mazeResultTitle');
+    const textElement = document.getElementById('mazeResultText');
+    const historicalElement = document.getElementById('mazeHistoricalText');
+    
+    if (landGrabMaze.gameState.gameWon) {
+        titleElement.textContent = 'Victory!';
+        textElement.textContent = `You collected all resources! Final Score: ${landGrabMaze.gameState.score}`;
+    } else {
+        titleElement.textContent = 'Game Over';
+        textElement.textContent = `You were caught by the ghosts! Final Score: ${landGrabMaze.gameState.score}`;
+    }
+    
+    // Show historical reflection
+    const character = landGrabMaze.gameState.selectedCharacter;
+    historicalElement.textContent = historicalReflections[character];
+    
+    gameOverDiv.style.display = 'block';
+}
+
+// Restart the maze game
+function restartLandGrabMaze() {
+    // Hide game over screen
+    document.getElementById('mazeGameOver').style.display = 'none';
+    
+    // Show instructions
+    document.getElementById('mazeInstructions').style.display = 'block';
+    
+    // Stop current game
+    if (landGrabMaze.animationId) {
+        cancelAnimationFrame(landGrabMaze.animationId);
+    }
+    
+    landGrabMaze.gameState.active = false;
+}
+
+// Exit the maze game
+function exitLandGrabMaze() {
+    // Stop current game
+    if (landGrabMaze.animationId) {
+        cancelAnimationFrame(landGrabMaze.animationId);
+    }
+    
+    landGrabMaze.gameState.active = false;
+    
+    // Hide maze screen
+    document.getElementById('landGrabMazeScreen').style.display = 'none';
+    
+    // Show mini-game collection
+    document.getElementById('miniGameScreen').style.display = 'block';
+}
+
+// Play Land Grab Maze (called from mini-game collection)
+function playLandGrabMaze() {
+    // Hide mini-game collection
+    document.getElementById('miniGameScreen').style.display = 'none';
+    
+    // Show maze screen
+    document.getElementById('landGrabMazeScreen').style.display = 'block';
+    
+    // Initialize if not already done
+    if (!landGrabMaze.canvas) {
+        initLandGrabMaze();
+    }
+}
+
+// Update the game loop to check for game over
+function updateLandGrabMaze() {
+    if (!landGrabMaze.gameState.active) return;
+    
+    // Update player position
+    updatePlayer();
+    
+    // Update ghosts
+    updateGhosts();
+    
+    // Check collisions
+    checkCollisions();
+    
+    // Update power-ups
+    updatePowerUps();
+    
+    // Check win/lose conditions
+    checkGameState();
+    
+    // Update UI
+    updateMazeUI();
+    
+    // Check for game over
+    if (landGrabMaze.gameState.gameOver || landGrabMaze.gameState.gameWon) {
+        landGrabMaze.gameState.active = false;
+        if (landGrabMaze.animationId) {
+            cancelAnimationFrame(landGrabMaze.animationId);
+        }
+        showMazeGameOver();
+    }
 }
 
 // End of file
