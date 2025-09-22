@@ -1458,6 +1458,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Game is ready to play!
     console.log('Voices of the Past: South Africa - Game Ready!');
     console.log('Trading Challenge mini-game loaded with', tradingChallenge.items.length, 'trade items');
+    
+    // Debug: Log all collected endings and their themes
+    console.log('=== DEBUG: Collected Endings Analysis ===');
+    Object.keys(collectedEndings).forEach(character => {
+        console.log(`\n${character.toUpperCase()} ENDINGS (${collectedEndings[character].length} total):`);
+        collectedEndings[character].forEach(endingKey => {
+            const ending = gameStories[character].endings[endingKey];
+            if (ending) {
+                const isFarmer = checkFarmerSurvivalTheme(character, endingKey);
+                const isDiplomatic = checkDiplomaticTheme(character, endingKey);
+                const isWarrior = checkWarriorResistanceTheme(character, endingKey);
+                console.log(`  ${endingKey}: "${ending.title}"`);
+                console.log(`    Farmer/Survival: ${isFarmer}, Diplomatic: ${isDiplomatic}, Warrior: ${isWarrior}`);
+            }
+        });
+    });
+    console.log('\n=== END DEBUG ===');
 });
 
 // Trading Challenge Functions
@@ -1674,11 +1691,49 @@ function showMiniGameCollection() {
     hideAllScreens();
     document.getElementById('miniGameScreen').style.display = 'block';
     updateMiniGameDisplay();
+    checkAllUnlockConditions();
 }
 
 function hideMiniGameCollection() {
     hideAllScreens();
     document.getElementById('titleScreen').style.display = 'block';
+}
+
+function checkAllUnlockConditions() {
+    console.log('Checking all unlock conditions...');
+    
+    // Check Cattle Chase unlock
+    const farmerSurvivalCount = countFarmerSurvivalEndings();
+    if (farmerSurvivalCount >= 8 && !unlockedMiniGames.cattleChase) {
+        console.log('Cattle Chase: Auto-unlocking...');
+        unlockMiniGame('cattleChase');
+        setTimeout(() => {
+            showCattleChaseUnlockedMessage();
+        }, 1000);
+    }
+    
+    // Check Harbor Hustle unlock
+    const diplomaticCount = countDiplomaticEndings();
+    if (diplomaticCount >= 5 && !unlockedMiniGames.harborHustle) {
+        console.log('Harbor Hustle: Auto-unlocking...');
+        unlockMiniGame('harborHustle');
+        setTimeout(() => {
+            showHarborHustleUnlockedMessage();
+        }, 1000);
+    }
+    
+    // Check Frontier Wars unlock
+    const warriorResistanceCount = countWarriorResistanceEndings();
+    if (warriorResistanceCount >= 8 && !unlockedMiniGames.frontierWars) {
+        console.log('Frontier Wars: Auto-unlocking...');
+        unlockMiniGame('frontierWars');
+        setTimeout(() => {
+            showFrontierWarsUnlockedMessage();
+        }, 1000);
+    }
+    
+    // Update display after potential unlocks
+    updateMiniGameDisplay();
 }
 
 function updateMiniGameDisplay() {
@@ -2029,9 +2084,16 @@ function checkFarmerSurvivalTheme(character, endingKey) {
         'resilient', 'selective', 'guardian', 'diplomatic', 'bridge builder'
     ];
     
-    return farmerSurvivalKeywords.some(keyword => 
+    const matches = farmerSurvivalKeywords.some(keyword => 
         title.includes(keyword) || text.includes(keyword)
     );
+    
+    // Debug logging
+    if (matches) {
+        console.log(`Farmer/Survival theme detected: ${character} - ${endingKey} - "${ending.title}"`);
+    }
+    
+    return matches;
 }
 
 function checkDiplomaticTheme(character, endingKey) {
@@ -2047,9 +2109,16 @@ function checkDiplomaticTheme(character, endingKey) {
         'reluctant adaptation', 'compromise', 'negotiate', 'peaceful'
     ];
     
-    return diplomaticKeywords.some(keyword => 
+    const matches = diplomaticKeywords.some(keyword => 
         title.includes(keyword) || text.includes(keyword)
     );
+    
+    // Debug logging
+    if (matches) {
+        console.log(`Diplomatic theme detected: ${character} - ${endingKey} - "${ending.title}"`);
+    }
+    
+    return matches;
 }
 
 function checkWarriorResistanceTheme(character, endingKey) {
@@ -2065,9 +2134,16 @@ function checkWarriorResistanceTheme(character, endingKey) {
         'struggle', 'fight', 'defend', 'proud', 'selective resistance'
     ];
     
-    return warriorResistanceKeywords.some(keyword => 
+    const matches = warriorResistanceKeywords.some(keyword => 
         title.includes(keyword) || text.includes(keyword)
     );
+    
+    // Debug logging
+    if (matches) {
+        console.log(`Warrior/Resistance theme detected: ${character} - ${endingKey} - "${ending.title}"`);
+    }
+    
+    return matches;
 }
 
 function countFarmerSurvivalEndings() {
@@ -2082,6 +2158,7 @@ function countFarmerSurvivalEndings() {
         });
     });
     
+    console.log(`Farmer/Survival endings count: ${count}`);
     return count;
 }
 
@@ -2097,6 +2174,7 @@ function countDiplomaticEndings() {
         });
     });
     
+    console.log(`Diplomatic endings count: ${count}`);
     return count;
 }
 
@@ -2112,6 +2190,7 @@ function countWarriorResistanceEndings() {
         });
     });
     
+    console.log(`Warrior/Resistance endings count: ${count}`);
     return count;
 }
 
@@ -2119,10 +2198,14 @@ function checkForCattleChase(character, endingKey) {
     // Check if this is a farmer/survival themed ending
     const isFarmerSurvivalEnding = checkFarmerSurvivalTheme(character, endingKey);
     
+    console.log(`Cattle Chase check: ${character} - ${endingKey} - isFarmerSurvival: ${isFarmerSurvivalEnding}`);
+    
     if (isFarmerSurvivalEnding) {
         const farmerSurvivalCount = countFarmerSurvivalEndings();
+        console.log(`Cattle Chase: ${farmerSurvivalCount}/8 farmer/survival endings`);
         
         if (farmerSurvivalCount >= 8) {
+            console.log('Cattle Chase: Attempting to unlock...');
             const wasNewlyUnlocked = unlockMiniGame('cattleChase');
             if (wasNewlyUnlocked) {
                 setTimeout(() => {
@@ -2141,10 +2224,14 @@ function checkForHarborHustle(character, endingKey) {
     // Check if this is a diplomatic/cooperation themed ending
     const isDiplomaticEnding = checkDiplomaticTheme(character, endingKey);
     
+    console.log(`Harbor Hustle check: ${character} - ${endingKey} - isDiplomatic: ${isDiplomaticEnding}`);
+    
     if (isDiplomaticEnding) {
         const diplomaticCount = countDiplomaticEndings();
+        console.log(`Harbor Hustle: ${diplomaticCount}/5 diplomatic endings`);
         
         if (diplomaticCount >= 5) {
+            console.log('Harbor Hustle: Attempting to unlock...');
             const wasNewlyUnlocked = unlockMiniGame('harborHustle');
             if (wasNewlyUnlocked) {
                 setTimeout(() => {
@@ -2163,10 +2250,14 @@ function checkForFrontierWars(character, endingKey) {
     // Check if this is a warrior/resistance themed ending
     const isWarriorResistanceEnding = checkWarriorResistanceTheme(character, endingKey);
     
+    console.log(`Frontier Wars check: ${character} - ${endingKey} - isWarriorResistance: ${isWarriorResistanceEnding}`);
+    
     if (isWarriorResistanceEnding) {
         const warriorResistanceCount = countWarriorResistanceEndings();
+        console.log(`Frontier Wars: ${warriorResistanceCount}/8 warrior/resistance endings`);
         
         if (warriorResistanceCount >= 8) {
+            console.log('Frontier Wars: Attempting to unlock...');
             const wasNewlyUnlocked = unlockMiniGame('frontierWars');
             if (wasNewlyUnlocked) {
                 setTimeout(() => {
