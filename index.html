@@ -137,6 +137,19 @@
             transform: translateX(5px);
         }
 
+        .choice-button:disabled {
+            background: rgba(52, 152, 219, 0.5);
+            border-color: #7f8c8d;
+            color: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .choice-countdown, .restart-countdown {
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
         .back-button {
             background: rgba(231, 76, 60, 0.8);
             border: 2px solid #e74c3c;
@@ -182,6 +195,14 @@
 
         .restart-button:hover {
             background: rgba(46, 204, 113, 1);
+        }
+
+        .restart-button:disabled {
+            background: rgba(46, 204, 113, 0.5);
+            border-color: #7f8c8d;
+            color: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .info-button {

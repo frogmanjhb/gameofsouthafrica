@@ -4,6 +4,91 @@ let currentCharacter = '';
 let currentScene = 0;
 let gameHistory = [];
 
+// Reading timer system to prevent rapid clicking
+let choiceStartTime = 0;
+let storyStartTime = 0;
+const MIN_CHOICE_TIME = 3000; // 3 seconds minimum between choices
+const MIN_STORY_TIME = 2000; // 2 seconds minimum to read story
+
+// Timer functions to prevent rapid clicking
+function startChoice() {
+    choiceStartTime = Date.now();
+}
+
+function startStory() {
+    storyStartTime = Date.now();
+}
+
+function canMakeChoice() {
+    return (Date.now() - choiceStartTime) >= MIN_CHOICE_TIME;
+}
+
+function canProceedFromStory() {
+    return (Date.now() - storyStartTime) >= MIN_STORY_TIME;
+}
+
+function getRemainingTime() {
+    const choiceTime = Math.max(0, MIN_CHOICE_TIME - (Date.now() - choiceStartTime));
+    const storyTime = Math.max(0, MIN_STORY_TIME - (Date.now() - storyStartTime));
+    return Math.max(choiceTime, storyTime);
+}
+
+function updateChoiceCountdown() {
+    const countdownElements = document.querySelectorAll('.choice-countdown');
+    const choiceButtons = document.querySelectorAll('.choice-button');
+    const remainingTime = getRemainingTime();
+    
+    if (remainingTime > 0) {
+        const seconds = Math.ceil(remainingTime / 1000);
+        countdownElements.forEach(element => {
+            element.textContent = `(Wait ${seconds}s)`;
+        });
+        
+        // Keep buttons disabled
+        choiceButtons.forEach(button => {
+            button.disabled = true;
+        });
+        
+        // Update every second
+        setTimeout(updateChoiceCountdown, 1000);
+    } else {
+        countdownElements.forEach(element => {
+            element.textContent = '(Ready!)';
+            element.style.color = '#2ecc71';
+        });
+        
+        // Enable buttons
+        choiceButtons.forEach(button => {
+            button.disabled = false;
+        });
+    }
+}
+
+function updateRestartCountdown() {
+    const countdownElement = document.querySelector('.restart-countdown');
+    const restartButton = document.querySelector('.restart-button');
+    if (!countdownElement || !restartButton) return;
+    
+    const remainingTime = getRemainingTime();
+    
+    if (remainingTime > 0) {
+        const seconds = Math.ceil(remainingTime / 1000);
+        countdownElement.textContent = `(Wait ${seconds}s)`;
+        
+        // Keep button disabled
+        restartButton.disabled = true;
+        
+        // Update every second
+        setTimeout(updateRestartCountdown, 1000);
+    } else {
+        countdownElement.textContent = '(Ready!)';
+        countdownElement.style.color = '#2ecc71';
+        
+        // Enable button
+        restartButton.disabled = false;
+    }
+}
+
 // Collector system for tracking endings
 let collectedEndings = JSON.parse(localStorage.getItem('collectedEndings')) || {
     khoisan: [],
@@ -1134,6 +1219,9 @@ function showScene() {
     const story = gameStories[currentCharacter];
     const scene = story.scenes[currentScene];
     
+    // Start story timer to prevent rapid clicking
+    startStory();
+    
     // Set background
     const backgroundImage = document.getElementById('backgroundImage');
     backgroundImage.style.backgroundImage = `url('${backgrounds[currentCharacter][scene.background]}')`;    
@@ -1150,11 +1238,34 @@ function showScene() {
         button.className = 'choice-button';
         button.textContent = choice.text;
         button.onclick = () => makeChoice(choice);
+        
+        // Initially disable button until timer expires
+        button.disabled = true;
+        
+        // Add countdown display
+        const countdownSpan = document.createElement('span');
+        countdownSpan.className = 'choice-countdown';
+        countdownSpan.style.cssText = 'color: #f39c12; font-size: 0.8em; margin-left: 10px;';
+        button.appendChild(countdownSpan);
+        
         choicesContainer.appendChild(button);
     });
+    
+    // Start countdown display
+    updateChoiceCountdown();
 }
 
 function makeChoice(choice) {
+    // Check if enough time has passed to prevent rapid clicking
+    if (!canMakeChoice()) {
+        const remainingTime = Math.ceil(getRemainingTime() / 1000);
+        alert(`Please take time to read and think about this choice! Wait ${remainingTime} more second(s).`);
+        return;
+    }
+    
+    // Start choice timer for next choice
+    startChoice();
+    
     gameHistory.push(choice.consequence);
     
     // Show historical context if available
@@ -1263,6 +1374,9 @@ function showEnding() {
     const endingKey = gameHistory.join('_');
     const ending = story.endings[endingKey];
     
+    // Start choice timer to prevent rapid clicking on ending screen
+    startChoice();
+    
     // Save the ending to collected endings
     saveCollectedEnding(currentCharacter, endingKey, ending);
     
@@ -1276,6 +1390,19 @@ function showEnding() {
         "Try another character to see history from a different perspective!";
     
     document.getElementById('endingText').textContent = endingText;
+    
+    // Add countdown to restart button
+    const restartButton = document.querySelector('.restart-button');
+    if (restartButton) {
+        // Initially disable restart button
+        restartButton.disabled = true;
+        
+        const countdownSpan = document.createElement('span');
+        countdownSpan.className = 'restart-countdown';
+        countdownSpan.style.cssText = 'color: #f39c12; font-size: 0.8em; margin-left: 10px;';
+        restartButton.appendChild(countdownSpan);
+        updateRestartCountdown();
+    }
     
     // Check for trading challenge opportunity
     checkForTradingChallenge(currentCharacter, endingKey);
@@ -1292,6 +1419,13 @@ function goBack() {
 }
 
 function restartGame() {
+    // Check if enough time has passed to prevent rapid clicking
+    if (!canMakeChoice()) {
+        const remainingTime = Math.ceil(getRemainingTime() / 1000);
+        alert(`Please take time to read the ending! Wait ${remainingTime} more second(s).`);
+        return;
+    }
+    
     goBack();
 }
 
