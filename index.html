@@ -426,6 +426,39 @@
             text-align: center;
         }
 
+        .quiz-button {
+            background: rgba(230, 126, 34, 0.8);
+            border: 2px solid #e67e22;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+
+        .quiz-button:hover {
+            background: rgba(230, 126, 34, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .quiz-icon {
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+
+        .quiz-text {
+            font-size: 0.8em;
+            opacity: 0.9;
+            text-align: center;
+        }
+
 
         /* Mini-Game Collection Styles */
         .mini-game-screen {
@@ -776,6 +809,393 @@
 
         .ending-item.locked .ending-status {
             color: #7f8c8d;
+        }
+
+        /* Quiz Screen Styles */
+        .quiz-screen {
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .quiz-title {
+            font-size: 2em;
+            color: #e67e22;
+            margin-bottom: 15px;
+        }
+
+        .quiz-info {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e67e22;
+        }
+
+        .quiz-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-top: 10px;
+        }
+
+        .quiz-progress {
+            text-align: center;
+            font-size: 1.2em;
+            color: #f39c12;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #e67e22;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            color: #ecf0f1;
+            line-height: 1.5;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-option {
+            background: rgba(52, 152, 219, 0.8);
+            border: 2px solid #3498db;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quiz-option:hover {
+            background: rgba(52, 152, 219, 1);
+            border-color: #f39c12;
+            transform: translateY(-2px);
+        }
+
+        .quiz-option.selected {
+            background: rgba(46, 204, 113, 0.8);
+            border-color: #2ecc71;
+        }
+
+        .option-letter {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1em;
+        }
+
+        .quiz-controls {
+            text-align: center;
+        }
+
+        .submit-quiz-btn {
+            background: rgba(46, 204, 113, 0.8);
+            border: 2px solid #2ecc71;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .submit-quiz-btn:hover:not(:disabled) {
+            background: rgba(46, 204, 113, 1);
+            border-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .submit-quiz-btn:disabled {
+            background: rgba(127, 140, 141, 0.3);
+            border-color: #7f8c8d;
+            color: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quiz-result {
+            background: rgba(44, 62, 80, 0.9);
+            border: 3px solid #f39c12;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .quiz-result h3 {
+            color: #f39c12;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .quiz-success {
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid #2ecc71;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .quiz-failure {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .play-fort-defense-btn, .restart-quiz-btn {
+            background: rgba(243, 156, 18, 0.8);
+            border: 2px solid #f39c12;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            margin: 10px;
+        }
+
+        .play-fort-defense-btn:hover, .restart-quiz-btn:hover {
+            background: rgba(243, 156, 18, 1);
+            border-color: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        /* Fort Defense Screen Styles */
+        .fort-defense-screen {
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .fort-defense-title {
+            font-size: 2em;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .fort-defense-info {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .fort-defense-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-top: 10px;
+        }
+
+        .fort-defense-stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(52, 73, 94, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .fort-defense-game-area {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #c0392b;
+        }
+
+        #fortDefenseCanvas {
+            border: 3px solid #e74c3c;
+            border-radius: 10px;
+            background: #87CEEB;
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .fort-defense-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group label {
+            color: #ecf0f1;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .control-group input[type="range"] {
+            width: 150px;
+            height: 8px;
+            border-radius: 5px;
+            background: #34495e;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+            border: none;
+        }
+
+        .fire-btn {
+            background: rgba(231, 76, 60, 0.8);
+            border: 2px solid #e74c3c;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.3em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .fire-btn:hover {
+            background: rgba(231, 76, 60, 1);
+            border-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .fort-defense-instructions {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .fort-defense-instructions h3 {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .fort-defense-instructions p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .fort-defense-game-over {
+            background: rgba(52, 73, 94, 0.9);
+            border: 3px solid #e74c3c;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .fort-defense-game-over h3 {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .fort-defense-game-over p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .fort-defense-final-stats {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .restart-fort-defense-btn, .exit-fort-defense-btn {
+            background: rgba(231, 76, 60, 0.8);
+            border: 2px solid #e74c3c;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            margin: 10px;
+        }
+
+        .restart-fort-defense-btn:hover {
+            background: rgba(231, 76, 60, 1);
+            border-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .exit-fort-defense-btn {
+            background: rgba(149, 165, 166, 0.8);
+            border-color: #95a5a6;
+        }
+
+        .exit-fort-defense-btn:hover {
+            background: rgba(149, 165, 166, 1);
+            border-color: #7f8c8d;
         }
 
         /* Trading Challenge Styles */
@@ -1754,6 +2174,10 @@
             <p class="subtitle">Choose your character and step into history</p>
             
             <div class="menu-buttons">
+                <button id="quizButton" class="quiz-button" onclick="showQuiz()">
+                    <span class="quiz-icon">📝</span>
+                    <span class="quiz-text">Take the Quiz</span>
+                </button>
                 <button id="infoButton" class="info-button" onclick="showInfo()">ℹ️ Game Info</button>
                 <button id="collectorButton" class="collector-button" onclick="showCollector()">
                     <span class="collector-icon">🏆</span>
@@ -2283,6 +2707,41 @@
                     </div>
                 </div>
                 
+                <div id="fortDefenseMiniGame" class="mini-game-item locked">
+                    <div class="mini-game-header">
+                        <span class="mini-game-emoji">🏰</span>
+                        <div class="mini-game-info">
+                            <h3 class="mini-game-title">Fort Defense</h3>
+                            <p class="mini-game-subtitle">Quiz Unlock Challenge</p>
+                        </div>
+                        <div class="mini-game-status">
+                            <span class="status-icon">🔒</span>
+                            <span class="status-text">Locked</span>
+                        </div>
+                    </div>
+                    <div class="mini-game-description">
+                        <p class="description-text">Defend your fort by launching projectiles at the enemy! A classic artillery game where you must adjust angle and velocity to hit your target while accounting for wind. Experience the strategic warfare of colonial South African fortifications!</p>
+                        <div class="unlock-condition">
+                            <strong>Unlock by:</strong> Score 100% on the Historical Knowledge Quiz (20/20 correct)
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-label">
+                            <span>Progress</span>
+                            <span id="fortDefenseProgressText">0/20</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div id="fortDefenseProgressFill" class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="mini-game-actions">
+                        <button class="play-mini-game-btn" onclick="playFortDefenseFromCollection()" disabled>
+                            <span class="play-icon">▶️</span>
+                            Play Game
+                        </button>
+                    </div>
+                </div>
+                
                 <div id="landGrabMazeMiniGame" class="mini-game-item locked">
                     <div class="mini-game-header">
                         <span class="mini-game-emoji">🏰</span>
@@ -2468,6 +2927,125 @@
                     </div>
                     <button class="restart-button" onclick="restartLandGrabMaze()">Play Again</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="quiz-screen" style="display: none;">
+            <button class="back-button" onclick="hideQuiz()">← Back to Main Menu</button>
+            <h2 class="quiz-title">📝 Historical Knowledge Quiz</h2>
+            <div class="quiz-info">
+                <p>Test your knowledge of South African colonial history! Answer all 20 questions correctly to unlock Fort Defense.</p>
+                <p class="quiz-subtitle">You need 100% to unlock the special mini-game!</p>
+            </div>
+            
+            <div class="quiz-progress">
+                <span id="quizProgress">Question 1 of 20</span>
+            </div>
+            
+            <div class="quiz-container">
+                <div id="quizQuestion" class="quiz-question">
+                    <!-- Questions will be populated by JavaScript -->
+                </div>
+                
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="selectAnswer('A')">
+                        <span class="option-letter">A</span>
+                        <span class="option-text" id="optionA">Option A</span>
+                    </button>
+                    <button class="quiz-option" onclick="selectAnswer('B')">
+                        <span class="option-letter">B</span>
+                        <span class="option-text" id="optionB">Option B</span>
+                    </button>
+                    <button class="quiz-option" onclick="selectAnswer('C')">
+                        <span class="option-letter">C</span>
+                        <span class="option-text" id="optionC">Option C</span>
+                    </button>
+                    <button class="quiz-option" onclick="selectAnswer('D')">
+                        <span class="option-letter">D</span>
+                        <span class="option-text" id="optionD">Option D</span>
+                    </button>
+                </div>
+                
+                <div class="quiz-controls">
+                    <button id="submitQuizBtn" class="submit-quiz-btn" onclick="submitQuiz()" disabled>Submit Quiz</button>
+                </div>
+            </div>
+            
+            <div id="quizResult" class="quiz-result" style="display: none;">
+                <h3 id="quizResultTitle">Quiz Complete!</h3>
+                <p id="quizResultText">You scored 0/20 correct answers.</p>
+                <div id="quizSuccess" class="quiz-success" style="display: none;">
+                    <p>🎉 Congratulations! You've unlocked Fort Defense!</p>
+                    <button class="play-fort-defense-btn" onclick="playFortDefense()">Play Fort Defense</button>
+                </div>
+                <div id="quizFailure" class="quiz-failure" style="display: none;">
+                    <p>❌ Sorry, you need 100% to unlock Fort Defense. Try again later!</p>
+                    <button class="restart-quiz-btn" onclick="restartQuiz()">Try Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fort Defense Screen -->
+        <div id="fortDefenseScreen" class="fort-defense-screen" style="display: none;">
+            <button class="back-button" onclick="exitFortDefense()">← Exit Game</button>
+            <h2 class="fort-defense-title">🏰 Fort Defense</h2>
+            <div class="fort-defense-info">
+                <p>Defend your fort by launching projectiles at the enemy! Adjust angle and velocity to hit your target.</p>
+                <p class="fort-defense-subtitle">A classic artillery game with historical South African fortifications!</p>
+            </div>
+            
+            <div class="fort-defense-stats">
+                <div class="stat">
+                    <span class="stat-label">Player Score:</span>
+                    <span id="playerScore" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Enemy Score:</span>
+                    <span id="enemyScore" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Wind:</span>
+                    <span id="windSpeed" class="stat-value">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Turn:</span>
+                    <span id="currentTurn" class="stat-value">Player</span>
+                </div>
+            </div>
+            
+            <div class="fort-defense-game-area">
+                <canvas id="fortDefenseCanvas" width="800" height="500"></canvas>
+                
+                <div class="fort-defense-controls">
+                    <div class="control-group">
+                        <label for="angleSlider">Angle: <span id="angleValue">45</span>°</label>
+                        <input type="range" id="angleSlider" min="0" max="90" value="45" oninput="updateAngle()">
+                    </div>
+                    <div class="control-group">
+                        <label for="velocitySlider">Velocity: <span id="velocityValue">50</span></label>
+                        <input type="range" id="velocitySlider" min="10" max="100" value="50" oninput="updateVelocity()">
+                    </div>
+                    <button id="fireBtn" class="fire-btn" onclick="fireProjectile()">Fire!</button>
+                </div>
+            </div>
+            
+            <div class="fort-defense-instructions">
+                <h3>🎮 How to Play</h3>
+                <p><strong>Goal:</strong> Destroy the enemy fort by hitting it with projectiles!</p>
+                <p><strong>Controls:</strong> Adjust angle (0-90°) and velocity (10-100), then click Fire!</p>
+                <p><strong>Wind:</strong> Watch the wind indicator - it affects projectile trajectory!</p>
+                <p><strong>Strategy:</strong> Account for wind and distance to hit your target accurately!</p>
+            </div>
+            
+            <div id="fortDefenseGameOver" class="fort-defense-game-over" style="display: none;">
+                <h3 id="fortDefenseResultTitle">Game Over!</h3>
+                <p id="fortDefenseResultText">The battle is complete!</p>
+                <div class="fort-defense-final-stats">
+                    <p>Final Score - Player: <span id="finalPlayerScore">0</span> | Enemy: <span id="finalEnemyScore">0</span></p>
+                </div>
+                <button class="restart-fort-defense-btn" onclick="restartFortDefense()">Play Again</button>
+                <button class="exit-fort-defense-btn" onclick="exitFortDefense()">Exit to Collection</button>
             </div>
         </div>
 
