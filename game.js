@@ -3,6 +3,7 @@
 let currentCharacter = '';
 let currentScene = 0;
 let gameHistory = [];
+let isTestMode = false; // Flag to track if we're in test mode
 
 // Reading timer system to prevent rapid clicking
 let choiceStartTime = 0;
@@ -6181,7 +6182,7 @@ function submitQuiz() {
     if (isCorrect) {
         showQuizNotification('✅ Correct!', 'success');
     } else {
-        showQuizNotification(`❌ Incorrect. The correct answer was: ${currentQuestion.correct}`, 'error');
+        showQuizNotification('❌ Incorrect. Try again next time!', 'error');
     }
     
     // Move to next question after a short delay
@@ -6292,7 +6293,13 @@ function hideFortDefense() {
 
 function exitFortDefense() {
     hideFortDefense();
-    showMiniGameCollection();
+    if (isTestMode) {
+        // Return to test screen if we're in test mode
+        showTestMiniGames();
+    } else {
+        // Return to mini-game collection if in normal mode
+        showMiniGameCollection();
+    }
 }
 
 function initFortDefense() {
@@ -6682,6 +6689,9 @@ function getUnlockedMiniGameCount() {
 
 // Test Mini-Games functionality
 function showTestMiniGames() {
+    // Set test mode flag
+    isTestMode = true;
+    
     // First hide all screens including any existing test screen
     hideAllScreens();
     
@@ -6741,6 +6751,9 @@ function showTestMiniGames() {
 }
 
 function hideTestMiniGames() {
+    // Clear test mode flag
+    isTestMode = false;
+    
     const testScreen = document.getElementById('testMiniGamesScreen');
     if (testScreen) {
         testScreen.remove();
@@ -6757,7 +6770,17 @@ function testTradingChallenge() {
 
 function testCattleChase() {
     hideTestMiniGames();
+    // Temporarily unlock cattle chase for testing
+    const originalValue = unlockedMiniGames.cattleChase;
+    unlockedMiniGames.cattleChase = true;
+    
+    // Start the game
     playCattleChase();
+    
+    // Restore original value after a delay
+    setTimeout(() => {
+        unlockedMiniGames.cattleChase = originalValue;
+    }, 1000);
 }
 
 function testHarborHustle() {
@@ -6777,7 +6800,75 @@ function testFortDefense() {
 
 function testLandGrabMaze() {
     hideTestMiniGames();
-    playLandGrabMaze();
+    
+    // Create modal for Land Grab Maze
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border: 3px solid #e67e22;
+        border-radius: 15px;
+        padding: 20px;
+        max-width: 90%;
+        max-height: 90%;
+        overflow: auto;
+        position: relative;
+    `;
+    
+    // Get the Land Grab Maze screen content
+    const mazeScreen = document.getElementById('landGrabMazeScreen');
+    const mazeContent = mazeScreen.innerHTML;
+    
+    modal.innerHTML = `
+        <button onclick="closeLandGrabMazeModal()" style="
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        ">×</button>
+        ${mazeContent}
+    `;
+    
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    
+    // Initialize the game
+    if (!landGrabMaze.canvas) {
+        initLandGrabMaze();
+    }
+    
+    // Store reference for closing
+    window.currentLandGrabMazeModal = overlay;
+}
+
+function closeLandGrabMazeModal() {
+    if (window.currentLandGrabMazeModal) {
+        document.body.removeChild(window.currentLandGrabMazeModal);
+        window.currentLandGrabMazeModal = null;
+    }
+    // Return to test screen
+    showTestMiniGames();
 }
 
 // End of file
