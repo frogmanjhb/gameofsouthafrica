@@ -5729,23 +5729,72 @@ function gameLoop() {
 
 // Character selection for maze
 function selectMazeCharacter(character) {
+    console.log('selectMazeCharacter called with:', character);
+    
     // Remove previous selection
     document.querySelectorAll('.character-card-maze').forEach(card => {
         card.classList.remove('selected');
     });
     
     // Add selection to clicked card
-    event.currentTarget.classList.add('selected');
+    const clickedCard = event.target.closest('.character-card-maze');
+    if (clickedCard) {
+        clickedCard.classList.add('selected');
+    }
     
     // Update game state
     landGrabMaze.gameState.selectedCharacter = character;
     landGrabMaze.player.color = mazeCharacters[character].color;
+    
+    console.log('Character selected:', landGrabMaze.gameState.selectedCharacter);
+}
+
+// Show notification for maze game
+function showMazeNotification(message, type = 'info') {
+    // Remove any existing notification
+    const existingNotification = document.getElementById('mazeNotification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.id = 'mazeNotification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'warning' ? '#e74c3c' : '#3498db'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 1.1em;
+        font-weight: bold;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 2px solid ${type === 'warning' ? '#c0392b' : '#2980b9'};
+    `;
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 3000);
 }
 
 // Start the maze game
 function startLandGrabMaze() {
+    console.log('startLandGrabMaze called, selectedCharacter:', landGrabMaze.gameState.selectedCharacter);
+    
     if (!landGrabMaze.gameState.selectedCharacter) {
-        alert('Please select a character first!');
+        showMazeNotification('Please select a character first!', 'warning');
         return;
     }
     
@@ -6009,6 +6058,50 @@ function showQuiz() {
 
 function hideQuiz() {
     document.getElementById('quizScreen').style.display = 'none';
+    // Show the main menu
+    document.getElementById('titleScreen').style.display = 'block';
+}
+
+// Show notification for quiz
+function showQuizNotification(message, type = 'info') {
+    // Remove any existing notification
+    const existingNotification = document.getElementById('quizNotification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.id = 'quizNotification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : type === 'warning' ? '#f39c12' : '#3498db'};
+        color: white;
+        padding: 15px 25px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 1.1em;
+        font-weight: bold;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 2px solid ${type === 'success' ? '#27ae60' : type === 'error' ? '#c0392b' : type === 'warning' ? '#e67e22' : '#2980b9'};
+        max-width: 80%;
+        text-align: center;
+    `;
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 2 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 2000);
 }
 
 function startQuiz() {
@@ -6041,6 +6134,7 @@ function displayQuestion() {
     
     // Enable submit button if we have an answer for this question
     const submitBtn = document.getElementById('submitQuizBtn');
+    submitBtn.textContent = 'Submit Answer';
     if (quizState.answers[quizState.currentQuestion]) {
         submitBtn.disabled = false;
     } else {
@@ -6068,15 +6162,40 @@ function selectAnswer(letter) {
 }
 
 function submitQuiz() {
-    if (quizState.currentQuestion < quizQuestions.length - 1) {
-        // Move to next question
-        quizState.currentQuestion++;
-        displayQuestion();
-    } else {
-        // Quiz complete - calculate score
-        calculateQuizScore();
-        showQuizResult();
+    // Check if an answer was selected
+    if (!quizState.answers[quizState.currentQuestion]) {
+        showQuizNotification('Please select an answer before submitting!', 'warning');
+        return;
     }
+    
+    // Disable submit button to prevent multiple submissions
+    const submitBtn = document.getElementById('submitQuizBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing...';
+    
+    // Check if the answer is correct
+    const currentQuestion = quizQuestions[quizState.currentQuestion];
+    const isCorrect = quizState.answers[quizState.currentQuestion] === currentQuestion.correct;
+    
+    // Show immediate feedback
+    if (isCorrect) {
+        showQuizNotification('✅ Correct!', 'success');
+    } else {
+        showQuizNotification(`❌ Incorrect. The correct answer was: ${currentQuestion.correct}`, 'error');
+    }
+    
+    // Move to next question after a short delay
+    setTimeout(() => {
+        if (quizState.currentQuestion < quizQuestions.length - 1) {
+            // Move to next question
+            quizState.currentQuestion++;
+            displayQuestion();
+        } else {
+            // Quiz complete - calculate score
+            calculateQuizScore();
+            showQuizResult();
+        }
+    }, 1500); // 1.5 second delay to show feedback
 }
 
 function calculateQuizScore() {
