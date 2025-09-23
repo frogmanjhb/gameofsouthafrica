@@ -6600,4 +6600,103 @@ function getUnlockedMiniGameCount() {
     return count;
 }
 
+// Test Mini-Games functionality
+function showTestMiniGames() {
+    hideAllScreens();
+    document.getElementById('titleScreen').style.display = 'block';
+    
+    // Create test mini-games screen
+    const testScreen = document.createElement('div');
+    testScreen.id = 'testMiniGamesScreen';
+    testScreen.className = 'test-mini-games-screen';
+    testScreen.style.display = 'block';
+    testScreen.innerHTML = `
+        <button class="back-button" onclick="hideTestMiniGames()">← Back to Main Menu</button>
+        <h2 class="test-title">🧪 Test All Mini-Games</h2>
+        <div class="test-info">
+            <p>Test all mini-games without completing unlock requirements! Perfect for demonstrations and testing.</p>
+            <p class="test-subtitle">All games are unlocked in test mode for educational purposes.</p>
+        </div>
+        
+        <div class="test-games-container">
+            <div class="test-game-item" onclick="testTradingChallenge()">
+                <span class="test-game-emoji">🤝</span>
+                <h3>Trading Challenge</h3>
+                <p>Test item matching game</p>
+            </div>
+            
+            <div class="test-game-item" onclick="testCattleChase()">
+                <span class="test-game-emoji">🐄</span>
+                <h3>Cattle Chase</h3>
+                <p>Test herding game</p>
+            </div>
+            
+            <div class="test-game-item" onclick="testHarborHustle()">
+                <span class="test-game-emoji">⚓</span>
+                <h3>Harbor Hustle</h3>
+                <p>Test loading game</p>
+            </div>
+            
+            <div class="test-game-item" onclick="testFrontierWars()">
+                <span class="test-game-emoji">⚔️</span>
+                <h3>Frontier Wars</h3>
+                <p>Test battle game</p>
+            </div>
+            
+            <div class="test-game-item" onclick="testFortDefense()">
+                <span class="test-game-emoji">🏰</span>
+                <h3>Fort Defense</h3>
+                <p>Test artillery game</p>
+            </div>
+            
+            <div class="test-game-item" onclick="testLandGrabMaze()">
+                <span class="test-game-emoji">🏰</span>
+                <h3>Land Grab Maze</h3>
+                <p>Test maze game</p>
+            </div>
+        </div>
+    `;
+    
+    document.querySelector('.game-container').appendChild(testScreen);
+}
+
+function hideTestMiniGames() {
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
+    document.getElementById('titleScreen').style.display = 'block';
+}
+
+// Test game functions
+function testTradingChallenge() {
+    hideTestMiniGames();
+    showTradingChallenge();
+}
+
+function testCattleChase() {
+    hideTestMiniGames();
+    showCattleChase();
+}
+
+function testHarborHustle() {
+    hideTestMiniGames();
+    showHarborHustle();
+}
+
+function testFrontierWars() {
+    hideTestMiniGames();
+    showFrontierWars();
+}
+
+function testFortDefense() {
+    hideTestMiniGames();
+    showFortDefense();
+}
+
+function testLandGrabMaze() {
+    hideTestMiniGames();
+    showLandGrabMaze();
+}
+
 // End of file

@@ -1198,6 +1198,76 @@
             border-color: #7f8c8d;
         }
 
+        /* Test Mini-Games Screen Styles */
+        .test-mini-games-screen {
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .test-title {
+            font-size: 2em;
+            color: #e67e22;
+            margin-bottom: 15px;
+        }
+
+        .test-info {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e67e22;
+        }
+
+        .test-subtitle {
+            font-style: italic;
+            color: #bdc3c7;
+            margin-top: 10px;
+        }
+
+        .test-games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .test-game-item {
+            background: rgba(52, 152, 219, 0.8);
+            border: 2px solid #3498db;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .test-game-item:hover {
+            background: rgba(52, 152, 219, 1);
+            border-color: #f39c12;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .test-game-emoji {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .test-game-item h3 {
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .test-game-item p {
+            color: #bdc3c7;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
         /* Trading Challenge Styles */
         .trading-challenge-screen {
             text-align: center;
@@ -2087,6 +2157,10 @@
                 gap: 15px;
             }
 
+            .quiz-button, .test-mini-games-button {
+                min-width: 100px;
+            }
+
             .character-tabs {
                 flex-direction: column;
             }
@@ -2163,6 +2237,19 @@
                 padding: 12px 20px;
                 font-size: 1em;
             }
+
+            .test-games-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .test-game-item {
+                padding: 15px;
+            }
+
+            .test-game-emoji {
+                font-size: 2.5em;
+            }
         }
     </style>
 </head>
@@ -2186,15 +2273,13 @@
                 </button>
                 <button id="miniGameButton" class="mini-game-button" onclick="showMiniGameCollection()">
                     <span class="mini-game-icon">🎮</span>
-                    <span id="miniGameCount" class="mini-game-count">0/5</span>
+                    <span id="miniGameCount" class="mini-game-count">0/6</span>
                     <span class="mini-game-text">Mini-Games</span>
                 </button>
-                <!-- Temporarily removed test mini-games button
                 <button id="testMiniGamesButton" class="test-mini-games-button" onclick="showTestMiniGames()">
                     <span class="test-icon">🧪</span>
                     <span class="test-text">Test All Games</span>
                 </button>
-                -->
             </div>
             
             <div class="character-selection">
@@ -2342,6 +2427,8 @@
                         <li><strong>Cattle Chase:</strong> Top-down herding game unlocked after completing 8 Farmer/Survival themed endings (any character)</li>
                         <li><strong>Harbor Hustle:</strong> Tetris-style loading game unlocked after completing 5 Diplomatic/Cooperation themed endings (any character)</li>
                         <li><strong>Frontier Wars:</strong> Space Invaders-style battle game unlocked after completing 8 Warrior/Resistance themed endings (any character)</li>
+                        <li><strong>Fort Defense:</strong> Classic artillery game unlocked by scoring 100% on the Historical Knowledge Quiz (20/20 correct)</li>
+                        <li><strong>Land Grab Maze:</strong> Ultimate Pac-Man style maze game unlocked after completing ALL 128 endings (100% completion)</li>
                         <li><strong>Educational Integration:</strong> Mini-games reinforce historical concepts from the main story</li>
                         <li><strong>Progressive Unlocking:</strong> Complete specific story requirements to access each mini-game</li>
                         <li><strong>Cross-Character Learning:</strong> Trade endings from both Khoi-San and Dutch characters count toward Trading Challenge unlock</li>
@@ -2354,6 +2441,8 @@
                         <li><strong>Cattle Chase:</strong> Guide cattle into kraals while avoiding obstacles, with alternating spawn locations and life-based scoring</li>
                         <li><strong>Harbor Hustle:</strong> Pack supplies onto ships using Tetris-style pieces with 30-second timer and grid-based placement</li>
                         <li><strong>Frontier Wars:</strong> Space Invaders-style battle where Bantu warriors (🏹) defend against waves of British soldiers (💂) using traditional weapons</li>
+                        <li><strong>Fort Defense:</strong> Classic artillery game where you adjust angle and velocity to hit enemy fortifications while accounting for wind effects</li>
+                        <li><strong>Land Grab Maze:</strong> Pac-Man style maze where you collect resources while avoiding historical "ghosts" representing different colonial challenges</li>
                         <li><strong>Test Mode:</strong> Use the "Test All Games" button to try mini-games without completing unlock requirements</li>
                     </ul>
 
@@ -2363,8 +2452,21 @@
                         <li><strong>Cattle Chase:</strong> Complete 8 Farmer/Survival themed endings across any characters</li>
                         <li><strong>Harbor Hustle:</strong> Complete 5 Diplomatic/Cooperation themed endings across any characters</li>
                         <li><strong>Frontier Wars:</strong> Complete 8 Warrior/Resistance themed endings across any characters</li>
+                        <li><strong>Fort Defense:</strong> Score 100% on the Historical Knowledge Quiz (answer all 20 questions correctly)</li>
+                        <li><strong>Land Grab Maze:</strong> Complete ALL 128 endings across all characters (100% completion)</li>
                         <li><strong>Progress Tracking:</strong> See your unlock progress in the Mini-Game Collection screen</li>
                         <li><strong>Encouragement System:</strong> Get progress updates when completing relevant endings</li>
+                    </ul>
+
+                    <h4>Historical Knowledge Quiz 📝</h4>
+                    <ul>
+                        <li><strong>Purpose:</strong> Test comprehensive understanding of South African colonial history across all character perspectives</li>
+                        <li><strong>Format:</strong> 20 multiple choice questions covering Khoi-San, Dutch, British, and Bantu storylines</li>
+                        <li><strong>Requirements:</strong> Must score 100% (20/20 correct) to unlock Fort Defense mini-game</li>
+                        <li><strong>Content Coverage:</strong> Questions test knowledge of key historical events, relationships, challenges, and responses from all four character perspectives</li>
+                        <li><strong>Retry System:</strong> Students can retake the quiz as many times as needed to achieve perfect score</li>
+                        <li><strong>Educational Value:</strong> Reinforces learning by requiring mastery of content from all character storylines</li>
+                        <li><strong>Access:</strong> Available from main menu via "Take the Quiz" button</li>
                     </ul>
                 </div>
             </div>
