@@ -4558,51 +4558,6 @@ function showTestMiniGames() {
     document.body.appendChild(overlay);
 }
 
-function testTradingChallenge() {
-    // Temporarily unlock trading challenge for testing
-    unlockedMiniGames.tradingChallenge = true;
-    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
-    
-    hideAllScreens();
-    document.getElementById('tradingChallengeScreen').style.display = 'block';
-    
-    // Update perspective display
-    document.getElementById('tradePerspective').textContent = 'Khoi-San';
-    
-    // Start the game
-    nextTradeItem();
-    startTimer();
-}
-
-function testCattleChase() {
-    // Temporarily unlock cattle chase for testing
-    unlockedMiniGames.cattleChase = true;
-    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
-    
-    hideAllScreens();
-    document.getElementById('cattleChaseScreen').style.display = 'block';
-    initializeCattleChase();
-}
-
-function testHarborHustle() {
-    // Temporarily unlock harbor hustle for testing
-    unlockedMiniGames.harborHustle = true;
-    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
-    
-    hideAllScreens();
-    document.getElementById('harborHustleScreen').style.display = 'block';
-    initializeHarborHustle();
-}
-
-function testFrontierWars() {
-    // Temporarily unlock frontier wars for testing
-    unlockedMiniGames.frontierWars = true;
-    localStorage.setItem('unlockedMiniGames', JSON.stringify(unlockedMiniGames));
-    
-    hideAllScreens();
-    document.getElementById('frontierWarsScreen').style.display = 'block';
-    initializeFrontierWars();
-}
 
 function checkAllKhoisanEndingsCollected() {
     const totalKhoisanEndings = Object.keys(gameStories.khoisan.endings).length;
@@ -6532,6 +6487,12 @@ function hideAllScreens() {
             screen.style.display = 'none';
         }
     });
+    
+    // Also hide any dynamically created test screen
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
 }
 
 // Update mini-game collection to include Fort Defense
@@ -6602,8 +6563,8 @@ function getUnlockedMiniGameCount() {
 
 // Test Mini-Games functionality
 function showTestMiniGames() {
+    // First hide all screens including any existing test screen
     hideAllScreens();
-    document.getElementById('titleScreen').style.display = 'block';
     
     // Create test mini-games screen
     const testScreen = document.createElement('div');
@@ -6665,28 +6626,29 @@ function hideTestMiniGames() {
     if (testScreen) {
         testScreen.remove();
     }
+    // Show title screen
     document.getElementById('titleScreen').style.display = 'block';
 }
 
 // Test game functions
 function testTradingChallenge() {
     hideTestMiniGames();
-    showTradingChallenge();
+    playTradingChallenge();
 }
 
 function testCattleChase() {
     hideTestMiniGames();
-    showCattleChase();
+    playCattleChase();
 }
 
 function testHarborHustle() {
     hideTestMiniGames();
-    showHarborHustle();
+    playHarborHustle();
 }
 
 function testFrontierWars() {
     hideTestMiniGames();
-    showFrontierWars();
+    playFrontierWars();
 }
 
 function testFortDefense() {
@@ -6696,7 +6658,7 @@ function testFortDefense() {
 
 function testLandGrabMaze() {
     hideTestMiniGames();
-    showLandGrabMaze();
+    playLandGrabMaze();
 }
 
 // End of file
