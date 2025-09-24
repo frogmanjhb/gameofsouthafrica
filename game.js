@@ -4353,7 +4353,7 @@ function exitFrontierWars() {
         showTestMiniGames();
     } else {
     document.getElementById('titleScreen').style.display = 'block';
-    }
+}
 }
 
 
@@ -5000,7 +5000,11 @@ const landGrabMaze = {
         { x: 150, y: 150, type: 'disease', color: '#e74c3c', speed: 1.5, direction: 0, behavior: 'random' },
         { x: 450, y: 150, type: 'colonial', color: '#8e44ad', speed: 2, direction: 0, behavior: 'hunt' },
         { x: 150, y: 450, type: 'law', color: '#3498db', speed: 1, direction: 0, behavior: 'block' },
-        { x: 450, y: 450, type: 'war', color: '#e67e22', speed: 2.5, direction: 0, behavior: 'charge' }
+        { x: 450, y: 450, type: 'war', color: '#e67e22', speed: 2.5, direction: 0, behavior: 'charge' },
+        { x: 300, y: 100, type: 'disease', color: '#e74c3c', speed: 1.8, direction: 0, behavior: 'random' },
+        { x: 100, y: 300, type: 'colonial', color: '#8e44ad', speed: 2.2, direction: 0, behavior: 'hunt' },
+        { x: 500, y: 300, type: 'law', color: '#3498db', speed: 1.2, direction: 0, behavior: 'block' },
+        { x: 300, y: 500, type: 'war', color: '#e67e22', speed: 2.8, direction: 0, behavior: 'charge' }
     ],
     powerUps: {
         peaceTreaty: { active: false, timer: 0, duration: 5000 },
