@@ -287,16 +287,21 @@ gameStories.khoisan = {
     scenes: [
         {
             background: 'intro',
-            text: "You are Khoi-San, living as herders and hunter-gatherers. The land and cattle are your life. One day in 1652, strange ships appear at the Cape.",
+            text: "You are Khoi-San, living as herders and hunter-gatherers. The land and cattle are your life. One day in 1652, strange ships appear at the Cape. As you watch from the shore, a familiar figure approaches - Autshumato, known to the Dutch as 'Harry the Strandloper', who has already been trading with these newcomers.",
+            historicalFigure: {
+                name: "Autshumato (Harry the Strandloper)",
+                quote: "These strangers bring new things, but they also bring change. I have learned their ways, but I warn you - they are not like us. They seek to stay, not just trade.",
+                historyFact: "Autshumato was one of the first Khoi leaders to act as a translator and trader with the Dutch in the 1600s. He learned Dutch and became a crucial intermediary between the Khoi-San and European settlers."
+            },
             choices: [
                 {
-                    text: "Trade cattle with settlers (gain beads and tools)",
+                    text: "Listen to Autshumato and trade cattle with settlers (gain beads and tools)",
                     nextScene: 1,
                     consequence: "trade",
                     historyNote: "The Khoi-San traded with the Dutch at first but later felt cheated as land pressure grew."
                 },
                 {
-                    text: "Refuse trade (protect traditions)",
+                    text: "Follow Autshumato's warning and refuse trade (protect traditions)",
                     nextScene: 1,
                     consequence: "refuse",
                     historyNote: "The Khoi-San traded with the Dutch at first but later felt cheated as land pressure grew."
@@ -513,16 +518,21 @@ gameStories.dutch = {
         scenes: [
             {
                 background: 'intro',
-                text: "You arrive with Jan van Riebeeck in 1652. The Dutch East India Company needs farms to supply passing ships. You need food and supplies from the local people.",
+                text: "You arrive with Jan van Riebeeck in 1652. The Dutch East India Company needs farms to supply passing ships. You need food and supplies from the local people. Commander van Riebeeck calls a meeting to discuss the Company's strategy for establishing the settlement.",
+                historicalFigure: {
+                    name: "Jan van Riebeeck",
+                    quote: "We must establish a permanent settlement here to supply our ships. The Company's orders are clear - we need farms, not just trade posts. But we must be careful with the local people. They have cattle and knowledge of this land.",
+                    historyFact: "Jan van Riebeeck established the first permanent Dutch settlement at the Cape in 1652. He was tasked with creating a refreshment station for Dutch East India Company ships traveling to and from Asia."
+                },
                 choices: [
                     {
-                        text: "Trade cattle fairly with Khoi-San (slow growth, good relations)",
+                        text: "Follow van Riebeeck's advice and trade cattle fairly with Khoi-San (slow growth, good relations)",
                         nextScene: 1,
                         consequence: "fair_trade",
                         historyNote: "Trade gave way to land seizures and conflict."
                     },
                     {
-                        text: "Take land and cattle (start conflict)",
+                        text: "Take a more aggressive approach and take land and cattle (start conflict)",
                         nextScene: 1,
                         consequence: "take_land",
                         historyNote: "Trade gave way to land seizures and conflict."
@@ -757,16 +767,21 @@ gameStories["britishColonist"] = {
             },
             {
                 background: 'court',
-                text: "The Khoi-San people are seeking fairness under British rule. They hope the British will treat them better than the Dutch did. You must decide how to handle their requests for equal treatment.",
+                text: "The Khoi-San people are seeking fairness under British rule. They hope the British will treat them better than the Dutch did. Governor Lord Charles Somerset has called you to discuss the policy regarding the Khoi-San people. The settlers are pressuring for stricter controls, while the Khoi-San seek protection under British law.",
+                historicalFigure: {
+                    name: "Lord Charles Somerset",
+                    quote: "The Khoi-San question is delicate. We must balance the needs of our settlers with the principles of British justice. The Hottentot Proclamation will ensure order, but we must consider what is truly just for all subjects of the Crown.",
+                    historyFact: "Lord Charles Somerset was Governor of the Cape from 1814–1826 and introduced strict laws affecting the Khoi-San, including the Hottentot Proclamation which restricted their movement and freedom."
+                },
                 choices: [
                     {
-                        text: "Protect Khoi-San rights (anger settlers)",
+                        text: "Support Somerset's approach and protect Khoi-San rights (anger settlers)",
                         nextScene: 2,
                         consequence: "protect_khoisan",
                         historyNote: "The Hottentot Proclamation restricted Khoi-San freedom."
                     },
                     {
-                        text: "Enforce pass laws (please settlers, harm Khoi-San)",
+                        text: "Enforce strict pass laws as Somerset suggests (please settlers, harm Khoi-San)",
                         nextScene: 2,
                         consequence: "enforce_pass_laws",
                         historyNote: "The Hottentot Proclamation restricted Khoi-San freedom."
@@ -1034,16 +1049,21 @@ gameStories.bantu = {
         },
         {
             background: 'war',
-            text: "Conflict is spreading across the frontier as settlers push deeper into traditional lands. Your community must decide how to respond to these growing pressures and threats.",
+            text: "Conflict is spreading across the frontier as settlers push deeper into traditional lands. Your community must decide how to respond to these growing pressures and threats. Word has reached you of a powerful new force in the region - King Shaka Zulu has united many groups under his banner and revolutionized warfare in southern Africa. His messengers have arrived to discuss potential alliances.",
+            historicalFigure: {
+                name: "King Shaka Zulu",
+                quote: "The white men come with their guns and their ways, but they do not understand our land or our people. I have united the Zulu nation and created new ways of war. Join me, and together we can drive them back to the sea, or learn their ways and use them against them.",
+                historyFact: "King Shaka Zulu (1787–1828) was a powerful Zulu king who revolutionized warfare in southern Africa. He created new military tactics, weapons, and organizational structures that made the Zulu army one of the most formidable forces in the region."
+            },
             choices: [
                 {
-                    text: "Join neighboring groups in resistance wars (united front)",
+                    text: "Ally with King Shaka and join neighboring groups in resistance wars (united front)",
                     nextScene: 4,
                     consequence: "join_resistance",
                     historyNote: "The frontier wars involved complex alliances and conflicts between different groups."
                 },
                 {
-                    text: "Negotiate peace to reduce losses (diplomatic approach)",
+                    text: "Adopt Shaka's tactics but negotiate peace to reduce losses (diplomatic approach)",
                     nextScene: 4,
                     consequence: "negotiate_peace",
                     historyNote: "The frontier wars involved complex alliances and conflicts between different groups."
@@ -1269,24 +1289,163 @@ function makeChoice(choice) {
     
     gameHistory.push(choice.consequence);
     
-    // Show historical context if available
-    if (choice.historyNote) {
-        showHistoricalContext(choice.historyNote, () => {
+    // Check if current scene has a historical figure to show
+    // Historical figures are displayed before the choice consequences
+    const story = gameStories[currentCharacter];
+    const scene = story.scenes[currentScene];
+    
+    if (scene.historicalFigure) {
+        // Show historical figure information first
+        showHistoricalFigure(scene.historicalFigure.name, scene.historicalFigure.quote, scene.historicalFigure.historyFact, () => {
+            // After historical figure, show historical context if available
+            if (choice.historyNote) {
+                showHistoricalContext(choice.historyNote, () => {
+                    if (choice.nextScene === 'ending') {
+                        showEnding();
+                    } else {
+                        currentScene = choice.nextScene;
+                        showScene();
+                    }
+                });
+            } else {
+                if (choice.nextScene === 'ending') {
+                    showEnding();
+                } else {
+                    currentScene = choice.nextScene;
+                    showScene();
+                }
+            }
+        });
+    } else {
+        // Show historical context if available (original behavior)
+        if (choice.historyNote) {
+            showHistoricalContext(choice.historyNote, () => {
+                if (choice.nextScene === 'ending') {
+                    showEnding();
+                } else {
+                    currentScene = choice.nextScene;
+                    showScene();
+                }
+            });
+        } else {
             if (choice.nextScene === 'ending') {
                 showEnding();
             } else {
                 currentScene = choice.nextScene;
                 showScene();
             }
-        });
-    } else {
-        if (choice.nextScene === 'ending') {
-            showEnding();
-        } else {
-            currentScene = choice.nextScene;
-            showScene();
         }
     }
+}
+
+// Function to display historical figure information
+// This function creates a styled modal to show historical figures with their quotes and facts
+// To add more historical figures, simply add a 'historicalFigure' object to any scene with:
+// - name: The historical figure's name
+// - quote: A quote or dialogue from the figure
+// - historyFact: A "Did You Know?" fact about the figure
+function showHistoricalFigure(figureName, figureQuote, historyFact, callback) {
+    // Create a modal overlay for historical figure
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background: rgba(44, 62, 80, 0.95);
+        border: 3px solid #e74c3c;
+        border-radius: 10px;
+        padding: 30px;
+        max-width: 700px;
+        margin: 20px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = `👑 ${figureName}`;
+    title.style.cssText = `
+        color: #e74c3c;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        font-family: 'Courier New', monospace;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    `;
+    
+    const quote = document.createElement('div');
+    quote.style.cssText = `
+        background: rgba(52, 73, 94, 0.8);
+        border-left: 4px solid #f39c12;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 5px;
+        font-style: italic;
+    `;
+    quote.innerHTML = `<p style="color: #ecf0f1; font-size: 1.2em; line-height: 1.6; margin: 0; font-family: 'Courier New', monospace;">"${figureQuote}"</p>`;
+    
+    const factTitle = document.createElement('h4');
+    factTitle.textContent = "💡 Did You Know?";
+    factTitle.style.cssText = `
+        color: #f39c12;
+        font-size: 1.3em;
+        margin: 25px 0 15px 0;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const fact = document.createElement('p');
+    fact.textContent = historyFact;
+    fact.style.cssText = `
+        color: #ecf0f1;
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+    `;
+    
+    const button = document.createElement('button');
+    button.textContent = "Continue";
+    button.style.cssText = `
+        background: rgba(46, 204, 113, 0.8);
+        border: 2px solid #2ecc71;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-family: 'Courier New', monospace;
+        transition: all 0.3s ease;
+    `;
+    
+    button.onmouseover = () => {
+        button.style.background = 'rgba(46, 204, 113, 1)';
+    };
+    
+    button.onmouseout = () => {
+        button.style.background = 'rgba(46, 204, 113, 0.8)';
+    };
+    
+    button.onclick = () => {
+        document.body.removeChild(overlay);
+        callback();
+    };
+    
+    modal.appendChild(title);
+    modal.appendChild(quote);
+    modal.appendChild(factTitle);
+    modal.appendChild(fact);
+    modal.appendChild(button);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
 }
 
 function showHistoricalContext(historyNote, callback) {
@@ -5081,7 +5240,11 @@ function generateResources() {
         { icon: '🛠️', name: 'Tools', points: 8 }
     ];
     
-    for (let i = 0; i < landGrabMaze.gameState.totalResources; i++) {
+    // Add 5 extra resources per level to compensate for stuck resources
+    const extraResources = landGrabMaze.gameState.level * 5;
+    const totalResourcesToGenerate = landGrabMaze.gameState.totalResources + extraResources;
+    
+    for (let i = 0; i < totalResourcesToGenerate; i++) {
         let x, y;
         let attempts = 0;
         
@@ -5212,7 +5375,7 @@ function handleMazeKeyUp(e) {
 
 // Update game state
 function updateLandGrabMaze() {
-    if (!landGrabMaze.gameState.active) return;
+    if (!landGrabMaze.gameState.active || landGrabMaze.gameState.gameOver) return;
     
     // Update player position
     updatePlayer();
@@ -5315,14 +5478,52 @@ function updateGhosts() {
                 break;
         }
         
-        // Check wall collisions for ghosts
-        if (!isWall(targetX - 10, targetY - 10) &&
-            !isWall(targetX + 10, targetY - 10) &&
-            !isWall(targetX - 10, targetY + 10) &&
-            !isWall(targetX + 10, targetY + 10)) {
-            ghost.x = targetX;
-            ghost.y = targetY;
+        // Check wall collisions for ghosts with better collision handling
+        let newX = ghost.x;
+        let newY = ghost.y;
+        
+        // Try horizontal movement first
+        if (!isWall(targetX - 10, ghost.y - 10) &&
+            !isWall(targetX + 10, ghost.y - 10) &&
+            !isWall(targetX - 10, ghost.y + 10) &&
+            !isWall(targetX + 10, ghost.y + 10)) {
+            newX = targetX;
         }
+        
+        // Try vertical movement
+        if (!isWall(newX - 10, targetY - 10) &&
+            !isWall(newX + 10, targetY - 10) &&
+            !isWall(newX - 10, targetY + 10) &&
+            !isWall(newX + 10, targetY + 10)) {
+            newY = targetY;
+        }
+        
+        // If ghost is completely stuck, try to find a new direction
+        if (newX === ghost.x && newY === ghost.y) {
+            // Try different directions to get unstuck
+            const directions = [
+                Math.PI/4, 3*Math.PI/4, 5*Math.PI/4, 7*Math.PI/4, // Diagonal directions
+                0, Math.PI/2, Math.PI, 3*Math.PI/2 // Cardinal directions
+            ];
+            
+            for (const dir of directions) {
+                const testX = ghost.x + Math.cos(dir) * ghost.speed;
+                const testY = ghost.y + Math.sin(dir) * ghost.speed;
+                
+                if (!isWall(testX - 10, testY - 10) &&
+                    !isWall(testX + 10, testY - 10) &&
+                    !isWall(testX - 10, testY + 10) &&
+                    !isWall(testX + 10, testY + 10)) {
+                    newX = testX;
+                    newY = testY;
+                    ghost.direction = dir; // Update direction to the working one
+                    break;
+                }
+            }
+        }
+        
+        ghost.x = newX;
+        ghost.y = newY;
         
         // Keep ghosts within bounds
         ghost.x = Math.max(10, Math.min(790, ghost.x));
@@ -5371,15 +5572,18 @@ function checkCollisions() {
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance < 20) {
-                // Player caught by ghost
+                // Player loses 1 life
                 landGrabMaze.gameState.lives--;
-                if (landGrabMaze.gameState.lives <= 0) {
-                    landGrabMaze.gameState.gameOver = true;
-                } else {
-                    // Reset player position
+                
+                // Character respawns in middle
                     landGrabMaze.player.x = 300;
                     landGrabMaze.player.y = 300;
-                }
+                
+                // Ghost respawns somewhere safe (away from player and walls)
+                const safePos = findSafeGhostPosition(landGrabMaze.player.x, landGrabMaze.player.y, 150);
+                ghost.x = safePos.x;
+                ghost.y = safePos.y;
+                ghost.direction = Math.random() * Math.PI * 2; // Random new direction
             }
         });
     }
@@ -5407,10 +5611,62 @@ function updatePowerUps() {
 
 // Check game state
 function checkGameState() {
-    if (landGrabMaze.gameState.resourcesCollected >= landGrabMaze.gameState.totalResources) {
+    if (landGrabMaze.gameState.lives <= 0) {
+        landGrabMaze.gameState.gameOver = true;
+        landGrabMaze.gameState.active = false;
+        showMazeGameOver();
+    } else if (landGrabMaze.gameState.resourcesCollected >= landGrabMaze.gameState.totalResources) {
+        // Check if player completed all 3 levels
+        if (landGrabMaze.gameState.level >= 3) {
         landGrabMaze.gameState.gameWon = true;
         landGrabMaze.gameState.active = false;
+            showMazeGameOver();
+        } else {
+            // Progress to next level
+            nextMazeLevel();
+        }
     }
+}
+
+// Progress to next level
+function nextMazeLevel() {
+    landGrabMaze.gameState.level++;
+    landGrabMaze.gameState.score += 200; // Bonus for completing level
+    landGrabMaze.gameState.resourcesCollected = 0;
+    
+    // Reset player position to center
+    landGrabMaze.player.x = 300;
+    landGrabMaze.player.y = 300;
+    
+    // Generate new maze and resources for next level
+    generateMaze();
+    generateResources();
+    
+    // Increase difficulty by adding more ghosts
+    const additionalGhosts = landGrabMaze.gameState.level - 1;
+    for (let i = 0; i < additionalGhosts; i++) {
+        const ghostTypes = ['disease', 'colonial', 'law', 'war'];
+        const randomType = ghostTypes[Math.floor(Math.random() * ghostTypes.length)];
+        
+        const safePos = findSafeGhostPosition(landGrabMaze.player.x, landGrabMaze.player.y, 150);
+        
+        landGrabMaze.ghosts.push({
+            x: safePos.x,
+            y: safePos.y,
+            type: randomType,
+            speed: 1 + (landGrabMaze.gameState.level * 0.2),
+            direction: Math.random() * Math.PI * 2,
+            lastDirectionChange: 0,
+            behavior: getGhostBehavior(randomType),
+            color: getGhostColor(randomType)
+        });
+    }
+    
+    // Update UI
+    updateMazeUI();
+    
+    // Show level transition message
+    showMazeNotification(`Level ${landGrabMaze.gameState.level} Started! Collect all resources!`, 'success');
 }
 
 // Update UI
@@ -5575,7 +5831,7 @@ function renderLandGrabMaze() {
 
 // Game loop
 function gameLoop() {
-    if (landGrabMaze.gameState.active) {
+    if (landGrabMaze.gameState.active && !landGrabMaze.gameState.gameOver) {
         updateLandGrabMaze();
         renderLandGrabMaze();
         landGrabMaze.animationId = requestAnimationFrame(gameLoop);
@@ -5686,6 +5942,70 @@ function showMazeNotification(message, type = 'info') {
     }, 3000);
 }
 
+// Get ghost behavior based on type
+function getGhostBehavior(type) {
+    const behaviors = {
+        disease: 'random',
+        colonial: 'hunt',
+        law: 'block',
+        war: 'charge'
+    };
+    return behaviors[type] || 'random';
+}
+
+// Get ghost color based on type
+function getGhostColor(type) {
+    const colors = {
+        disease: '#e74c3c',
+        colonial: '#8e44ad',
+        law: '#3498db',
+        war: '#e67e22'
+    };
+    return colors[type] || '#e74c3c';
+}
+
+// Helper function to find a safe spawn position for ghosts
+function findSafeGhostPosition(excludeX = 0, excludeY = 0, minDistance = 150) {
+    let x, y;
+    let attempts = 0;
+    do {
+        x = Math.random() * (landGrabMaze.maze.width * landGrabMaze.maze.cellSize - 40) + 20;
+        y = Math.random() * (landGrabMaze.maze.height * landGrabMaze.maze.cellSize - 40) + 20;
+        attempts++;
+    } while (
+        (Math.abs(x - excludeX) < minDistance && Math.abs(y - excludeY) < minDistance) ||
+        isWall(x - 10, y - 10) || isWall(x + 10, y - 10) ||
+        isWall(x - 10, y + 10) || isWall(x + 10, y + 10) ||
+        attempts < 100
+    );
+    
+    return { x, y };
+}
+
+// Generate initial ghosts for Level 1
+function generateInitialGhosts() {
+    landGrabMaze.ghosts = [];
+    const ghostTypes = ['disease', 'colonial', 'law', 'war'];
+    
+    // Generate 2 of each ghost type for Level 1 (8 total)
+    ghostTypes.forEach(ghostType => {
+        for (let i = 0; i < 2; i++) {
+            const safePos = findSafeGhostPosition(landGrabMaze.player.x, landGrabMaze.player.y, 150);
+            
+            landGrabMaze.ghosts.push({
+                x: safePos.x,
+                y: safePos.y,
+                type: ghostType,
+                speed: 1,
+                direction: Math.random() * Math.PI * 2,
+                lastDirectionChange: 0,
+                behavior: getGhostBehavior(ghostType),
+                color: getGhostColor(ghostType)
+            });
+        }
+    });
+}
+
 // Start the maze game
 function startLandGrabMaze() {
     console.log('startLandGrabMaze called, selectedCharacter:', landGrabMaze.gameState.selectedCharacter);
@@ -5712,7 +6032,7 @@ function startLandGrabMaze() {
         console.log('Power-ups:', landGrabMaze.maze.powerUps.length);
     }
     
-    // Hide instructions and make sure they don't interfere
+    // Hide instructions and start button while game is active
     const instructions = document.getElementById('mazeInstructions');
     if (instructions) {
         instructions.style.display = 'none';
@@ -5758,9 +6078,9 @@ function startLandGrabMaze() {
     landGrabMaze.gameState.lives = 3;
     landGrabMaze.gameState.resourcesCollected = 0;
     
-    // Reset player position
-    landGrabMaze.player.x = 400;
-    landGrabMaze.player.y = 400;
+    // Reset player position to center
+    landGrabMaze.player.x = 300;
+    landGrabMaze.player.y = 300;
     
     // Reset resources
     landGrabMaze.maze.resources.forEach(resource => {
@@ -5781,6 +6101,9 @@ function startLandGrabMaze() {
     // Set up keyboard controls (already set up in initLandGrabMaze)
     // No need to add additional listeners
     
+    // Generate initial ghosts for Level 1
+    generateInitialGhosts();
+    
     // Focus the canvas for keyboard events
     const canvasElement = document.getElementById('mazeCanvas');
     if (canvasElement) {
@@ -5800,11 +6123,11 @@ function showMazeGameOver() {
     const historicalElement = document.getElementById('mazeHistoricalText');
     
     if (landGrabMaze.gameState.gameWon) {
-        titleElement.textContent = 'Victory!';
-        textElement.textContent = `You collected all resources! Final Score: ${landGrabMaze.gameState.score}`;
+        titleElement.textContent = 'Complete Victory!';
+        textElement.textContent = `You completed all 3 levels and collected all resources! Final Score: ${landGrabMaze.gameState.score}`;
     } else {
         titleElement.textContent = 'Game Over';
-        textElement.textContent = `You were caught by the ghosts! Final Score: ${landGrabMaze.gameState.score}`;
+        textElement.textContent = `You lost all your lives! Reached Level ${landGrabMaze.gameState.level}. Final Score: ${landGrabMaze.gameState.score}`;
     }
     
     // Show historical reflection
@@ -5814,20 +6137,49 @@ function showMazeGameOver() {
     gameOverDiv.style.display = 'block';
 }
 
-// Restart the maze game
+// Restart the maze game - full restart from level 1
 function restartLandGrabMaze() {
     // Hide game over screen
     document.getElementById('mazeGameOver').style.display = 'none';
     
-    // Show instructions
+    // Show instructions and start button
     document.getElementById('mazeInstructions').style.display = 'block';
+    document.getElementById('startMazeBtn').style.display = 'block';
     
     // Stop current game
     if (landGrabMaze.animationId) {
         cancelAnimationFrame(landGrabMaze.animationId);
     }
     
+    // Reset ALL game state to initial values
     landGrabMaze.gameState.active = false;
+    landGrabMaze.gameState.gameOver = false;
+    landGrabMaze.gameState.gameWon = false;
+    landGrabMaze.gameState.score = 0;
+    landGrabMaze.gameState.lives = 3;
+    landGrabMaze.gameState.level = 1;
+    landGrabMaze.gameState.resourcesCollected = 0;
+    landGrabMaze.gameState.totalResources = 50;
+    
+    // Reset player position to center
+    landGrabMaze.player.x = 300;
+    landGrabMaze.player.y = 300;
+    
+    // Reset power-ups
+    landGrabMaze.powerUps.peaceTreaty.active = false;
+    landGrabMaze.powerUps.resistanceShield.active = false;
+    landGrabMaze.powerUps.migrationPath.active = false;
+    
+    // Clear ghosts array (will be regenerated on start)
+    landGrabMaze.ghosts = [];
+    
+    // Update UI to show reset values
+    updateMazeUI();
+    
+    // Clear canvas
+    const canvas = document.getElementById('mazeCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 // Exit the maze game
@@ -6628,6 +6980,16 @@ function getUnlockedMiniGameCount() {
     return count;
 }
 
+// Prompt for test all games password
+function promptTestAllGamesPassword() {
+    const password = prompt('Enter password to access Test All Games:');
+    if (password === 'sixseven') {
+        showTestMiniGames();
+    } else {
+        alert('Incorrect password. Access denied. You could find the password....if only you knew how to hack...');
+    }
+}
+
 // Test Mini-Games functionality
 function showTestMiniGames() {
     // Set test mode flag
@@ -6776,12 +7138,7 @@ function testLandGrabMaze() {
         initLandGrabMaze();
     }
     
-    // Auto-select a character and start the game for testing
-    landGrabMaze.gameState.selectedCharacter = 'khoisan';
-    landGrabMaze.player.color = mazeCharacters.khoisan.color;
-    
-    // Start the game automatically
-    startLandGrabMaze();
+    // Game will only start when user clicks the Start Game button
 }
 
 

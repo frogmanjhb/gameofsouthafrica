@@ -2,6 +2,22 @@
 
 This document provides a comprehensive mapping of all characters, storylines, and possible narrative paths in the "Voices of the Past" interactive fiction game. This mapping is designed to help improve the game's storyline and guide the addition of new characters.
 
+## 🏛️ Historical Figures Integration
+
+The game now features famous historical figures from South African history who appear at key decision points in each character's storyline. These figures provide context, guidance, and educational value through:
+
+- **Character Dialogue**: Each figure speaks with historically accurate quotes and perspectives
+- **Educational Facts**: "Did You Know?" boxes provide factual historical context
+- **Interactive Learning**: Students learn through character interaction rather than passive reading
+- **Retro Styling**: Historical figure modals match the game's 16-bit aesthetic
+
+### Featured Historical Figures:
+
+1. **👑 Autshumato (Harry the Strandloper)** - Khoi-San Scene 1
+2. **👑 Jan van Riebeeck** - Dutch Settler Scene 1  
+3. **👑 Lord Charles Somerset** - British Colonist Scene 2
+4. **👑 King Shaka Zulu** - Bantu Scene 4
+
 ## 🎭 Character Overview
 
 ### 1. Khoi-San Character
@@ -9,6 +25,12 @@ This document provides a comprehensive mapping of all characters, storylines, an
 **Core Identity:** Indigenous herders and hunter-gatherers  
 **Primary Motivation:** Preserve traditional way of life and cultural independence  
 **Key Challenges:** Colonial expansion, disease, land loss, cultural assimilation
+
+**Historical Figure:** **👑 Autshumato (Harry the Strandloper)**
+- **Appears in:** Scene 1 (First Contact)
+- **Role:** Translator and intermediary who warns about Dutch intentions
+- **Quote:** "These strangers bring new things, but they also bring change. I have learned their ways, but I warn you - they are not like us. They seek to stay, not just trade."
+- **Educational Value:** First Khoi leader to act as translator and trader with the Dutch
 
 **Character Arc Themes:**
 - **Adaptation vs. Resistance:** Balancing survival with cultural preservation
@@ -21,6 +43,12 @@ This document provides a comprehensive mapping of all characters, storylines, an
 **Primary Motivation:** Establish profitable farms and gain independence from Company control  
 **Key Challenges:** Company restrictions, labor shortages, frontier expansion, Boer identity formation
 
+**Historical Figure:** **👑 Jan van Riebeeck**
+- **Appears in:** Scene 1 (Arrival)
+- **Role:** Commander who establishes settlement strategy and Company policy
+- **Quote:** "We must establish a permanent settlement here to supply our ships. The Company's orders are clear - we need farms, not just trade posts. But we must be careful with the local people. They have cattle and knowledge of this land."
+- **Educational Value:** Established the first permanent Dutch settlement at the Cape in 1652
+
 **Character Arc Themes:**
 - **Company vs. Independence:** Balancing corporate loyalty with personal freedom
 - **Fair Trade vs. Exploitation:** Deciding how to interact with indigenous peoples
@@ -31,6 +59,12 @@ This document provides a comprehensive mapping of all characters, storylines, an
 **Core Identity:** British administrators and officials  
 **Primary Motivation:** Establish British control and implement British law  
 **Key Challenges:** Boer resistance, slavery abolition, frontier conflicts, colonial administration
+
+**Historical Figure:** **👑 Lord Charles Somerset**
+- **Appears in:** Scene 2 (Khoi-San Rights)
+- **Role:** Governor who influences policy decisions regarding indigenous rights
+- **Quote:** "The Khoi-San question is delicate. We must balance the needs of our settlers with the principles of British justice. The Hottentot Proclamation will ensure order, but we must consider what is truly just for all subjects of the Crown."
+- **Educational Value:** Governor of the Cape from 1814–1826 who introduced strict laws affecting the Khoi-San
 
 **Character Arc Themes:**
 - **Control vs. Autonomy:** Balancing centralized rule with local needs
@@ -43,6 +77,12 @@ This document provides a comprehensive mapping of all characters, storylines, an
 **Primary Motivation:** Secure fertile land, protect cattle, preserve community traditions  
 **Key Challenges:** Migration, land competition, disease, frontier wars, adapting to colonial pressures
 
+**Historical Figure:** **👑 King Shaka Zulu**
+- **Appears in:** Scene 4 (Territory Expansion/Frontier Conflicts)
+- **Role:** Powerful military leader who offers alliances and revolutionary warfare tactics
+- **Quote:** "The white men come with their guns and their ways, but they do not understand our land or our people. I have united the Zulu nation and created new ways of war. Join me, and together we can drive them back to the sea, or learn their ways and use them against them."
+- **Educational Value:** Powerful Zulu king (1787–1828) who revolutionized warfare in southern Africa
+
 **Character Arc Themes:**
 - **Migration vs. Settlement:** Choosing when to move or defend existing territory
 - **Cooperation vs. Resistance:** Balancing alliances with conflict against settlers
@@ -53,9 +93,9 @@ This document provides a comprehensive mapping of all characters, storylines, an
 
 ### Khoi-San Storyline (5 Decision Points)
 
-**Scene 1: First Contact (1652)**
-- **Choice A:** Trade cattle with settlers (gain beads and tools)
-- **Choice B:** Refuse trade (protect traditions)
+**Scene 1: First Contact (1652)** 👑 *Featuring Autshumato (Harry the Strandloper)*
+- **Choice A:** Listen to Autshumato and trade cattle with settlers (gain beads and tools)
+- **Choice B:** Follow Autshumato's warning and refuse trade (protect traditions)
 
 **Scene 2: Land Conflicts**
 - **Choice A:** Share grazing land (risk losing access)
@@ -75,9 +115,9 @@ This document provides a comprehensive mapping of all characters, storylines, an
 
 ### Dutch Settler Storyline (5 Decision Points)
 
-**Scene 1: Arrival (1652)**
-- **Choice A:** Trade cattle fairly with Khoi-San (slow growth, good relations)
-- **Choice B:** Take land and cattle (start conflict)
+**Scene 1: Arrival (1652)** 👑 *Featuring Jan van Riebeeck*
+- **Choice A:** Follow van Riebeeck's advice and trade cattle fairly with Khoi-San (slow growth, good relations)
+- **Choice B:** Take a more aggressive approach and take land and cattle (start conflict)
 
 **Scene 2: Farm Expansion**
 - **Choice A:** Keep farms small (peaceful growth)
@@ -101,9 +141,9 @@ This document provides a comprehensive mapping of all characters, storylines, an
 - **Choice A:** Allow Boers autonomy (weaker control)
 - **Choice B:** Impose British laws (spark Boer anger)
 
-**Scene 2: Khoi-San Rights**
-- **Choice A:** Protect Khoi-San rights (anger settlers)
-- **Choice B:** Enforce pass laws (please settlers, harm Khoi-San)
+**Scene 2: Khoi-San Rights** 👑 *Featuring Lord Charles Somerset*
+- **Choice A:** Support Somerset's approach and protect Khoi-San rights (anger settlers)
+- **Choice B:** Enforce strict pass laws as Somerset suggests (please settlers, harm Khoi-San)
 
 **Scene 3: Slavery Debate**
 - **Choice A:** Support abolition (align with Britain, anger settlers)
@@ -131,9 +171,9 @@ This document provides a comprehensive mapping of all characters, storylines, an
 - **Choice A:** Trade cattle and crops with settlers (gain goods, risk dependence)
 - **Choice B:** Reject trade and guard land (preserve independence, risk conflict)
 
-**Scene 4: Frontier Conflicts (1700s-1800s)**
-- **Choice A:** Join neighboring groups in resistance wars
-- **Choice B:** Negotiate peace to reduce losses
+**Scene 4: Frontier Conflicts (1700s-1800s)** 👑 *Featuring King Shaka Zulu*
+- **Choice A:** Ally with King Shaka and join neighboring groups in resistance wars
+- **Choice B:** Adopt Shaka's tactics but negotiate peace to reduce losses
 
 **Scene 5: Legacy & Cultural Survival (1800s)**
 - **Choice A:** Preserve language, traditions, and cattle economy despite pressure
@@ -285,6 +325,7 @@ This document provides a comprehensive mapping of all characters, storylines, an
 3. **Character Development:** Show character growth over time
 4. **Historical Accuracy:** Ensure all storylines reflect historical realities
 5. **Educational Value:** Maintain learning objectives while improving narrative
+6. **Historical Figures Integration:** Continue adding famous historical figures to key decision points
 
 ### For New Character Integration
 1. **Unique Perspectives:** Each character should offer distinct viewpoints
