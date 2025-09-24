@@ -1817,9 +1817,13 @@ function exitTradingChallenge() {
         clearInterval(tradingChallenge.gameState.timer);
     }
     
-    // Return to title screen
+    // Return to appropriate screen based on mode
     hideAllScreens();
+    if (isTestMode) {
+        showTestMiniGames();
+    } else {
     document.getElementById('titleScreen').style.display = 'block';
+    }
 }
 
 // Mini-Game Collection Functions
@@ -3501,7 +3505,11 @@ function restartCattleChase() {
 function exitCattleChase() {
     cattleChase.gameState.active = false;
     hideAllScreens();
+    if (isTestMode) {
+        showTestMiniGames();
+    } else {
     document.getElementById('titleScreen').style.display = 'block';
+    }
 }
 
 // Harbor Hustle Functions
@@ -3954,7 +3962,11 @@ function restartHarborHustle() {
 
 function exitHarborHustle() {
     hideAllScreens();
+    if (isTestMode) {
+        showTestMiniGames();
+    } else {
     document.getElementById('titleScreen').style.display = 'block';
+    }
 }
 
 // Frontier Wars Functions (Space Invaders style)
@@ -4337,227 +4349,13 @@ function restartFrontierWars() {
 
 function exitFrontierWars() {
     hideAllScreens();
+    if (isTestMode) {
+        showTestMiniGames();
+    } else {
     document.getElementById('titleScreen').style.display = 'block';
+    }
 }
 
-// Test Mini-Games Functions
-function showTestMiniGames() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-    `;
-    
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        background: linear-gradient(135deg, #2c3e50, #34495e);
-        border: 3px solid #e67e22;
-        border-radius: 15px;
-        padding: 30px;
-        text-align: center;
-        max-width: 600px;
-        color: white;
-        font-family: 'Courier New', monospace;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    `;
-    
-    const title = document.createElement('h2');
-    title.textContent = '🧪 Test All Mini-Games';
-    title.style.cssText = `
-        color: #e67e22;
-        margin-bottom: 20px;
-        font-size: 1.8em;
-    `;
-    
-    const text = document.createElement('p');
-    text.innerHTML = `
-        Choose a mini-game to test directly. These are unlocked for testing purposes only.<br><br>
-        <em>Note: This bypasses normal unlock requirements for testing.</em>
-    `;
-    text.style.cssText = `
-        margin-bottom: 25px;
-        line-height: 1.6;
-        font-size: 1.1em;
-    `;
-    
-    const buttonContainer = document.createElement('div');
-    buttonContainer.style.cssText = `
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin-bottom: 20px;
-    `;
-    
-    // Trading Challenge Button
-    const tradingButton = document.createElement('button');
-    tradingButton.innerHTML = '🎯 Trading Challenge<br><small>Item matching game</small>';
-    tradingButton.style.cssText = `
-        background: #e74c3c;
-        color: white;
-        border: none;
-        padding: 15px 25px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1em;
-        font-family: 'Courier New', monospace;
-        transition: all 0.3s ease;
-        line-height: 1.4;
-    `;
-    
-    // Cattle Chase Button
-    const cattleButton = document.createElement('button');
-    cattleButton.innerHTML = '🐄 Cattle Chase<br><small>Herding game</small>';
-    cattleButton.style.cssText = `
-        background: #8e44ad;
-        color: white;
-        border: none;
-        padding: 15px 25px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1em;
-        font-family: 'Courier New', monospace;
-        transition: all 0.3s ease;
-        line-height: 1.4;
-    `;
-    
-    // Harbor Hustle Button
-    const harborButton = document.createElement('button');
-    harborButton.innerHTML = '⚓ Harbor Hustle<br><small>Loading game</small>';
-    harborButton.style.cssText = `
-        background: #3498db;
-        color: white;
-        border: none;
-        padding: 15px 25px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1em;
-        font-family: 'Courier New', monospace;
-        transition: all 0.3s ease;
-        line-height: 1.4;
-    `;
-    
-    // Frontier Wars Button
-    const frontierButton = document.createElement('button');
-    frontierButton.innerHTML = '⚔️ Frontier Wars<br><small>Defense game</small>';
-    frontierButton.style.cssText = `
-        background: #e74c3c;
-        color: white;
-        border: none;
-        padding: 15px 25px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1em;
-        font-family: 'Courier New', monospace;
-        transition: all 0.3s ease;
-        line-height: 1.4;
-    `;
-    
-    // Close Button
-    const closeButton = document.createElement('button');
-    closeButton.textContent = 'Close';
-    closeButton.style.cssText = `
-        background: #95a5a6;
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1em;
-        font-family: 'Courier New', monospace;
-        transition: all 0.3s ease;
-    `;
-    
-    // Hover effects
-    tradingButton.onmouseover = () => {
-        tradingButton.style.background = '#c0392b';
-        tradingButton.style.transform = 'translateY(-2px)';
-    };
-    tradingButton.onmouseout = () => {
-        tradingButton.style.background = '#e74c3c';
-        tradingButton.style.transform = 'translateY(0)';
-    };
-    
-    cattleButton.onmouseover = () => {
-        cattleButton.style.background = '#7d3c98';
-        cattleButton.style.transform = 'translateY(-2px)';
-    };
-    cattleButton.onmouseout = () => {
-        cattleButton.style.background = '#8e44ad';
-        cattleButton.style.transform = 'translateY(0)';
-    };
-    
-    harborButton.onmouseover = () => {
-        harborButton.style.background = '#2980b9';
-        harborButton.style.transform = 'translateY(-2px)';
-    };
-    harborButton.onmouseout = () => {
-        harborButton.style.background = '#3498db';
-        harborButton.style.transform = 'translateY(0)';
-    };
-    
-    frontierButton.onmouseover = () => {
-        frontierButton.style.background = '#c0392b';
-        frontierButton.style.transform = 'translateY(-2px)';
-    };
-    frontierButton.onmouseout = () => {
-        frontierButton.style.background = '#e74c3c';
-        frontierButton.style.transform = 'translateY(0)';
-    };
-    
-    closeButton.onmouseover = () => {
-        closeButton.style.background = '#7f8c8d';
-        closeButton.style.transform = 'translateY(-2px)';
-    };
-    closeButton.onmouseout = () => {
-        closeButton.style.background = '#95a5a6';
-        closeButton.style.transform = 'translateY(0)';
-    };
-    
-    // Click handlers
-    tradingButton.onclick = () => {
-        document.body.removeChild(overlay);
-        testTradingChallenge();
-    };
-    
-    cattleButton.onclick = () => {
-        document.body.removeChild(overlay);
-        testCattleChase();
-    };
-    
-    harborButton.onclick = () => {
-        document.body.removeChild(overlay);
-        testHarborHustle();
-    };
-    
-    frontierButton.onclick = () => {
-        document.body.removeChild(overlay);
-        testFrontierWars();
-    };
-    
-    closeButton.onclick = () => {
-        document.body.removeChild(overlay);
-    };
-    
-    buttonContainer.appendChild(tradingButton);
-    buttonContainer.appendChild(cattleButton);
-    buttonContainer.appendChild(harborButton);
-    buttonContainer.appendChild(frontierButton);
-    
-    modal.appendChild(title);
-    modal.appendChild(text);
-    modal.appendChild(buttonContainer);
-    modal.appendChild(closeButton);
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-}
 
 
 function checkAllKhoisanEndingsCollected() {
@@ -5184,25 +4982,25 @@ const landGrabMaze = {
         }
     },
     player: {
-        x: 400,
-        y: 400,
+        x: 300,
+        y: 300,
         size: 20,
         speed: 3,
         color: '#f39c12'
     },
     maze: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         cellSize: 20,
         walls: [],
         resources: [],
         powerUps: []
     },
     ghosts: [
-        { x: 200, y: 200, type: 'disease', color: '#e74c3c', speed: 1.5, direction: 0, behavior: 'random' },
-        { x: 600, y: 200, type: 'colonial', color: '#8e44ad', speed: 2, direction: 0, behavior: 'hunt' },
-        { x: 200, y: 600, type: 'law', color: '#3498db', speed: 1, direction: 0, behavior: 'block' },
-        { x: 600, y: 600, type: 'war', color: '#e67e22', speed: 2.5, direction: 0, behavior: 'charge' }
+        { x: 150, y: 150, type: 'disease', color: '#e74c3c', speed: 1.5, direction: 0, behavior: 'random' },
+        { x: 450, y: 150, type: 'colonial', color: '#8e44ad', speed: 2, direction: 0, behavior: 'hunt' },
+        { x: 150, y: 450, type: 'law', color: '#3498db', speed: 1, direction: 0, behavior: 'block' },
+        { x: 450, y: 450, type: 'war', color: '#e67e22', speed: 2.5, direction: 0, behavior: 'charge' }
     ],
     powerUps: {
         peaceTreaty: { active: false, timer: 0, duration: 5000 },
@@ -5349,6 +5147,7 @@ function isWall(x, y) {
 
 // Handle key press events
 function handleMazeKeyDown(e) {
+    console.log('Key pressed:', e.key, 'Game active:', landGrabMaze.gameState.active);
     if (!landGrabMaze.gameState.active) return;
     
     switch(e.key) {
@@ -5574,8 +5373,8 @@ function checkCollisions() {
                     landGrabMaze.gameState.gameOver = true;
                 } else {
                     // Reset player position
-                    landGrabMaze.player.x = 400;
-                    landGrabMaze.player.y = 400;
+                    landGrabMaze.player.x = 300;
+                    landGrabMaze.player.y = 300;
                 }
             }
         });
@@ -5626,7 +5425,26 @@ function updateMazeUI() {
 // Update power-up display
 function updatePowerUpDisplay(powerUpId, powerUp) {
     const element = document.getElementById(powerUpId);
-    const timerElement = document.getElementById(powerUpId.replace('Treaty', 'Timer').replace('Shield', 'Timer').replace('Path', 'Timer'));
+    if (!element) return; // Exit if element doesn't exist
+    
+    // Map power-up IDs to their corresponding timer element IDs
+    let timerId;
+    switch(powerUpId) {
+        case 'peaceTreaty':
+            timerId = 'peaceTimer';
+            break;
+        case 'resistanceShield':
+            timerId = 'shieldTimer';
+            break;
+        case 'migrationPath':
+            timerId = 'migrationTimer';
+            break;
+        default:
+            return; // Exit if unknown power-up ID
+    }
+    
+    const timerElement = document.getElementById(timerId);
+    if (!timerElement) return; // Exit if timer element doesn't exist
     
     if (powerUp.active) {
         element.classList.add('active');
@@ -5639,13 +5457,43 @@ function updatePowerUpDisplay(powerUpId, powerUp) {
 
 // Render the game
 function renderLandGrabMaze() {
-    if (!landGrabMaze.ctx) return;
+    if (!landGrabMaze.ctx) {
+        console.log('No canvas context!');
+        return;
+    }
     
     const { ctx, canvas } = landGrabMaze;
     
     // Clear canvas
     ctx.fillStyle = '#2c3e50';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Test rectangle removed - canvas is working
+    
+    console.log('Rendering maze with', landGrabMaze.maze.walls.length, 'walls');
+    console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
+    console.log('Canvas visible:', canvas.offsetWidth, 'x', canvas.offsetHeight);
+    console.log('Canvas display:', canvas.style.display);
+    console.log('Canvas visibility:', canvas.style.visibility);
+    console.log('Canvas position:', canvas.style.position);
+    console.log('Canvas z-index:', canvas.style.zIndex);
+    
+    // Debug parent elements
+    const parent = canvas.parentElement;
+    if (parent) {
+        console.log('Parent element:', parent.tagName, parent.id);
+        console.log('Parent display:', parent.style.display);
+        console.log('Parent visibility:', parent.style.visibility);
+        console.log('Parent height:', parent.style.height);
+        console.log('Parent overflow:', parent.style.overflow);
+    }
+    
+    const grandparent = parent ? parent.parentElement : null;
+    if (grandparent) {
+        console.log('Grandparent element:', grandparent.tagName, grandparent.id);
+        console.log('Grandparent display:', grandparent.style.display);
+        console.log('Grandparent visibility:', grandparent.style.visibility);
+    }
     
     // Draw walls
     ctx.fillStyle = '#34495e';
@@ -5690,6 +5538,8 @@ function renderLandGrabMaze() {
     
     // Draw player
     const character = mazeCharacters[landGrabMaze.gameState.selectedCharacter];
+    console.log('Drawing player at:', landGrabMaze.player.x, landGrabMaze.player.y, 'Character:', character);
+    
     ctx.fillStyle = character.color;
     ctx.beginPath();
     ctx.arc(landGrabMaze.player.x, landGrabMaze.player.y, landGrabMaze.player.size/2, 0, Math.PI * 2);
@@ -5725,6 +5575,48 @@ function gameLoop() {
         updateLandGrabMaze();
         renderLandGrabMaze();
         landGrabMaze.animationId = requestAnimationFrame(gameLoop);
+    }
+}
+
+// Handle keyboard input for maze
+function handleMazeKeyPress(event) {
+    if (!landGrabMaze.gameState.active) return;
+    
+    const player = landGrabMaze.player;
+    const speed = 5;
+    
+    switch(event.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+            event.preventDefault();
+            player.y -= speed;
+            break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+            event.preventDefault();
+            player.y += speed;
+            break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+            event.preventDefault();
+            player.x -= speed;
+            break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+            event.preventDefault();
+            player.x += speed;
+            break;
+    }
+    
+    // Keep player within canvas bounds
+    const canvas = document.getElementById('mazeCanvas');
+    if (canvas) {
+        player.x = Math.max(20, Math.min(580, player.x));
+        player.y = Math.max(20, Math.min(580, player.y));
     }
 }
 
@@ -5799,8 +5691,60 @@ function startLandGrabMaze() {
         return;
     }
     
-    // Hide instructions
-    document.getElementById('mazeInstructions').style.display = 'none';
+    // Check if canvas exists
+    const canvas = document.getElementById('mazeCanvas');
+    console.log('Canvas found:', canvas);
+    if (!canvas) {
+        showMazeNotification('Canvas not found! Game cannot start.', 'error');
+        return;
+    }
+    
+    // Initialize if not already done
+    if (!landGrabMaze.canvas) {
+        console.log('Initializing maze...');
+        initLandGrabMaze();
+        console.log('Maze walls:', landGrabMaze.maze.walls.length);
+        console.log('Resources:', landGrabMaze.maze.resources.length);
+        console.log('Power-ups:', landGrabMaze.maze.powerUps.length);
+    }
+    
+    // Hide instructions and make sure they don't interfere
+    const instructions = document.getElementById('mazeInstructions');
+    if (instructions) {
+        instructions.style.display = 'none';
+        instructions.style.visibility = 'hidden';
+        instructions.style.height = '0';
+        instructions.style.overflow = 'hidden';
+    }
+    
+    // Make sure canvas is visible
+    const mazeCanvas = document.getElementById('mazeCanvas');
+    if (mazeCanvas) {
+        mazeCanvas.style.display = 'block';
+        mazeCanvas.style.visibility = 'visible';
+        mazeCanvas.style.width = '600px';
+        mazeCanvas.style.height = '600px';
+        mazeCanvas.style.position = 'relative';
+        mazeCanvas.style.zIndex = '1';
+        mazeCanvas.style.margin = '0 auto 20px auto';
+    }
+    
+    // Make sure game area is visible
+    const gameArea = document.getElementById('mazeGameArea');
+    if (gameArea) {
+        gameArea.style.display = 'block';
+        gameArea.style.visibility = 'visible';
+        gameArea.style.position = 'relative';
+        gameArea.style.zIndex = '1';
+    }
+    
+    // Ensure canvas is properly visible
+    if (mazeCanvas) {
+        mazeCanvas.style.opacity = '1';
+        mazeCanvas.style.transform = 'none';
+        mazeCanvas.style.clip = 'auto';
+        mazeCanvas.style.clipPath = 'none';
+    }
     
     // Reset game state
     landGrabMaze.gameState.active = true;
@@ -5829,6 +5773,16 @@ function startLandGrabMaze() {
         landGrabMaze.powerUps[key].active = false;
         landGrabMaze.powerUps[key].timer = 0;
     });
+    
+    // Set up keyboard controls (already set up in initLandGrabMaze)
+    // No need to add additional listeners
+    
+    // Focus the canvas for keyboard events
+    const canvasElement = document.getElementById('mazeCanvas');
+    if (canvasElement) {
+        canvasElement.focus();
+        canvasElement.tabIndex = 0; // Make canvas focusable
+    }
     
     // Start game loop
     gameLoop();
@@ -5879,13 +5833,27 @@ function exitLandGrabMaze() {
         cancelAnimationFrame(landGrabMaze.animationId);
     }
     
+    // Remove keyboard event listeners safely
+    try {
+        document.removeEventListener('keydown', handleMazeKeyDown);
+        document.removeEventListener('keyup', handleMazeKeyUp);
+    } catch (e) {
+        console.log('Event listener cleanup:', e.message);
+    }
+    
     landGrabMaze.gameState.active = false;
     
     // Hide maze screen
     document.getElementById('landGrabMazeScreen').style.display = 'none';
     
-    // Show mini-game collection
-    document.getElementById('miniGameScreen').style.display = 'block';
+    // Show appropriate screen based on mode
+    if (isTestMode) {
+        showTestMiniGames();
+    } else {
+        // Return to home page
+        hideAllScreens();
+        document.getElementById('titleScreen').style.display = 'block';
+    }
 }
 
 // Play Land Grab Maze (called from mini-game collection)
@@ -5902,37 +5870,6 @@ function playLandGrabMaze() {
     }
 }
 
-// Update the game loop to check for game over
-function updateLandGrabMaze() {
-    if (!landGrabMaze.gameState.active) return;
-    
-    // Update player position
-    updatePlayer();
-    
-    // Update ghosts
-    updateGhosts();
-    
-    // Check collisions
-    checkCollisions();
-    
-    // Update power-ups
-    updatePowerUps();
-    
-    // Check win/lose conditions
-    checkGameState();
-    
-    // Update UI
-    updateMazeUI();
-    
-    // Check for game over
-    if (landGrabMaze.gameState.gameOver || landGrabMaze.gameState.gameWon) {
-        landGrabMaze.gameState.active = false;
-        if (landGrabMaze.animationId) {
-            cancelAnimationFrame(landGrabMaze.animationId);
-        }
-        showMazeGameOver();
-    }
-}
 
 // ========================================
 // QUIZ SYSTEM
@@ -6764,12 +6701,21 @@ function hideTestMiniGames() {
 
 // Test game functions
 function testTradingChallenge() {
-    hideTestMiniGames();
+    // Hide test screen but keep test mode flag
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
     playTradingChallenge();
 }
 
 function testCattleChase() {
-    hideTestMiniGames();
+    // Hide test screen but keep test mode flag
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
+    
     // Temporarily unlock cattle chase for testing
     const originalValue = unlockedMiniGames.cattleChase;
     unlockedMiniGames.cattleChase = true;
@@ -6784,91 +6730,55 @@ function testCattleChase() {
 }
 
 function testHarborHustle() {
-    hideTestMiniGames();
+    // Hide test screen but keep test mode flag
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
     playHarborHustle();
 }
 
 function testFrontierWars() {
-    hideTestMiniGames();
+    // Hide test screen but keep test mode flag
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
     playFrontierWars();
 }
 
 function testFortDefense() {
-    hideTestMiniGames();
+    // Hide test screen but keep test mode flag
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
     showFortDefense();
 }
 
 function testLandGrabMaze() {
-    hideTestMiniGames();
+    // Hide test screen but keep test mode flag
+    const testScreen = document.getElementById('testMiniGamesScreen');
+    if (testScreen) {
+        testScreen.remove();
+    }
     
-    // Create modal for Land Grab Maze
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-    `;
+    // Show the actual Land Grab Maze screen
+    hideAllScreens();
+    document.getElementById('landGrabMazeScreen').style.display = 'block';
     
-    const modal = document.createElement('div');
-    modal.style.cssText = `
-        background: linear-gradient(135deg, #2c3e50, #34495e);
-        border: 3px solid #e67e22;
-        border-radius: 15px;
-        padding: 20px;
-        max-width: 90%;
-        max-height: 90%;
-        overflow: auto;
-        position: relative;
-    `;
-    
-    // Get the Land Grab Maze screen content
-    const mazeScreen = document.getElementById('landGrabMazeScreen');
-    const mazeContent = mazeScreen.innerHTML;
-    
-    modal.innerHTML = `
-        <button onclick="closeLandGrabMazeModal()" style="
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-        ">×</button>
-        ${mazeContent}
-    `;
-    
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    
-    // Initialize the game
+    // Initialize the game if not already done
     if (!landGrabMaze.canvas) {
         initLandGrabMaze();
     }
     
-    // Store reference for closing
-    window.currentLandGrabMazeModal = overlay;
+    // Auto-select a character and start the game for testing
+    landGrabMaze.gameState.selectedCharacter = 'khoisan';
+    landGrabMaze.player.color = mazeCharacters.khoisan.color;
+    
+    // Start the game automatically
+    startLandGrabMaze();
 }
 
-function closeLandGrabMazeModal() {
-    if (window.currentLandGrabMazeModal) {
-        document.body.removeChild(window.currentLandGrabMazeModal);
-        window.currentLandGrabMazeModal = null;
-    }
-    // Return to test screen
-    showTestMiniGames();
-}
 
 // End of file
