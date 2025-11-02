@@ -1,0 +1,3 @@
+# Netlify redirect rules
+/ /welcome.html 200
+
