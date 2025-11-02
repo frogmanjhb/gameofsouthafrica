@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Voices of the Past</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            background: #000;
+            color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .pixelblast-wrapper {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+            --bg-image: url('Images/oldsa.jpg');
+        }
+
+        .pixelblast-wrapper::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--bg-image) center/cover no-repeat;
+            filter: saturate(0.85) brightness(0.65);
+            transform: scale(1.05);
+        }
+
+        .pixelblast-wrapper canvas {
+            mix-blend-mode: screen;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px 32px;
+            backdrop-filter: blur(6px);
+            background: rgba(12, 13, 20, 0.55);
+            border: 2px solid rgba(243, 156, 18, 0.5);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            max-width: 540px;
+            width: min(90vw, 540px);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #f39c12;
+            text-shadow: 0 0 12px rgba(243, 156, 18, 0.7);
+            animation: floatTitle 6s ease-in-out infinite;
+            margin-bottom: 28px;
+        }
+
+        .tagline {
+            font-size: clamp(1rem, 2.6vw, 1.3rem);
+            color: rgba(236, 240, 241, 0.9);
+            margin-bottom: 36px;
+            line-height: 1.6;
+        }
+
+        .enter-button {
+            padding: 16px 36px;
+            font-size: 1.05rem;
+            border-radius: 999px;
+            border: 2px solid #f39c12;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.9), rgba(243, 156, 18, 0.65));
+            color: #0c0d14;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: 0 15px 30px rgba(243, 156, 18, 0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+        }
+
+        .enter-button:hover,
+        .enter-button:focus-visible {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 45px rgba(243, 156, 18, 0.55);
+            filter: brightness(1.1);
+            outline: none;
+        }
+
+        .enter-button:active {
+            transform: translateY(0);
+        }
+
+        .fallback {
+            margin-top: 28px;
+            font-size: 0.9rem;
+            color: rgba(236, 240, 241, 0.75);
+        }
+
+        @keyframes floatTitle {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @media (max-width: 540px) {
+            .content {
+                padding: 32px 24px;
+            }
+
+            h1 {
+                letter-spacing: 0.12em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pixelblast-wrapper" id="pixelblast"></div>
+    <main class="content" aria-labelledby="welcome-title">
+        <h1 id="welcome-title">Voices of the Past</h1>
+        <p class="tagline">Step into South Africa's living archive. Follow the echoes, uncover the stories, and shape history.</p>
+        <button class="enter-button" id="enterButton" type="button">Click to Begin</button>
+        <p class="fallback" id="webglWarning" hidden>For the full experience, enable WebGL in your browser.</p>
+    </main>
+
+    <noscript>
+        <style>
+            #webglWarning { display: block !important; }
+            .pixelblast-wrapper { display: none !important; }
+        </style>
+        <p class="fallback" role="alert">JavaScript is disabled. Enable it to experience the animated background.</p>
+    </noscript>
+
+    <script type="module">
+        import PixelBlastBackground from './pixelblast/pixelblast-background.js';
+
+        const container = document.getElementById('pixelblast');
+        const fallback = document.getElementById('webglWarning');
+
+        const backgroundImages = [
+            'Images/greattrek.jpg',
+            'Images/khoisanbit.jpg',
+            'Images/kraal.jpg',
+            'Images/oldsa.jpg'
+        ];
+
+        const preloadImages = () => {
+            backgroundImages.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        };
+
+        const setBackgroundImage = index => {
+            const src = backgroundImages[index % backgroundImages.length];
+            container.style.setProperty('--bg-image', `url('${src}')`);
+        };
+
+        let backgroundIndex = 0;
+        preloadImages();
+        setBackgroundImage(backgroundIndex);
+
+        const rotationInterval = setInterval(() => {
+            backgroundIndex = (backgroundIndex + 1) % backgroundImages.length;
+            setBackgroundImage(backgroundIndex);
+        }, 15000);
+
+        const createPixelBlast = () => new PixelBlastBackground(container, {
+            color: '#f39c12',
+            variant: 'diamond',
+            pixelSize: 3.2,
+            patternScale: 2.5,
+            patternDensity: 1.1,
+            enableRipples: true,
+            rippleIntensityScale: 1.2,
+            rippleThickness: 0.14,
+            rippleSpeed: 0.34,
+            edgeFade: 0.45,
+            liquid: true,
+            liquidStrength: 0.14,
+            liquidRadius: 1.25,
+            liquidWobbleSpeed: 4.8,
+            noiseAmount: 0.12,
+            speed: 0.48
+        });
+
+        let webglAvailable = false;
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+            webglAvailable = Boolean(gl);
+        } catch (err) {
+            console.error('WebGL unavailable', err);
+            webglAvailable = false;
+        }
+
+        let pixelBlastInstance = null;
+
+        if (!webglAvailable) {
+            fallback.hidden = false;
+        } else {
+            pixelBlastInstance = createPixelBlast();
+        }
+
+        const cleanup = () => {
+            clearInterval(rotationInterval);
+            if (pixelBlastInstance) {
+                pixelBlastInstance.destroy();
+                pixelBlastInstance = null;
+            }
+        };
+
+        window.addEventListener('beforeunload', cleanup);
+
+        document.getElementById('enterButton').addEventListener('click', () => {
+            cleanup();
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
+
